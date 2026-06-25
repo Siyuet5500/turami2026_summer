@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>방명록 · 2026 뚜라미 하계공연</title>
+<meta property="og:title" content="2026 뚜라미 하계공연 · 북두칠성" />
+<meta property="og:description" content="홍익대학교 중앙 창작곡 밴드 동아리 뚜라미 — 2026 하계 정기공연. 일곱 개의 별이 북쪽을 가리키는 여름밤." />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="images/poster.png" />
+<meta name="theme-color" content="#08090e" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+<canvas id="sky"></canvas>
+<header class="nav" id="nav">
+  <a href="index.html" class="brand" aria-label="TURAMI 홈">
+    <svg viewBox="0 0 44 44" fill="none" aria-hidden="true">
+      <path d="M6 17 L13 20 L20 23 L27 25 L28 33 L37 34 L38 25 Z" stroke="#d9a94e" stroke-width="1" opacity=".55" stroke-linejoin="round" fill="none"/>
+      <circle cx="6" cy="17" r="1.6" fill="#f4d68a"/><circle cx="13" cy="20" r="1.4" fill="#f4d68a"/>
+      <circle cx="20" cy="23" r="1.4" fill="#f4d68a"/><circle cx="27" cy="25" r="1.6" fill="#f4d68a"/>
+      <circle cx="28" cy="33" r="1.4" fill="#f4d68a"/><circle cx="37" cy="34" r="1.4" fill="#f4d68a"/>
+      <circle cx="38" cy="25" r="1.8" fill="#fff"/>
+    </svg>
+    <span class="word">TURAMI</span>
+  </a>
+  <nav class="navlinks" id="navlinks">
+    <a href="index.html" class="navlink">HOME</a>
+    <a href="about.html" class="navlink">ABOUT</a>
+    <a href="setlist.html" class="navlink">SETLIST</a>
+    <a href="members.html" class="navlink">MEMBERS</a>
+    <a href="ticket.html" class="navlink">TICKET</a>
+    <a href="memento.html" class="navlink">MEMENTO</a>
+    <a href="guestbook.html" class="navlink">GUESTBOOK</a>
+  </nav>
+  <a href="ticket.html" class="nav-cta">예매하기</a>
+  <button class="burger" id="burger" aria-label="메뉴 열기"><span></span><span></span><span></span></button>
+</header>
+<button class="drawer-close" id="drawerClose" aria-label="메뉴 닫기">&times;</button>
+<section class="pad" id="guestbook">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="eyebrow">Guestbook</p>
+      <h2>한여름 밤의 <em>은하수</em></h2>
+      <p class="kr">응원 한마디가 별이 되어 밤하늘에 안착합니다 · 떠 있는 별을 눌러 다른 이의 메시지를 확인해 보세요</p>
+    </div>
+    <div class="gb-sky-wrap reveal">
+      <canvas id="gbSky"></canvas>
+      <div class="gb-tip" id="gbTip"></div>
+      <span class="gb-count" id="gbCount">별 0개</span>
+    </div>
+    <div class="gb-form reveal">
+      <input id="gbName" maxlength="12" placeholder="이름 (선택)" autocomplete="off" />
+      <input id="gbMsg" maxlength="60" placeholder="응원 한마디를 남겨 별을 띄워보세요" autocomplete="off" />
+      <button class="btn btn-primary" id="gbAdd" type="button">별 띄우기 ✦</button>
+    </div>
+    <p class="gb-note" id="gbNote">※ 현재는 이 기기에만 저장돼요. 모든 관객과 은하수를 공유하려면 Firebase 연결이 필요합니다(설정법 안내 가능).</p>
+  </div>
+</section>
+<div class="ls-overlay" id="lsOverlay" aria-hidden="true">
+  <div class="ls-sync">모든 화면이 같은 리듬으로 빛납니다</div>
+  <canvas class="ls-glow" id="lsGlow" width="680" height="680"></canvas>
+  <div class="ls-starlabel" id="lsLabel">TURAMI · 북두칠성</div>
+  <div class="ls-colors" id="lsColors"></div>
+  <button class="ls-close" id="lsClose" type="button">닫기 ✕</button>
+</div>
+
+<!-- 떠 있는 응원봉 버튼 -->
+<button class="ls-fab" id="lsFab" type="button"><span class="dot"></span>응원봉</button>
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <div class="word">TURAMI</div>
+        <p>홍익대학교 중앙 창작곡 밴드 동아리 뚜라미.<br/>우리가 만든 노래로, 우리만의 밤을 켭니다.</p>
+      </div>
+      <div class="socials">
+        <a href="https://www.youtube.com/@hongik_TURAMI" target="_blank" rel="noopener">공식 YouTube</a>
+        <a href="https://www.instagram.com/turami_hongik/" target="_blank" rel="noopener">공식 Instagram</a>
+        <a href="https://www.instagram.com/tugetherami/" target="_blank" rel="noopener">활동 Instagram</a>
+        <a href="https://youtube.com/playlist?list=PLefGzk5NdwqvgyBtjJUl_FDFeBJc-KuJL" target="_blank" rel="noopener">2025 가을공연 다시보기</a>
+      </div>
+    </div>
+    <div class="copyright">COPYRIGHT © 2026 TURAMI, HONGIK UNIVERSITY. ALL RIGHTS RESERVED.</div>
+  </div>
+</footer>
+<script src="assets/app.js"></script>
+</body>
+</html>
