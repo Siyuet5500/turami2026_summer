@@ -678,10 +678,15 @@ prefersReduced?staticDraw():requestAnimationFrame(frame);
   if(!document.getElementById("tm-map-style")){
     const st=document.createElement("style"); st.id="tm-map-style";
     st.textContent=`
-@keyframes tmPulse{0%{transform:scale(.6);opacity:.75}70%{transform:scale(2.3);opacity:0}100%{opacity:0}}
-.tm-marker{position:relative;width:20px;height:20px}
-.tm-marker .core{position:absolute;inset:5px;border-radius:50%;background:#f4d68a;box-shadow:0 0 10px 2px rgba(244,214,138,.9)}
-.tm-marker .ring{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(244,214,138,.85);animation:tmPulse 2.4s ease-out infinite}
+@keyframes tmRing{0%{transform:scale(.45);opacity:1}100%{transform:scale(3.2);opacity:0}}
+@keyframes tmPing{0%{transform:scale(.45);opacity:.45}100%{transform:scale(3.2);opacity:0}}
+.tm-pin{position:relative;width:46px;height:46px}
+.tm-pin .halo{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle, rgba(8,10,18,.55) 0%, rgba(8,10,18,0) 70%)}
+.tm-pin .ping{position:absolute;left:50%;top:50%;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;background:radial-gradient(circle, rgba(244,214,138,.5), rgba(244,214,138,0) 70%);animation:tmPing 2.6s ease-out infinite}
+.tm-pin .ring{position:absolute;left:50%;top:50%;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;border:2.5px solid rgba(244,214,138,.95);box-shadow:0 0 0 1px rgba(8,10,18,.5), 0 0 9px rgba(244,214,138,.55);animation:tmRing 2.6s ease-out infinite}
+.tm-pin .ring.d{animation-delay:1.3s}
+.tm-pin .disc{position:absolute;left:50%;top:50%;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;background:radial-gradient(circle at 50% 35%, #1a2030, #0b0e16);border:1.5px solid #f4d68a;box-shadow:0 2px 8px rgba(0,0,0,.5), 0 0 12px 2px rgba(244,214,138,.55)}
+.tm-pin .star{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:#f4d68a;font-size:15px;line-height:1;text-shadow:0 0 6px rgba(244,214,138,.9)}
 .tm-info{position:relative;background:rgba(11,14,22,.95);border:1px solid rgba(217,169,78,.5);border-radius:12px;padding:11px 16px;font-family:'Noto Sans KR',sans-serif;color:#e9edf9;box-shadow:0 12px 30px rgba(0,0,0,.55);white-space:nowrap}
 .tm-info .v{color:#f4d68a;font-size:12px;letter-spacing:.05em}
 .tm-info .t{font-size:14px;font-weight:500;margin-top:3px}
@@ -702,8 +707,8 @@ prefersReduced?staticDraw():requestAnimationFrame(frame);
     const marker = new naver.maps.Marker({
       position: pos, map,
       icon: {
-        content: '<div class="tm-marker"><span class="ring"></span><span class="core"></span></div>',
-        anchor: new naver.maps.Point(10,10)
+        content: '<div class="tm-pin"><span class="halo"></span><span class="ping"></span><span class="ring"></span><span class="ring d"></span><span class="disc"></span><span class="star">✦</span></div>',
+        anchor: new naver.maps.Point(23,23)
       }
     });
     const info = new naver.maps.InfoWindow({
