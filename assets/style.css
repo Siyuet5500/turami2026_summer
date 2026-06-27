@@ -317,3 +317,12 @@ footer{border-top:1px solid var(--line);padding:70px 0 50px;position:relative;z-
 .map-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
 .map-act{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-bright);border:1px solid var(--line);border-radius:999px;padding:9px 16px;background:transparent;cursor:pointer;transition:border-color .2s,color .2s;text-decoration:none}
 .map-act:hover{border-color:var(--gold-bright);color:#fff}
+
+
+/* 모바일: 별자리 내비를 키우고 '별을 눌러 이동' 안내를 다시 노출 */
+@media(max-width:880px){
+  .navstar .ns-dot{r:5.4}
+  .navstar.secret .ns-dot{r:6}
+  .starmap-hint{display:block}
+}
+@media(hover:none){ .starmap-hint{display:block} }

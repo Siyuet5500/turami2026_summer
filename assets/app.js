@@ -691,3 +691,30 @@ prefersReduced?staticDraw():requestAnimationFrame(frame);
   s.onerror = function(){ if(fb) fb.innerHTML = "지도를 불러오지 못했어요. 네트워크를 확인해 주세요."; };
   document.head.appendChild(s);
 })();
+
+
+/* ============================================================
+   ★ HERO 별자리 반응형 — 모바일에선 잘리지 않게 전체 표시(히든 별 포함)
+   ============================================================ */
+(function(){
+  const svgs = [
+    document.querySelector(".hero-constellation"),
+    document.querySelector(".hero-navstars")
+  ].filter(Boolean);
+  if(!svgs.length) return;                 // 히어로가 있는 index 페이지에서만
+  const mq = window.matchMedia("(max-width:880px)");
+  function fit(){
+    const mobile = mq.matches;
+    svgs.forEach(svg=>{
+      if(mobile){
+        svg.setAttribute("viewBox", "40 110 920 380");
+        svg.setAttribute("preserveAspectRatio", "xMidYMin meet");
+      }else{
+        svg.setAttribute("viewBox", "0 0 1000 600");
+        svg.setAttribute("preserveAspectRatio", "xMidYMid slice");
+      }
+    });
+  }
+  fit();
+  mq.addEventListener ? mq.addEventListener("change", fit) : addEventListener("resize", fit);
+})();
