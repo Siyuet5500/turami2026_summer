@@ -792,6 +792,13 @@ prefersReduced?staticDraw():requestAnimationFrame(frame);
       h+='<span style="left:'+x+'%;top:'+y+'%;width:'+s+'px;height:'+s+'px;animation-delay:'+d+'s;'+(g?'background:#f4d68a;':'')+'"></span>'; }
     sky.innerHTML=h;
   }
+// 히어로 별자리와 위치·크기를 똑같이 맞춤 (반응형 상태까지 복사)
+  const dip=intro.querySelector(".intro-dipper"), heroC=document.querySelector(".hero-constellation");
+  if(dip && heroC){
+    const vb=heroC.getAttribute("viewBox");            if(vb) dip.setAttribute("viewBox", vb);
+    const pa=heroC.getAttribute("preserveAspectRatio"); if(pa) dip.setAttribute("preserveAspectRatio", pa);
+    dip.style.top=heroC.style.top; dip.style.height=heroC.style.height; dip.style.bottom=heroC.style.bottom;
+  }
   intro.classList.add("play");                              // 애니메이션 시작
   let done=false;
   function end(){ if(done) return; done=true;

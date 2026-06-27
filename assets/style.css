@@ -342,7 +342,7 @@ footer{border-top:1px solid var(--line);padding:70px 0 50px;position:relative;z-
 .intro-line{fill:none;stroke:url(#introGrad);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 5px rgba(244,214,138,.55));stroke-dasharray:1;stroke-dashoffset:1}
 .intro.play .intro-line{animation:introDraw 1.7s ease-in-out forwards;animation-delay:.95s}
 @keyframes introDraw{to{stroke-dashoffset:0}}
-.intro-ds{opacity:0;transform-box:fill-box;transform-origin:center;fill:#f4e8c8;filter:drop-shadow(0 0 6px rgba(244,214,138,.95))}
+.intro-ds{opacity:0;transform-box:fill-box;transform-origin:center;fill:#f4d68a;filter:drop-shadow(0 0 6px rgba(244,214,138,.95))}
 .intro.play .intro-ds{animation:introPop .8s cubic-bezier(.2,.8,.2,1) forwards}
 @keyframes introPop{0%{opacity:0;transform:scale(0)}55%{opacity:1;transform:scale(1.7)}100%{opacity:1;transform:scale(1)}}
 .intro-dubhe{fill:#fff;filter:drop-shadow(0 0 12px rgba(255,255,255,.95))}
