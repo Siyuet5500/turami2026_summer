@@ -31,7 +31,15 @@ const CONFIG = {
 
   // 방명록 공유 백엔드 (선택). 비워두면 이 기기에만 저장(localStorage).
   // Firebase 웹 설정 객체를 그대로 넣으면 전체 관객이 공유하는 은하수가 됩니다.
-  firebase : null,
+  firebase : {
+    apiKey: "AIzaSyCv7sHltUys91fb1lQeFYRqP9w2FriCUiY",
+    authDomain: "turami2026-summer.firebaseapp.com",
+    projectId: "turami2026-summer",
+    storageBucket: "turami2026-summer.firebasestorage.app",
+    messagingSenderId: "931198123638",
+    appId: "1:931198123638:web:3d59430b2acea3fc976957",
+    measurementId: "G-JL2371PFSM"
+  },
   // 처음 보일 예시 응원(시드)
   seedWishes : [
     {name:"뚜라미", msg:"올여름, 가장 빛나는 밤을 함께해요 ✦"},
