@@ -63,8 +63,13 @@
             NJ빌딩 <strong style="color:var(--starlight);font-weight:400">지하 1층</strong> 아트홀 베짱이입니다.<br/>
             별도의 주차 공간이 없으니 가급적 대중교통을 이용해 주세요.
           </p>
-          <a href="#" id="mapBtn2" target="_blank" rel="noopener"
-             style="display:inline-block;margin-top:14px;font-family:var(--mono);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-bright);border-bottom:1px solid var(--line);padding-bottom:3px">네이버 지도로 보기 →</a>
+          <div class="map-embed" id="naverMap">
+            <div class="map-fallback" id="mapFallback">지도를 불러오는 중…</div>
+          </div>
+          <div class="map-actions">
+            <a class="map-act" id="mapOpen" target="_blank" rel="noopener">네이버 지도에서 열기 →</a>
+            <button class="map-act" id="mapCopy" type="button">주소 복사</button>
+          </div>
         </div>
       </div>
       <div class="about-card reveal">
