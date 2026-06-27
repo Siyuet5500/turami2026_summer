@@ -775,3 +775,31 @@ prefersReduced?staticDraw():requestAnimationFrame(frame);
   addEventListener("load", apply);
   if(document.fonts && document.fonts.ready) document.fonts.ready.then(apply);
 })();
+
+/* ============================================================
+   ★ 시네마틱 인트로 — index 첫 진입 시 1회 재생 (세션당)
+   ============================================================ */
+(function(){
+  const intro=document.getElementById("intro");
+  if(!intro) return;                       // index에만 존재
+  const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let seen=false; try{ seen=sessionStorage.getItem("turami_intro")==="1"; }catch(_){}
+  if(seen || reduce){ intro.remove(); return; }
+  document.documentElement.style.overflow="hidden";        // 인트로 동안 스크롤 잠금
+  const sky=document.getElementById("introSky");
+  if(sky){ let h="";
+    for(let i=0;i<70;i++){ const x=Math.random()*100,y=Math.random()*100,s=Math.random()*2+0.6,d=Math.random()*3,g=Math.random()<0.12;
+      h+='<span style="left:'+x+'%;top:'+y+'%;width:'+s+'px;height:'+s+'px;animation-delay:'+d+'s;'+(g?'background:#f4d68a;':'')+'"></span>'; }
+    sky.innerHTML=h;
+  }
+  intro.classList.add("play");                              // 애니메이션 시작
+  let done=false;
+  function end(){ if(done) return; done=true;
+    intro.classList.add("done");
+    try{ sessionStorage.setItem("turami_intro","1"); }catch(_){}
+    setTimeout(()=>{ intro.remove(); document.documentElement.style.overflow=""; }, 1000);
+  }
+  const t=setTimeout(end, 4600);
+  const skip=document.getElementById("introSkip");
+  if(skip) skip.addEventListener("click",()=>{ clearTimeout(t); end(); });
+})();
