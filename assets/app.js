@@ -489,10 +489,14 @@ gbSky.addEventListener("click",e=>{const i=gbPick(e.clientX,e.clientY);if(i>=0)s
 function showTip(w,cx,cy,sticky){
   const wrap=gbSky.parentElement.getBoundingClientRect();
   gbTip.innerHTML=`<div class="t-msg">${escapeHtml(w.msg)}</div><div class="t-name">— ${escapeHtml(w.name||"익명")}</div>`;
+  gbTip.classList.add("show");                 // 먼저 보이게 해서 크기를 잰다
+  const tw=gbTip.offsetWidth, th=gbTip.offsetHeight, pad=14;
   let x=cx-wrap.left+14, y=cy-wrap.top+14;
-  x=Math.min(x,wrap.width-250);
-  gbTip.style.left=x+"px";gbTip.style.top=y+"px";
-  gbTip.classList.add("show");
+  if(x+tw > wrap.width-pad)  x=cx-wrap.left-tw-14;   // 오른쪽 넘치면 왼쪽으로
+  if(y+th > wrap.height-pad) y=cy-wrap.top-th-14;    // 아래로 넘치면 위로
+  x=Math.max(pad, Math.min(x, wrap.width-tw-pad));   // 좌우 안쪽으로 보정
+  y=Math.max(pad, Math.min(y, wrap.height-th-pad));  // 상하 안쪽으로 보정
+  gbTip.style.left=x+"px"; gbTip.style.top=y+"px";
   if(sticky){clearTimeout(gbTip._t);gbTip._t=setTimeout(hideTip,3500);}
 }
 function hideTip(){gbTip.classList.remove("show");}
