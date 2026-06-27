@@ -674,6 +674,23 @@ prefersReduced?staticDraw():requestAnimationFrame(frame);
     if(fb){ fb.style.display="flex"; fb.innerHTML = "지도 인증 실패 — 도메인 등록/키를 확인해 주세요.<br/>‘네이버 지도에서 열기’는 정상 동작합니다."; }
   };
 
+  // 마커·정보창 커스텀 스타일 (1회 주입)
+  if(!document.getElementById("tm-map-style")){
+    const st=document.createElement("style"); st.id="tm-map-style";
+    st.textContent=`
+@keyframes tmPulse{0%{transform:scale(.6);opacity:.75}70%{transform:scale(2.3);opacity:0}100%{opacity:0}}
+.tm-marker{position:relative;width:20px;height:20px}
+.tm-marker .core{position:absolute;inset:5px;border-radius:50%;background:#f4d68a;box-shadow:0 0 10px 2px rgba(244,214,138,.9)}
+.tm-marker .ring{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(244,214,138,.85);animation:tmPulse 2.4s ease-out infinite}
+.tm-info{position:relative;background:rgba(11,14,22,.95);border:1px solid rgba(217,169,78,.5);border-radius:12px;padding:11px 16px;font-family:'Noto Sans KR',sans-serif;color:#e9edf9;box-shadow:0 12px 30px rgba(0,0,0,.55);white-space:nowrap}
+.tm-info .v{color:#f4d68a;font-size:12px;letter-spacing:.05em}
+.tm-info .t{font-size:14px;font-weight:500;margin-top:3px}
+.tm-info .a{color:#8a93b8;font-size:11px;margin-top:5px}
+.tm-info::after{content:"";position:absolute;left:50%;bottom:-7px;width:12px;height:12px;transform:translateX(-50%) rotate(45deg);background:rgba(11,14,22,.95);border-right:1px solid rgba(217,169,78,.5);border-bottom:1px solid rgba(217,169,78,.5)}
+`;
+    document.head.appendChild(st);
+  }
+
   const s = document.createElement("script");
   s.src = "https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=" + encodeURIComponent(CONFIG.naverMapKey);
   s.onload = function(){
@@ -681,17 +698,27 @@ prefersReduced?staticDraw():requestAnimationFrame(frame);
     if(fb) fb.style.display = "none";
     const pos = new naver.maps.LatLng(geo.lat, geo.lng);
     const map = new naver.maps.Map(box, { center: pos, zoom: 16, scrollWheel: false });
-    const marker = new naver.maps.Marker({ position: pos, map, title: "아트홀 베짱이" });
-    const info = new naver.maps.InfoWindow({
-      content: '<div style="padding:8px 12px;font-size:13px;color:#111;font-family:sans-serif;white-space:nowrap">아트홀 베짱이<br/><b>2026 뚜라미 하계공연</b></div>'
+
+    const marker = new naver.maps.Marker({
+      position: pos, map,
+      icon: {
+        content: '<div class="tm-marker"><span class="ring"></span><span class="core"></span></div>',
+        anchor: new naver.maps.Point(10,10)
+      }
     });
-    naver.maps.Event.addListener(marker, "click", ()=> info.getMap()? info.close() : info.open(map, marker));
+    const info = new naver.maps.InfoWindow({
+      content: '<div class="tm-info"><div class="v">아트홀 베짱이</div><div class="t">2026 뚜라미 하계공연</div><div class="a">6호선 상수역 1번 출구 · 도보 5분</div></div>',
+      borderWidth: 0,
+      backgroundColor: "transparent",
+      disableAnchor: true,
+      pixelOffset: new naver.maps.Point(0, -16)
+    });
     info.open(map, marker);
+    naver.maps.Event.addListener(marker, "click", ()=> info.getMap() ? info.close() : info.open(map, marker));
   };
   s.onerror = function(){ if(fb) fb.innerHTML = "지도를 불러오지 못했어요. 네트워크를 확인해 주세요."; };
   document.head.appendChild(s);
 })();
-
 
 /* ============================================================
    ★ HERO 별자리 반응형 — 모바일에선 '제목 ~ 타이머' 사이에 배치 + 전체 표시
