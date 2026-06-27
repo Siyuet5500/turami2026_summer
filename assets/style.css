@@ -325,3 +325,4 @@ footer{border-top:1px solid var(--line);padding:70px 0 50px;position:relative;z-
   .starmap-hint{display:block}
 }
 @media(hover:none){ .starmap-hint{display:block} }
+.drawer-close{display:none}
