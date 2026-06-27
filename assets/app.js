@@ -694,27 +694,40 @@ prefersReduced?staticDraw():requestAnimationFrame(frame);
 
 
 /* ============================================================
-   ★ HERO 별자리 반응형 — 모바일에선 잘리지 않게 전체 표시(히든 별 포함)
+   ★ HERO 별자리 반응형 — 모바일에선 '제목 ~ 타이머' 사이에 배치 + 전체 표시
    ============================================================ */
 (function(){
-  const svgs = [
-    document.querySelector(".hero-constellation"),
-    document.querySelector(".hero-navstars")
-  ].filter(Boolean);
-  if(!svgs.length) return;                 // 히어로가 있는 index 페이지에서만
+  const hero  = document.querySelector(".hero");
+  const c     = document.querySelector(".hero-constellation");
+  const n     = document.querySelector(".hero-navstars");
+  const title = hero && hero.querySelector("h1");
+  const timer = document.getElementById("countdown");
+  if(!hero || (!c && !n)) return;
+  const svgs = [c, n].filter(Boolean);
   const mq = window.matchMedia("(max-width:880px)");
-  function fit(){
+
+  function apply(){
     const mobile = mq.matches;
     svgs.forEach(svg=>{
       if(mobile){
         svg.setAttribute("viewBox", "40 110 920 380");
-        svg.setAttribute("preserveAspectRatio", "xMidYMin meet");
+        svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
       }else{
         svg.setAttribute("viewBox", "0 0 1000 600");
         svg.setAttribute("preserveAspectRatio", "xMidYMid slice");
+        svg.style.top = svg.style.height = svg.style.bottom = "";  // 데스크톱은 inset:0 복원
       }
     });
+    if(mobile && title && timer){
+      const hr  = hero.getBoundingClientRect();
+      const top = title.getBoundingClientRect().bottom - hr.top;   // 제목 아래
+      const bot = timer.getBoundingClientRect().top    - hr.top;   // 타이머 위
+      const h   = Math.max(120, bot - top);
+      svgs.forEach(svg=>{ svg.style.top = top+"px"; svg.style.height = h+"px"; svg.style.bottom = "auto"; });
+    }
   }
-  fit();
-  mq.addEventListener ? mq.addEventListener("change", fit) : addEventListener("resize", fit);
+  apply();
+  addEventListener("resize", apply);
+  addEventListener("load", apply);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(apply);
 })();

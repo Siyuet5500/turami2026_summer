@@ -319,7 +319,6 @@ footer{border-top:1px solid var(--line);padding:70px 0 50px;position:relative;z-
 .map-act:hover{border-color:var(--gold-bright);color:#fff}
 
 
-/* 모바일: 별자리 내비를 키우고 '별을 눌러 이동' 안내를 다시 노출 */
 @media(max-width:880px){
   .navstar .ns-dot{r:5.4}
   .navstar.secret .ns-dot{r:6}
