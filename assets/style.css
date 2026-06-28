@@ -327,3 +327,5 @@ footer{border-top:1px solid var(--line);padding:70px 0 50px;position:relative;z-
 @media(hover:none){ .starmap-hint{display:block} }
 .drawer-close{display:none}
 .foot-brand p{word-break:keep-all;max-width:40ch}
+
+.ls-starlabel{display:none}
