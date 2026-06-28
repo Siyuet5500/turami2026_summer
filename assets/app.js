@@ -341,6 +341,10 @@ const LS_COLORS=[
   {name:"로즈",  rgb:[255,150,180]},
 ];
 let lsColor=LS_COLORS[0].rgb, lsRAF=null, lsWake=null;
+let lsPattern="pulse";
+const LS_PRESET={gold:[244,214,138],white:[255,255,255],blue:[120,170,255],violet:[185,150,255],rose:[255,150,180],green:[150,240,170],red:[255,110,110]};
+function hsl2rgb(h,s,l){h/=360;const a=s*Math.min(l,1-l);const f=n=>{const k=(n+h*12)%12;return l-a*Math.max(-1,Math.min(k-3,9-k,1));};return [f(0)*255,f(8)*255,f(4)*255];}
+function rgb2hsl(r,g,b){r/=255;g/=255;b/=255;const mx=Math.max(r,g,b),mn=Math.min(r,g,b);let h,s,l=(mx+mn)/2;if(mx===mn){h=s=0;}else{const d=mx-mn;s=l>0.5?d/(2-mx-mn):d/(mx+mn);switch(mx){case r:h=(g-b)/d+(g<b?6:0);break;case g:h=(b-r)/d+2;break;default:h=(r-g)/d+4;}h*=60;}return [h,s,l];}
 const lsOverlay=document.getElementById("lsOverlay"),
       lsGlow=document.getElementById("lsGlow"), lgx=lsGlow.getContext("2d"),
       lsColorsBox=document.getElementById("lsColors");
@@ -356,22 +360,29 @@ LS_COLORS.forEach((c,i)=>{
 
 function lsDraw(){
   const t=Date.now();
-  // 모든 기기가 공유하는 벽시계 → 동기 맥동 (period 2.0s) + 미세 반짝임 0.45s
-  const slow=(Math.sin(t/1000*Math.PI)+1)/2;        // 0~1, 2초 주기
-  const fast=(Math.sin(t/450*Math.PI)+1)/2;
-  const bright=0.55+slow*0.4+fast*0.05;
-  const [r,g,b]=lsColor;
   const W=lsGlow.width,H=lsGlow.height,cx=W/2,cy=H/2;
+  let [r,g,b]=lsColor, bright;
+  const slow=(Math.sin(t/1000*Math.PI)+1)/2;
+  const fast=(Math.sin(t/450*Math.PI)+1)/2;
+  switch(lsPattern){
+    case "solid":  bright=0.92; break;
+    case "blink":  bright=(Math.floor(t/380)%2)?0.95:0.12; break;
+    case "wave":   { const h=rgb2hsl(r,g,b); [r,g,b]=hsl2rgb((h[0]+(t/40))%360,h[1],h[2]); bright=0.6+slow*0.35; break; }
+    case "rainbow":{ [r,g,b]=hsl2rgb((t/25)%360,0.75,0.62); bright=0.7+fast*0.2; break; }
+    case "off":    bright=0; break;
+    default:       bright=0.55+slow*0.4+fast*0.05;   // pulse
+  }
   lgx.clearRect(0,0,W,H);
-  const R=W*0.46*(0.92+slow*0.08);
-  const grad=lgx.createRadialGradient(cx,cy,0,cx,cy,R);
-  grad.addColorStop(0,`rgba(${r},${g},${b},${bright})`);
-  grad.addColorStop(0.45,`rgba(${r},${g},${b},${bright*0.55})`);
-  grad.addColorStop(1,`rgba(${r},${g},${b},0)`);
-  lgx.fillStyle=grad;lgx.beginPath();lgx.arc(cx,cy,R,0,7);lgx.fill();
-  // 중심 코어
-  lgx.fillStyle=`rgba(255,255,255,${0.5+slow*0.4})`;
-  lgx.beginPath();lgx.arc(cx,cy,W*0.05,0,7);lgx.fill();
+  if(bright>0.01){
+    const R=W*0.46*(0.92+slow*0.08);
+    const grad=lgx.createRadialGradient(cx,cy,0,cx,cy,R);
+    grad.addColorStop(0,`rgba(${r|0},${g|0},${b|0},${bright})`);
+    grad.addColorStop(0.45,`rgba(${r|0},${g|0},${b|0},${bright*0.55})`);
+    grad.addColorStop(1,`rgba(${r|0},${g|0},${b|0},0)`);
+    lgx.fillStyle=grad;lgx.beginPath();lgx.arc(cx,cy,R,0,7);lgx.fill();
+    lgx.fillStyle=`rgba(255,255,255,${Math.min(0.9,bright*0.6+slow*0.3)})`;
+    lgx.beginPath();lgx.arc(cx,cy,W*0.05,0,7);lgx.fill();
+  }
   lsRAF=requestAnimationFrame(lsDraw);
 }
 async function lsOpen(){
@@ -774,4 +785,26 @@ prefersReduced?staticDraw():requestAnimationFrame(frame);
   addEventListener("resize", apply);
   addEventListener("load", apply);
   if(document.fonts && document.fonts.ready) document.fonts.ready.then(apply);
+})();
+
+/* ============================================================
+   ★ 응원봉 중앙제어 구독 — control.html 신호를 실시간 적용
+   ============================================================ */
+(async function lsLiveSubscribe(){
+  if(!CONFIG.firebase) return;
+  let appMod,fsMod;
+  try{
+    appMod=await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+    fsMod =await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+  }catch(e){ return; }
+  const app=appMod.getApps().length?appMod.getApp():appMod.initializeApp(CONFIG.firebase);
+  const db=fsMod.getFirestore(app);
+  const {doc,onSnapshot}=fsMod;
+  const sync=document.querySelector(".ls-sync");
+  onSnapshot(doc(db,"live","state"), snap=>{
+    const d=snap.data(); if(!d) return;
+    if(d.pattern) lsPattern=d.pattern;
+    if(d.color && LS_PRESET[d.color]) lsColor=LS_PRESET[d.color];
+    if(sync) sync.textContent="운영자와 실시간 동기화 중 ✦";
+  }, ()=>{});
 })();
