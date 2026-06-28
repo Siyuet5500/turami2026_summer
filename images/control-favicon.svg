@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="TURAMI 응원봉 컨트롤">
+  <rect width="64" height="64" rx="14" fill="#08090e"/>
+  <polyline points="8.0,19.2 18.5,23.8 29.0,28.2 39.5,31.2 41.0,43.2 54.5,44.8 56.0,31.2 39.5,31.2" fill="none" stroke="#d9a94e" stroke-width="1.4" opacity=".6" stroke-linejoin="round" stroke-linecap="round"/>
+  <circle cx="8.0" cy="19.2" r="2.4" fill="#f4d68a"/><circle cx="18.5" cy="23.8" r="2.4" fill="#f4d68a"/><circle cx="29.0" cy="28.2" r="2.4" fill="#f4d68a"/><circle cx="39.5" cy="31.2" r="2.4" fill="#f4d68a"/><circle cx="41.0" cy="43.2" r="2.4" fill="#f4d68a"/><circle cx="54.5" cy="44.8" r="2.4" fill="#f4d68a"/><circle cx="56.0" cy="31.2" r="4.8" fill="#ff3c3c" opacity=".4"/><circle cx="56.0" cy="31.2" r="3.1" fill="#ff3c3c"/>
+</svg>

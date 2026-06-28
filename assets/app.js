@@ -41,11 +41,7 @@ const CONFIG = {
     measurementId: "G-JL2371PFSM"
   },
   // 처음 보일 예시 응원(시드)
-  seedWishes : [
-    {name:"뚜라미", msg:"올여름, 가장 빛나는 밤을 함께해요 ✦"},
-    {name:"45기 OB", msg:"무대 위 일곱 별을 응원합니다"},
-    {name:"익명의 관객", msg:"첫 곡부터 마지막 곡까지 기대돼요!"},
-  ]
+  seedWishes : []
 };
 
 /* 셋리스트 — 북두칠성 일곱 별에 한 곡씩.
