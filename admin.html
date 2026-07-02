@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>관리자 · TURAMI</title>
+<link rel="icon" href="images/control-favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="images/control-favicon.png" sizes="32x32" type="image/png" />
+<link rel="apple-touch-icon" href="images/control-apple-touch.png" />
+<meta property="og:title" content="관리자 · TURAMI (STAFF ONLY)" />
+<meta property="og:description" content="2026 뚜라미 하계공연 통합 관리자 페이지 — 운영자 전용" />
+<meta property="og:image" content="https://siyuet5500.github.io/turami2026_summer/images/control-og.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  :root{--gold:#f4d68a;--goldd:#d9a94e;--line:rgba(255,255,255,.12);--muted:#8a93b8;--muted2:#5d678f;--star:#e9edf9}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;background:radial-gradient(120% 90% at 50% 8%,#0c1024,#06080e 70%);color:var(--star);font-family:'Noto Sans KR',sans-serif;-webkit-tap-highlight-color:transparent}
+  .wrap{max-width:720px;margin:0 auto;padding:26px 18px 70px}
+  .tag{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--goldd)}
+  h1{font-family:'Gowun Batang',serif;font-weight:400;letter-spacing:.05em}
+  .btn{font-family:'Space Mono',monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;border-radius:10px;padding:11px 18px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--star);transition:.15s}
+  .btn:hover{border-color:var(--goldd)}
+  .btn-gold{background:var(--gold);color:#0a0d14;border-color:var(--gold);font-weight:700}
+  .btn-gold:hover{filter:brightness(1.06)}
+  .btn-red{border-color:rgba(255,90,90,.5);color:#ff9a9a}
+  .btn-red:hover{background:rgba(255,60,60,.12);border-color:#ff5a5a}
+  .hidden{display:none!important}
+
+  /* 로그인 */
+  .login{max-width:340px;margin:14vh auto 0;text-align:center;display:flex;flex-direction:column;gap:14px;align-items:center}
+  .login h1{margin:6px 0}
+  .login input{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:10px;color:#fff;padding:12px 15px;font-size:1rem}
+  .login input:focus{outline:none;border-color:var(--goldd)}
+  .login .btn-gold{width:100%}
+  .login .err{color:#ff8a8a;font-size:.84rem;min-height:1em}
+
+  /* 헤더 + 탭 */
+  .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+  .who{font-size:.76rem;color:var(--muted)}
+  .tabs{display:flex;gap:8px;margin:18px 0 22px;border-bottom:1px solid var(--line)}
+  .tab{padding:11px 16px;font-size:.95rem;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+  .tab.on{color:#fff;border-color:var(--gold)}
+
+  /* 응원봉 */
+  .preview{position:relative;height:130px;border-radius:14px;border:1px solid var(--line);overflow:hidden;background:#05060c;margin-bottom:14px}
+  .preview canvas{position:absolute;inset:0;width:100%;height:100%}
+  .now{font-size:.82rem;color:var(--muted);text-align:center;margin:0 0 20px}
+  .now b{color:#fff;font-weight:500}
+  .sec{font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+  .colors{display:grid;grid-template-columns:repeat(7,1fr);gap:9px;margin-bottom:22px}
+  .sw{aspect-ratio:1;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:.12s;box-shadow:0 0 0 1px rgba(255,255,255,.08) inset}
+  .sw:hover{transform:scale(1.08)} .sw.sel{border-color:#fff;transform:scale(1.12)}
+  .pats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+  .pat{padding:14px 6px;border-radius:11px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--star);font-size:.92rem;cursor:pointer;transition:.15s}
+  .pat:hover{border-color:var(--goldd)} .pat.sel{background:var(--gold);color:#0a0d14;border-color:var(--gold);font-weight:700}
+  .pat.off.sel{background:#39435e;color:#fff;border-color:#39435e}
+
+  /* 방명록 */
+  .gb-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
+  .gb-bar .count{font-size:.82rem;color:var(--muted);margin-right:auto}
+  .gb-list{display:flex;flex-direction:column;gap:8px}
+  .row{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.02)}
+  .row.sel{border-color:rgba(244,214,138,.5);background:rgba(244,214,138,.05)}
+  .row input[type=checkbox]{margin-top:4px;width:17px;height:17px;accent-color:var(--gold);flex:none}
+  .row .body{flex:1;min-width:0}
+  .row .nm{font-size:.78rem;color:var(--gold);margin-bottom:3px}
+  .row .ms{font-size:.95rem;color:var(--star);word-break:break-word;white-space:pre-wrap}
+  .row .dt{font-size:.68rem;color:var(--muted2);margin-top:5px;font-family:'Space Mono',monospace}
+  .row .acts{display:flex;gap:6px;flex:none}
+  .row .mini{font-size:.7rem;padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:none;color:var(--muted);cursor:pointer}
+  .row .mini:hover{color:#fff;border-color:var(--goldd)}
+  .edit{display:flex;flex-direction:column;gap:7px;flex:1}
+  .edit input,.edit textarea{background:rgba(0,0,0,.3);border:1px solid var(--line);border-radius:8px;color:#fff;padding:8px 10px;font-size:.92rem;font-family:inherit;width:100%}
+  .edit textarea{resize:vertical;min-height:52px}
+  .empty{text-align:center;color:var(--muted2);padding:40px 0}
+  .hint{font-size:.74rem;color:var(--muted2);line-height:1.7;margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+</style>
+</head>
+<body>
+
+<!-- 로그인 -->
+<div class="login" id="loginView">
+  <span class="tag">TURAMI · STAFF ONLY</span>
+  <h1>관리자 로그인</h1>
+  <input id="email" type="email" placeholder="이메일" autocomplete="username" />
+  <input id="pw" type="password" placeholder="비밀번호" autocomplete="current-password" />
+  <button class="btn btn-gold" id="loginBtn" type="button">로그인</button>
+  <div class="err" id="loginErr"></div>
+</div>
+
+<!-- 관리 -->
+<div class="wrap hidden" id="adminView">
+  <div class="top">
+    <div><span class="tag">TURAMI Admin</span><h1 style="margin:4px 0 0;font-size:1.5rem">관리자</h1></div>
+    <div style="text-align:right"><div class="who" id="who"></div><button class="btn" id="logoutBtn" style="margin-top:6px">로그아웃</button></div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab on" data-t="light">응원봉 제어</div>
+    <div class="tab" data-t="guest">방명록 관리</div>
+  </div>
+
+  <!-- 응원봉 탭 -->
+  <section id="tabLight">
+    <div class="preview"><canvas id="pv"></canvas></div>
+    <p class="now">현재 송출 — <b id="nowC">골드</b> · <b id="nowP">맥동</b></p>
+    <p class="sec">색상</p><div class="colors" id="colors"></div>
+    <p class="sec">패턴</p><div class="pats" id="pats"></div>
+    <p class="hint">버튼을 누르면 즉시 객석의 모든 응원봉 화면에 반영됩니다(0.1~0.5초).<br/>관객은 각자 폰에서 응원봉을 켜둔 상태여야 받아요. ‘무지개’·‘끄기’는 색상과 무관하게 동작합니다.</p>
+  </section>
+
+  <!-- 방명록 탭 -->
+  <section id="tabGuest" class="hidden">
+    <div class="gb-bar">
+      <span class="count" id="gbCount">불러오는 중…</span>
+      <button class="btn" id="gbAll" type="button">전체선택</button>
+      <button class="btn" id="gbNone" type="button">선택해제</button>
+      <button class="btn" id="gbExport" type="button">백업(JSON)</button>
+      <button class="btn btn-red" id="gbDel" type="button">선택 삭제</button>
+    </div>
+    <div class="gb-list" id="gbList"></div>
+    <p class="hint">여러 개를 체크해 한 번에 삭제할 수 있어요. ‘수정’은 각 항목에서 개별로 저장됩니다. 삭제 전 ‘백업(JSON)’으로 내보내두면 사고에 대비할 수 있어요. 삭제·수정은 로그인한 관리자만 가능합니다.</p>
+  </section>
+</div>
+
+<canvas id="pvHidden" style="display:none"></canvas>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, onSnapshot, collection, getDocs, query, orderBy, deleteDoc, updateDoc }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCv7sHltUys91fb1lQeFYRqP9w2FriCUiY",
+  authDomain: "turami2026-summer.firebaseapp.com",
+  projectId: "turami2026-summer",
+  storageBucket: "turami2026-summer.firebasestorage.app",
+  messagingSenderId: "931198123638",
+  appId: "1:931198123638:web:3d59430b2acea3fc976957"
+};
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getFirestore(app);
+const $=id=>document.getElementById(id);
+
+/* ---------- 로그인 ---------- */
+$("loginBtn").addEventListener("click", async ()=>{
+  $("loginErr").textContent="";
+  try{ await signInWithEmailAndPassword(auth, $("email").value.trim(), $("pw").value); }
+  catch(e){ $("loginErr").textContent="로그인 실패 — 이메일/비밀번호를 확인하세요."; }
+});
+$("pw").addEventListener("keydown",e=>{if(e.key==="Enter")$("loginBtn").click();});
+$("logoutBtn").addEventListener("click",()=>signOut(auth));
+
+onAuthStateChanged(auth, user=>{
+  if(user){
+    $("loginView").classList.add("hidden");
+    $("adminView").classList.remove("hidden");
+    $("who").textContent=user.email;
+    initLight(); loadGuest();
+  }else{
+    $("adminView").classList.add("hidden");
+    $("loginView").classList.remove("hidden");
+    $("pw").value="";
+  }
+});
+
+/* ---------- 탭 ---------- */
+document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{
+  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on")); t.classList.add("on");
+  const k=t.dataset.t;
+  $("tabLight").classList.toggle("hidden", k!=="light");
+  $("tabGuest").classList.toggle("hidden", k!=="guest");
+}));
+
+/* ---------- 응원봉 ---------- */
+const COLORS=[{k:"gold",n:"골드",rgb:[244,214,138]},{k:"white",n:"화이트",rgb:[255,255,255]},{k:"blue",n:"블루",rgb:[120,170,255]},{k:"violet",n:"바이올렛",rgb:[185,150,255]},{k:"rose",n:"로즈",rgb:[255,150,180]},{k:"green",n:"그린",rgb:[150,240,170]},{k:"red",n:"레드",rgb:[255,110,110]}];
+const PATS=[{k:"pulse",n:"맥동"},{k:"solid",n:"은은"},{k:"blink",n:"깜빡"},{k:"wave",n:"물결"},{k:"rainbow",n:"무지개"},{k:"off",n:"끄기"}];
+let cur={color:"gold",pattern:"pulse"}, lightInit=false;
+function initLight(){
+  if(lightInit) return; lightInit=true;
+  const cb=$("colors"); COLORS.forEach(c=>{const b=document.createElement("button");b.className="sw"+(c.k===cur.color?" sel":"");b.style.background="rgb("+c.rgb.join(",")+")";b.title=c.n;b.dataset.k=c.k;b.onclick=()=>{cur.color=c.k;markL();sendL();};cb.appendChild(b);});
+  const pb=$("pats"); PATS.forEach(p=>{const b=document.createElement("button");b.className="pat"+(p.k==="off"?" off":"")+(p.k===cur.pattern?" sel":"");b.textContent=p.n;b.dataset.k=p.k;b.onclick=()=>{cur.pattern=p.k;markL();sendL();};pb.appendChild(b);});
+  onSnapshot(doc(db,"live","state"), s=>{const d=s.data();if(!d)return;if(d.color)cur.color=d.color;if(d.pattern)cur.pattern=d.pattern;markL();});
+  markL(); drawPv();
+}
+function markL(){
+  [...document.querySelectorAll(".sw")].forEach(b=>b.classList.toggle("sel",b.dataset.k===cur.color));
+  [...document.querySelectorAll(".pat")].forEach(b=>b.classList.toggle("sel",b.dataset.k===cur.pattern));
+  $("nowC").textContent=(COLORS.find(c=>c.k===cur.color)||{}).n; $("nowP").textContent=(PATS.find(p=>p.k===cur.pattern)||{}).n;
+}
+async function sendL(){ try{ await setDoc(doc(db,"live","state"),{color:cur.color,pattern:cur.pattern,ts:Date.now()}); }catch(e){} }
+const pv=$("pv"),px=pv.getContext("2d");
+function rgbOf(k){const c=COLORS.find(x=>x.k===k);return c?c.rgb:[244,214,138];}
+function hsl2rgb(h,s,l){h/=360;const a=s*Math.min(l,1-l);const f=n=>{const k=(n+h*12)%12;return l-a*Math.max(-1,Math.min(k-3,9-k,1));};return[f(0)*255,f(8)*255,f(4)*255];}
+function rgb2hsl(r,g,b){r/=255;g/=255;b/=255;const mx=Math.max(r,g,b),mn=Math.min(r,g,b);let h,s,l=(mx+mn)/2;if(mx===mn){h=s=0;}else{const d=mx-mn;s=l>.5?d/(2-mx-mn):d/(mx+mn);switch(mx){case r:h=(g-b)/d+(g<b?6:0);break;case g:h=(b-r)/d+2;break;default:h=(r-g)/d+4;}h*=60;}return[h,s,l];}
+function drawPv(){
+  const r=pv.getBoundingClientRect();pv.width=r.width*devicePixelRatio;pv.height=r.height*devicePixelRatio;
+  const t=Date.now();let[r0,g0,b0]=rgbOf(cur.color),bright;const slow=(Math.sin(t/1000*Math.PI)+1)/2,fast=(Math.sin(t/450*Math.PI)+1)/2;
+  switch(cur.pattern){case"solid":bright=.92;break;case"blink":bright=(Math.floor(t/380)%2)?.95:.12;break;case"wave":{const h=rgb2hsl(r0,g0,b0);[r0,g0,b0]=hsl2rgb((h[0]+(t/40))%360,h[1],h[2]);bright=.6+slow*.35;break;}case"rainbow":{[r0,g0,b0]=hsl2rgb((t/25)%360,.75,.62);bright=.7+fast*.2;break;}case"off":bright=0;break;default:bright=.55+slow*.4+fast*.05;}
+  const W=pv.width,H=pv.height,cx=W/2,cy=H/2;px.clearRect(0,0,W,H);
+  if(bright>.01){const R=W*.34*(.92+slow*.08);const gr=px.createRadialGradient(cx,cy,0,cx,cy,R);gr.addColorStop(0,`rgba(${r0|0},${g0|0},${b0|0},${bright})`);gr.addColorStop(.5,`rgba(${r0|0},${g0|0},${b0|0},${bright*.5})`);gr.addColorStop(1,`rgba(${r0|0},${g0|0},${b0|0},0)`);px.fillStyle=gr;px.beginPath();px.arc(cx,cy,R,0,7);px.fill();}
+  requestAnimationFrame(drawPv);
+}
+
+/* ---------- 방명록 관리 ---------- */
+let wishes=[];
+async function loadGuest(){
+  try{
+    const snap=await getDocs(query(collection(db,"wishes"),orderBy("ts","desc")));
+    wishes=snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderGuest();
+  }catch(e){ $("gbCount").textContent="불러오기 실패 — 새로고침 해주세요."; }
+}
+function esc(s){return (s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function fdate(ts){ if(!ts)return""; const d=new Date(ts); return d.toLocaleString("ko-KR",{month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"}); }
+function renderGuest(){
+  $("gbCount").textContent="총 "+wishes.length+"개";
+  const list=$("gbList");
+  if(!wishes.length){ list.innerHTML='<div class="empty">아직 남겨진 별이 없어요.</div>'; return; }
+  list.innerHTML="";
+  wishes.forEach(w=>{
+    const row=document.createElement("div"); row.className="row"; row.dataset.id=w.id;
+    row.innerHTML=`
+      <input type="checkbox" class="chk" />
+      <div class="body">
+        <div class="nm">${esc(w.name)||"익명"}</div>
+        <div class="ms">${esc(w.msg)}</div>
+        <div class="dt">${fdate(w.ts)} · ${w.id}</div>
+      </div>
+      <div class="acts">
+        <button class="mini edit-btn">수정</button>
+        <button class="mini del-btn">삭제</button>
+      </div>`;
+    row.querySelector(".chk").addEventListener("change",e=>row.classList.toggle("sel",e.target.checked));
+    row.querySelector(".del-btn").addEventListener("click",()=>delOne(w));
+    row.querySelector(".edit-btn").addEventListener("click",()=>editRow(row,w));
+    list.appendChild(row);
+  });
+}
+function editRow(row,w){
+  const body=row.querySelector(".body"), acts=row.querySelector(".acts");
+  body.innerHTML=`<div class="edit">
+    <input class="e-nm" maxlength="12" value="${esc(w.name)}" placeholder="이름(선택)" />
+    <textarea class="e-ms" maxlength="60" placeholder="내용">${esc(w.msg)}</textarea></div>`;
+  acts.innerHTML=`<button class="mini save-btn">저장</button><button class="mini cancel-btn">취소</button>`;
+  acts.querySelector(".cancel-btn").onclick=renderGuest;
+  acts.querySelector(".save-btn").onclick=async()=>{
+    const name=row.querySelector(".e-nm").value.trim(), msg=row.querySelector(".e-ms").value.trim();
+    if(!msg){ alert("내용을 입력하세요."); return; }
+    try{ await updateDoc(doc(db,"wishes",w.id),{name,msg,ts:w.ts||Date.now()});
+      w.name=name; w.msg=msg; renderGuest(); }
+    catch(e){ alert("수정 실패: "+e.code); }
+  };
+}
+async function delOne(w){
+  if(!confirm("이 별을 삭제할까요?\n\n"+(w.name||"익명")+" : "+w.msg)) return;
+  try{ await deleteDoc(doc(db,"wishes",w.id)); wishes=wishes.filter(x=>x.id!==w.id); renderGuest(); }
+  catch(e){ alert("삭제 실패: "+e.code); }
+}
+$("gbAll").onclick=()=>document.querySelectorAll(".row .chk").forEach(c=>{c.checked=true;c.dispatchEvent(new Event("change"));});
+$("gbNone").onclick=()=>document.querySelectorAll(".row .chk").forEach(c=>{c.checked=false;c.dispatchEvent(new Event("change"));});
+$("gbDel").onclick=async()=>{
+  const ids=[...document.querySelectorAll(".row")].filter(r=>r.querySelector(".chk").checked).map(r=>r.dataset.id);
+  if(!ids.length){ alert("선택된 항목이 없어요."); return; }
+  if(!confirm(ids.length+"개의 별을 삭제할까요? 되돌릴 수 없어요.")) return;
+  let ok=0;
+  for(const id of ids){ try{ await deleteDoc(doc(db,"wishes",id)); ok++; }catch(e){} }
+  wishes=wishes.filter(w=>!ids.includes(w.id)); renderGuest();
+  alert(ok+"개 삭제 완료.");
+};
+$("gbExport").onclick=()=>{
+  const blob=new Blob([JSON.stringify(wishes,null,2)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  a.download="turami-guestbook-"+new Date().toISOString().slice(0,10)+".json"; a.click();
+};
+</script>
+</body>
+</html>
