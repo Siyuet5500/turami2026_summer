@@ -37,9 +37,7 @@
   textarea{resize:vertical;min-height:56px;width:100%}
 
   .login{max-width:340px;margin:14vh auto 0;text-align:center;display:flex;flex-direction:column;gap:14px;align-items:center}
-  .login input{width:100%}
-  .login .btn-gold{width:100%}
-  .login .err{color:#ff8a8a;font-size:.84rem;min-height:1em}
+  .login input{width:100%}.login .btn-gold{width:100%}.login .err{color:#ff8a8a;font-size:.84rem;min-height:1em}
 
   .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
   .who{font-size:.76rem;color:var(--muted)}
@@ -49,16 +47,14 @@
 
   .preview{position:relative;height:130px;border-radius:14px;border:1px solid var(--line);overflow:hidden;background:#05060c;margin-bottom:14px}
   .preview canvas{position:absolute;inset:0;width:100%;height:100%}
-  .now{font-size:.82rem;color:var(--muted);text-align:center;margin:0 0 20px}
-  .now b{color:#fff;font-weight:500}
+  .now{font-size:.82rem;color:var(--muted);text-align:center;margin:0 0 20px}.now b{color:#fff;font-weight:500}
   .sec{font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
   .colors{display:grid;grid-template-columns:repeat(7,1fr);gap:9px;margin-bottom:22px}
   .sw{aspect-ratio:1;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:.12s;box-shadow:0 0 0 1px rgba(255,255,255,.08) inset}
-  .sw:hover{transform:scale(1.08)} .sw.sel{border-color:#fff;transform:scale(1.12)}
+  .sw:hover{transform:scale(1.08)}.sw.sel{border-color:#fff;transform:scale(1.12)}
   .pats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
   .pat{padding:14px 6px;border-radius:11px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--star);font-size:.92rem;cursor:pointer;transition:.15s}
-  .pat:hover{border-color:var(--goldd)} .pat.sel{background:var(--gold);color:#0a0d14;border-color:var(--gold);font-weight:700}
-  .pat.off.sel{background:#39435e;color:#fff;border-color:#39435e}
+  .pat:hover{border-color:var(--goldd)}.pat.sel{background:var(--gold);color:#0a0d14;border-color:var(--gold);font-weight:700}.pat.off.sel{background:#39435e;color:#fff;border-color:#39435e}
 
   .bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
   .bar .count{font-size:.82rem;color:var(--muted);margin-right:auto}
@@ -66,10 +62,8 @@
   .row{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.02)}
   .row.sel{border-color:rgba(244,214,138,.5);background:rgba(244,214,138,.05)}
   .row input[type=checkbox]{margin-top:4px;width:17px;height:17px;accent-color:var(--gold);flex:none}
-  .row .body{flex:1;min-width:0}
-  .row .nm{font-size:.95rem;color:var(--star)}
-  .row .sub{font-size:.75rem;color:var(--muted);margin-top:3px}
-  .row .gold{color:var(--gold)}
+  .row .body{flex:1;min-width:0}.row .nm{font-size:.95rem;color:var(--star)}
+  .row .sub{font-size:.75rem;color:var(--muted);margin-top:3px}.row .gold{color:var(--gold)}
   .row .dt{font-size:.68rem;color:var(--muted2);margin-top:5px;font-family:'Space Mono',monospace}
   .row .acts{display:flex;gap:6px;flex:none;align-items:center}
   .mini{font-size:.7rem;padding:6px 9px;border-radius:8px;border:1px solid var(--line);background:none;color:var(--muted);cursor:pointer}
@@ -78,11 +72,13 @@
   .ord button{font-size:.6rem;padding:2px 7px;border-radius:6px;border:1px solid var(--line);background:none;color:var(--muted);cursor:pointer;line-height:1.2}
   .ord button:hover{color:#fff;border-color:var(--goldd)}
   .form{border:1px solid rgba(244,214,138,.3);background:rgba(244,214,138,.04);border-radius:12px;padding:16px;margin-bottom:16px;display:flex;flex-direction:column;gap:10px}
-  .form .r2{display:flex;gap:10px}
-  .form .r2 input{flex:1;min-width:0}
-  .tm-rows{display:flex;flex-direction:column;gap:7px}
-  .tm-row{display:flex;gap:7px;align-items:center}
-  .tm-row select{flex:1;min-width:0}
+  .form .r2{display:flex;gap:10px}.form .r2 input{flex:1;min-width:0}
+  .tm-rows{display:flex;flex-direction:column;gap:8px}
+  .tm-row{border:1px solid var(--line);border-radius:10px;padding:9px;display:flex;flex-direction:column;gap:8px}
+  .tm-row .r{display:flex;gap:7px;align-items:center}.tm-row select{flex:1;min-width:0}
+  .tm-parts{display:flex;flex-wrap:wrap;gap:5px}
+  .pchip{font-size:.68rem;padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:none;color:var(--muted);cursor:pointer;transition:.12s}
+  .pchip.on{background:var(--gold);color:#0a0d14;border-color:var(--gold);font-weight:700}
   .empty{text-align:center;color:var(--muted2);padding:34px 0}
   .hint{font-size:.74rem;color:var(--muted2);line-height:1.7;margin-top:16px;border-top:1px solid var(--line);padding-top:14px}
 </style>
@@ -103,7 +99,6 @@
     <div><span class="tag">TURAMI Admin</span><h1 style="margin:4px 0 0;font-size:1.5rem">관리자</h1></div>
     <div style="text-align:right"><div class="who" id="who"></div><button class="btn" id="logoutBtn" style="margin-top:6px">로그아웃</button></div>
   </div>
-
   <div class="tabs">
     <div class="tab on" data-t="light">응원봉</div>
     <div class="tab" data-t="guest">방명록</div>
@@ -111,7 +106,6 @@
     <div class="tab" data-t="member">멤버</div>
   </div>
 
-  <!-- 응원봉 -->
   <section id="tabLight">
     <div class="preview"><canvas id="pv"></canvas></div>
     <p class="now">현재 송출 — <b id="nowC">골드</b> · <b id="nowP">맥동</b></p>
@@ -119,35 +113,27 @@
     <p class="sec">패턴</p><div class="pats" id="pats"></div>
   </section>
 
-  <!-- 방명록 -->
   <section id="tabGuest" class="hidden">
-    <div class="bar">
-      <span class="count" id="gbCount">불러오는 중…</span>
+    <div class="bar"><span class="count" id="gbCount">불러오는 중…</span>
       <button class="btn" id="gbAll" type="button">전체선택</button>
       <button class="btn" id="gbNone" type="button">선택해제</button>
       <button class="btn" id="gbExport" type="button">백업(JSON)</button>
-      <button class="btn btn-red" id="gbDel" type="button">선택 삭제</button>
-    </div>
+      <button class="btn btn-red" id="gbDel" type="button">선택 삭제</button></div>
     <div class="list" id="gbList"></div>
     <p class="hint">여러 개를 체크해 한 번에 삭제할 수 있어요. 삭제 전 ‘백업(JSON)’으로 내보내두면 사고에 대비할 수 있어요.</p>
   </section>
 
-  <!-- 팀 -->
   <section id="tabTeam" class="hidden">
     <div class="form">
       <p class="sec" style="margin:0">팀 추가</p>
-      <div class="r2">
-        <input id="tName" placeholder="팀명 (예: 경외)" maxlength="30" />
-        <select id="tStar" style="flex:none;width:150px"></select>
-      </div>
+      <input id="tName" placeholder="팀명 (예: 경외)" maxlength="30" />
       <button class="btn btn-gold" id="tAdd" type="button" style="align-self:flex-start">＋ 팀 추가</button>
     </div>
     <div class="bar"><span class="count" id="tCount"></span></div>
     <div class="list" id="tList"></div>
-    <p class="hint">팀은 북두칠성 일곱 별에 배정돼요. ↑↓로 순서를 바꾸면 관객 페이지 표시 순서가 바뀝니다.</p>
+    <p class="hint">↑▼로 순서를 바꾸면 관객 페이지의 팀 표시 순서가 바뀝니다.</p>
   </section>
 
-  <!-- 멤버 -->
   <section id="tabMember" class="hidden">
     <div class="form" id="mForm">
       <p class="sec" style="margin:0" id="mFormTitle">멤버 추가</p>
@@ -156,9 +142,9 @@
         <input id="mGen" placeholder="기수 (예: 50)" maxlength="6" style="flex:none;width:120px" />
       </div>
       <textarea id="mMsg" placeholder="한마디 (비우면 관객 페이지에 표시되지 않아요)" maxlength="80"></textarea>
-      <p class="sec" style="margin:2px 0 0">참여 팀 · 파트</p>
+      <p class="sec" style="margin:2px 0 0">참여 팀 · 세션 (한 팀에서 여러 세션 선택 가능)</p>
       <div class="tm-rows" id="mTeams"></div>
-      <button class="btn" id="mAddTeam" type="button" style="align-self:flex-start">＋ 팀 추가</button>
+      <button class="btn" id="mAddTeam" type="button" style="align-self:flex-start">＋ 참여 팀 추가</button>
       <div style="display:flex;gap:8px">
         <button class="btn btn-gold" id="mSave" type="button">저장</button>
         <button class="btn hidden" id="mCancel" type="button">취소</button>
@@ -166,11 +152,9 @@
     </div>
     <div class="bar"><span class="count" id="mCount"></span></div>
     <div class="list" id="mList"></div>
-    <p class="hint">한마디가 비어 있으면 관객 페이지에 안 보여요(관리 목록엔 보임). ↑↓로 순서를 조정하면 각 팀 안에서의 카드 순서가 바뀝니다.</p>
+    <p class="hint">한마디가 비면 관객 페이지에선 숨겨져요(관리 목록엔 보임). ↑▼로 순서를 조정하면 각 팀 안 카드 순서가 바뀝니다.</p>
   </section>
 </div>
-
-<canvas id="pvHidden" style="display:none"></canvas>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -188,33 +172,25 @@ const firebaseConfig = {
 const app=initializeApp(firebaseConfig), auth=getAuth(app), db=getFirestore(app);
 const $=id=>document.getElementById(id);
 const esc=s=>String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-
-const STARS=[["DUBHE","두베"],["MERAK","메라크"],["PHECDA","페크다"],["MEGREZ","메그레즈"],["ALIOTH","알리오트"],["MIZAR","미자르"],["ALKAID","알카이드"]];
 const PARTS=["Vocal","Guitar","Guitar 2","Bass","Drum","Keyboard","Synth","Percussion"];
 
-/* 로그인 */
 $("loginBtn").addEventListener("click", async ()=>{ $("loginErr").textContent="";
   try{ await signInWithEmailAndPassword(auth,$("email").value.trim(),$("pw").value); }
   catch(e){ $("loginErr").textContent="로그인 실패 — 이메일/비밀번호를 확인하세요."; } });
 $("pw").addEventListener("keydown",e=>{if(e.key==="Enter")$("loginBtn").click();});
 $("logoutBtn").addEventListener("click",()=>signOut(auth));
 onAuthStateChanged(auth,user=>{
-  if(user){ $("loginView").classList.add("hidden"); $("adminView").classList.remove("hidden"); $("who").textContent=user.email;
-    initLight(); loadGuest(); loadTeams(); }
+  if(user){ $("loginView").classList.add("hidden"); $("adminView").classList.remove("hidden"); $("who").textContent=user.email; initLight(); loadGuest(); loadTeams(); }
   else{ $("adminView").classList.add("hidden"); $("loginView").classList.remove("hidden"); $("pw").value=""; }
 });
-
-/* 탭 */
 document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{
   document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on")); t.classList.add("on");
   const k=t.dataset.t;
-  $("tabLight").classList.toggle("hidden",k!=="light");
-  $("tabGuest").classList.toggle("hidden",k!=="guest");
-  $("tabTeam").classList.toggle("hidden",k!=="team");
-  $("tabMember").classList.toggle("hidden",k!=="member");
+  $("tabLight").classList.toggle("hidden",k!=="light");$("tabGuest").classList.toggle("hidden",k!=="guest");
+  $("tabTeam").classList.toggle("hidden",k!=="team");$("tabMember").classList.toggle("hidden",k!=="member");
 }));
 
-/* ===== 응원봉 ===== */
+/* 응원봉 */
 const COLORS=[{k:"gold",n:"골드",rgb:[244,214,138]},{k:"white",n:"화이트",rgb:[255,255,255]},{k:"blue",n:"블루",rgb:[120,170,255]},{k:"violet",n:"바이올렛",rgb:[185,150,255]},{k:"rose",n:"로즈",rgb:[255,150,180]},{k:"green",n:"그린",rgb:[150,240,170]},{k:"red",n:"레드",rgb:[255,110,110]}];
 const PATS=[{k:"pulse",n:"맥동"},{k:"solid",n:"은은"},{k:"blink",n:"깜빡"},{k:"wave",n:"물결"},{k:"rainbow",n:"무지개"},{k:"off",n:"끄기"}];
 let cur={color:"gold",pattern:"pulse"},lightInit=false;
@@ -231,7 +207,7 @@ function hsl2rgb(h,s,l){h/=360;const a=s*Math.min(l,1-l);const f=n=>{const k=(n+
 function rgb2hsl(r,g,b){r/=255;g/=255;b/=255;const mx=Math.max(r,g,b),mn=Math.min(r,g,b);let h,s,l=(mx+mn)/2;if(mx===mn){h=s=0;}else{const d=mx-mn;s=l>.5?d/(2-mx-mn):d/(mx+mn);switch(mx){case r:h=(g-b)/d+(g<b?6:0);break;case g:h=(b-r)/d+2;break;default:h=(r-g)/d+4;}h*=60;}return[h,s,l];}
 function drawPv(){const r=pv.getBoundingClientRect();pv.width=r.width*devicePixelRatio;pv.height=r.height*devicePixelRatio;const t=Date.now();let[r0,g0,b0]=rgbOf(cur.color),bright;const slow=(Math.sin(t/1000*Math.PI)+1)/2,fast=(Math.sin(t/450*Math.PI)+1)/2;switch(cur.pattern){case"solid":bright=.92;break;case"blink":bright=(Math.floor(t/380)%2)?.95:.12;break;case"wave":{const h=rgb2hsl(r0,g0,b0);[r0,g0,b0]=hsl2rgb((h[0]+(t/40))%360,h[1],h[2]);bright=.6+slow*.35;break;}case"rainbow":{[r0,g0,b0]=hsl2rgb((t/25)%360,.75,.62);bright=.7+fast*.2;break;}case"off":bright=0;break;default:bright=.55+slow*.4+fast*.05;}const W=pv.width,H=pv.height,cx=W/2,cy=H/2;px.clearRect(0,0,W,H);if(bright>.01){const R=W*.34*(.92+slow*.08);const gr=px.createRadialGradient(cx,cy,0,cx,cy,R);gr.addColorStop(0,`rgba(${r0|0},${g0|0},${b0|0},${bright})`);gr.addColorStop(.5,`rgba(${r0|0},${g0|0},${b0|0},${bright*.5})`);gr.addColorStop(1,`rgba(${r0|0},${g0|0},${b0|0},0)`);px.fillStyle=gr;px.beginPath();px.arc(cx,cy,R,0,7);px.fill();}requestAnimationFrame(drawPv);}
 
-/* ===== 방명록 ===== */
+/* 방명록 */
 let wishes=[];
 async function loadGuest(){try{const snap=await getDocs(query(collection(db,"wishes"),orderBy("ts","desc")));wishes=snap.docs.map(d=>({id:d.id,...d.data()}));renderGuest();}catch(e){$("gbCount").textContent="불러오기 실패";}}
 function fdate(ts){if(!ts)return"";return new Date(ts).toLocaleString("ko-KR",{month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});}
@@ -243,29 +219,34 @@ $("gbNone").onclick=()=>document.querySelectorAll("#gbList .chk").forEach(c=>{c.
 $("gbDel").onclick=async()=>{const ids=[...document.querySelectorAll("#gbList .row")].filter(r=>r.querySelector(".chk").checked).map(r=>r.dataset.id);if(!ids.length){alert("선택된 항목이 없어요.");return;}if(!confirm(ids.length+"개를 삭제할까요? 되돌릴 수 없어요."))return;let ok=0;for(const id of ids){try{await deleteDoc(doc(db,"wishes",id));ok++;}catch(e){}}wishes=wishes.filter(w=>!ids.includes(w.id));renderGuest();alert(ok+"개 삭제 완료.");};
 $("gbExport").onclick=()=>{const blob=new Blob([JSON.stringify(wishes,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="turami-guestbook-"+new Date().toISOString().slice(0,10)+".json";a.click();};
 
-/* ===== 팀 ===== */
+/* 팀 (별자리 없음) */
 let teams=[];
-function starSelect(sel,val){sel.innerHTML=STARS.map(([en,kr])=>`<option value="${en}" ${en===val?"selected":""}>${en} · ${kr}</option>`).join("");}
-starSelect($("tStar"));
 async function loadTeams(){try{const snap=await getDocs(query(collection(db,"teams"),orderBy("order")));teams=snap.docs.map(d=>({id:d.id,...d.data()}));renderTeams();loadMembers();}catch(e){$("tCount").textContent="불러오기 실패";}}
-function renderTeams(){$("tCount").textContent="팀 "+teams.length+"개";const list=$("tList");if(!teams.length){list.innerHTML='<div class="empty">아직 팀이 없어요. 위에서 추가하세요.</div>';return;}list.innerHTML="";teams.forEach((t,i)=>{const kr=(STARS.find(s=>s[0]===t.star)||["",""])[1];const row=document.createElement("div");row.className="row";row.innerHTML=`<div class="ord"><button ${i===0?"disabled":""} data-d="-1">▲</button><button ${i===teams.length-1?"disabled":""} data-d="1">▼</button></div><div class="body"><div class="nm">${esc(t.name)}</div><div class="sub gold">${esc(t.star)} · ${kr}</div></div><div class="acts"><button class="mini edit-btn">수정</button><button class="mini del-btn">삭제</button></div>`;row.querySelectorAll(".ord button").forEach(b=>b.onclick=()=>moveTeam(i,+b.dataset.d));row.querySelector(".del-btn").onclick=()=>delTeam(t);row.querySelector(".edit-btn").onclick=()=>editTeam(row,t);list.appendChild(row);});}
-$("tAdd").onclick=async()=>{const name=$("tName").value.trim();if(!name){alert("팀명을 입력하세요.");return;}try{await addDoc(collection(db,"teams"),{name,star:$("tStar").value,order:teams.length});$("tName").value="";await loadTeams();}catch(e){alert("추가 실패: "+e.code);}};
+function renderTeams(){$("tCount").textContent="팀 "+teams.length+"개";const list=$("tList");if(!teams.length){list.innerHTML='<div class="empty">아직 팀이 없어요. 위에서 추가하세요.</div>';return;}list.innerHTML="";teams.forEach((t,i)=>{const row=document.createElement("div");row.className="row";row.innerHTML=`<div class="ord"><button ${i===0?"disabled":""} data-d="-1">▲</button><button ${i===teams.length-1?"disabled":""} data-d="1">▼</button></div><div class="body"><div class="nm">${esc(t.name)}</div><div class="sub gold">TEAM ${String(i+1).padStart(2,"0")}</div></div><div class="acts"><button class="mini edit-btn">수정</button><button class="mini del-btn">삭제</button></div>`;row.querySelectorAll(".ord button").forEach(b=>b.onclick=()=>moveTeam(i,+b.dataset.d));row.querySelector(".del-btn").onclick=()=>delTeam(t);row.querySelector(".edit-btn").onclick=()=>editTeam(row,t);list.appendChild(row);});}
+$("tAdd").onclick=async()=>{const name=$("tName").value.trim();if(!name){alert("팀명을 입력하세요.");return;}try{await addDoc(collection(db,"teams"),{name,order:teams.length});$("tName").value="";await loadTeams();}catch(e){alert("추가 실패: "+e.code);}};
 async function moveTeam(i,d){const j=i+d;if(j<0||j>=teams.length)return;const a=teams[i],b=teams[j];try{await updateDoc(doc(db,"teams",a.id),{order:j});await updateDoc(doc(db,"teams",b.id),{order:i});await loadTeams();}catch(e){alert("순서 변경 실패");}}
 async function delTeam(t){if(!confirm(`'${t.name}' 팀을 삭제할까요? (멤버의 이 팀 참여도 안 보이게 됩니다)`))return;try{await deleteDoc(doc(db,"teams",t.id));await loadTeams();}catch(e){alert("삭제 실패: "+e.code);}}
-function editTeam(row,t){const body=row.querySelector(".body"),acts=row.querySelector(".acts");body.innerHTML=`<input class="e-nm" value="${esc(t.name)}" style="width:100%;margin-bottom:6px" /><select class="e-star"></select>`;starSelect(body.querySelector(".e-star"),t.star);acts.innerHTML=`<button class="mini save-btn">저장</button><button class="mini cancel-btn">취소</button>`;acts.querySelector(".cancel-btn").onclick=renderTeams;acts.querySelector(".save-btn").onclick=async()=>{const name=body.querySelector(".e-nm").value.trim();const star=body.querySelector(".e-star").value;if(!name){alert("팀명을 입력하세요.");return;}try{await updateDoc(doc(db,"teams",t.id),{name,star});await loadTeams();}catch(e){alert("수정 실패: "+e.code);}};}
+function editTeam(row,t){const body=row.querySelector(".body"),acts=row.querySelector(".acts");body.innerHTML=`<input class="e-nm" value="${esc(t.name)}" style="width:100%" />`;acts.innerHTML=`<button class="mini save-btn">저장</button><button class="mini cancel-btn">취소</button>`;acts.querySelector(".cancel-btn").onclick=renderTeams;acts.querySelector(".save-btn").onclick=async()=>{const name=body.querySelector(".e-nm").value.trim();if(!name){alert("팀명을 입력하세요.");return;}try{await updateDoc(doc(db,"teams",t.id),{name});await loadTeams();}catch(e){alert("수정 실패: "+e.code);}};}
 
-/* ===== 멤버 ===== */
+/* 멤버 (한 팀에서 복수 세션 가능) */
 let members=[], editingId=null;
 function teamOptions(val){return `<option value="">팀 선택</option>`+teams.map(t=>`<option value="${t.id}" ${t.id===val?"selected":""}>${esc(t.name)}</option>`).join("");}
-function partOptions(val){return PARTS.map(p=>`<option value="${p}" ${p===val?"selected":""}>${p}</option>`).join("");}
-function addTeamRow(team="",part="Vocal"){const wrap=$("mTeams");const div=document.createElement("div");div.className="tm-row";div.innerHTML=`<select class="tm-team">${teamOptions(team)}</select><select class="tm-part">${partOptions(part)}</select><button class="mini tm-rm">✕</button>`;div.querySelector(".tm-rm").onclick=()=>div.remove();wrap.appendChild(div);}
+function addTeamRow(team="",parts=[]){const wrap=$("mTeams");const div=document.createElement("div");div.className="tm-row";
+  const chips=PARTS.map(p=>`<button type="button" class="pchip ${parts.includes(p)?"on":""}" data-p="${p}">${p}</button>`).join("");
+  div.innerHTML=`<div class="r"><select class="tm-team">${teamOptions(team)}</select><button class="mini tm-rm">✕</button></div><div class="tm-parts">${chips}</div>`;
+  div.querySelector(".tm-rm").onclick=()=>div.remove();
+  div.querySelectorAll(".pchip").forEach(c=>c.onclick=()=>c.classList.toggle("on"));
+  wrap.appendChild(div);}
 $("mAddTeam").onclick=()=>addTeamRow();
 function resetForm(){editingId=null;$("mFormTitle").textContent="멤버 추가";$("mName").value="";$("mGen").value="";$("mMsg").value="";$("mTeams").innerHTML="";addTeamRow();$("mCancel").classList.add("hidden");}
 $("mCancel").onclick=resetForm;
 $("mSave").onclick=async()=>{
   const name=$("mName").value.trim(); if(!name){alert("이름을 입력하세요.");return;}
   const gen=$("mGen").value.trim(), msg=$("mMsg").value.trim();
-  const tArr=[...document.querySelectorAll("#mTeams .tm-row")].map(r=>({team:r.querySelector(".tm-team").value,part:r.querySelector(".tm-part").value})).filter(x=>x.team);
+  const tArr=[...document.querySelectorAll("#mTeams .tm-row")].map(r=>({
+    team:r.querySelector(".tm-team").value,
+    parts:[...r.querySelectorAll(".pchip.on")].map(c=>c.dataset.p)
+  })).filter(x=>x.team);
   try{
     if(editingId){ await updateDoc(doc(db,"members",editingId),{name,gen,message:msg,teams:tArr}); }
     else{ await addDoc(collection(db,"members"),{name,gen,message:msg,teams:tArr,order:members.length}); }
@@ -274,8 +255,9 @@ $("mSave").onclick=async()=>{
 };
 async function loadMembers(){try{const snap=await getDocs(query(collection(db,"members"),orderBy("order")));members=snap.docs.map(d=>({id:d.id,...d.data()}));if(!$("mTeams").children.length)addTeamRow();renderMembers();}catch(e){$("mCount").textContent="불러오기 실패";}}
 function teamName(id){const t=teams.find(x=>x.id===id);return t?t.name:"(삭제된 팀)";}
-function renderMembers(){$("mCount").textContent="멤버 "+members.length+"명";const list=$("mList");if(!members.length){list.innerHTML='<div class="empty">아직 멤버가 없어요.</div>';return;}list.innerHTML="";members.forEach((m,i)=>{const tags=(m.teams||[]).map(x=>esc(teamName(x.team))+"·"+esc(x.part)).join(", ")||"참여 팀 없음";const noMsg=!(m.message&&m.message.trim());const row=document.createElement("div");row.className="row";row.innerHTML=`<div class="ord"><button ${i===0?"disabled":""} data-d="-1">▲</button><button ${i===members.length-1?"disabled":""} data-d="1">▼</button></div><div class="body"><div class="nm">${esc(m.name)} <span class="sub" style="display:inline">NO.${esc(m.gen||"")}</span> ${noMsg?'<span class="sub" style="display:inline;color:#ff9a9a">· 한마디 없음(숨김)</span>':''}</div><div class="sub">${tags}</div>${m.message?`<div class="sub" style="color:#cfd5e6">“${esc(m.message)}”</div>`:''}</div><div class="acts"><button class="mini edit-btn">수정</button><button class="mini del-btn">삭제</button></div>`;row.querySelectorAll(".ord button").forEach(b=>b.onclick=()=>moveMember(i,+b.dataset.d));row.querySelector(".del-btn").onclick=()=>delMember(m);row.querySelector(".edit-btn").onclick=()=>startEdit(m);list.appendChild(row);});}
-function startEdit(m){editingId=m.id;$("mFormTitle").textContent="멤버 수정";$("mName").value=m.name||"";$("mGen").value=m.gen||"";$("mMsg").value=m.message||"";$("mTeams").innerHTML="";(m.teams&&m.teams.length?m.teams:[{team:"",part:"Vocal"}]).forEach(x=>addTeamRow(x.team,x.part));$("mCancel").classList.remove("hidden");$("mForm").scrollIntoView({behavior:"smooth"});}
+function partsOf(x){return (x.parts&&x.parts.length?x.parts:(x.part?[x.part]:[])).join("/");}
+function renderMembers(){$("mCount").textContent="멤버 "+members.length+"명";const list=$("mList");if(!members.length){list.innerHTML='<div class="empty">아직 멤버가 없어요.</div>';return;}list.innerHTML="";members.forEach((m,i)=>{const tags=(m.teams||[]).map(x=>esc(teamName(x.team))+" · "+esc(partsOf(x)||"세션 미정")).join(" / ")||"참여 팀 없음";const noMsg=!(m.message&&m.message.trim());const row=document.createElement("div");row.className="row";row.innerHTML=`<div class="ord"><button ${i===0?"disabled":""} data-d="-1">▲</button><button ${i===members.length-1?"disabled":""} data-d="1">▼</button></div><div class="body"><div class="nm">${esc(m.name)} <span class="sub" style="display:inline">NO.${esc(m.gen||"")}</span> ${noMsg?'<span class="sub" style="display:inline;color:#ff9a9a">· 한마디 없음(숨김)</span>':''}</div><div class="sub">${tags}</div>${m.message?`<div class="sub" style="color:#cfd5e6">“${esc(m.message)}”</div>`:''}</div><div class="acts"><button class="mini edit-btn">수정</button><button class="mini del-btn">삭제</button></div>`;row.querySelectorAll(".ord button").forEach(b=>b.onclick=()=>moveMember(i,+b.dataset.d));row.querySelector(".del-btn").onclick=()=>delMember(m);row.querySelector(".edit-btn").onclick=()=>startEdit(m);list.appendChild(row);});}
+function startEdit(m){editingId=m.id;$("mFormTitle").textContent="멤버 수정";$("mName").value=m.name||"";$("mGen").value=m.gen||"";$("mMsg").value=m.message||"";$("mTeams").innerHTML="";const arr=(m.teams&&m.teams.length?m.teams:[{team:"",parts:[]}]);arr.forEach(x=>addTeamRow(x.team, (x.parts&&x.parts.length?x.parts:(x.part?[x.part]:[]))));$("mCancel").classList.remove("hidden");$("mForm").scrollIntoView({behavior:"smooth"});}
 async function moveMember(i,d){const j=i+d;if(j<0||j>=members.length)return;const a=members[i],b=members[j];try{await updateDoc(doc(db,"members",a.id),{order:j});await updateDoc(doc(db,"members",b.id),{order:i});await loadMembers();}catch(e){alert("순서 변경 실패");}}
 async function delMember(m){if(!confirm(`'${m.name}' 멤버를 삭제할까요?`))return;try{await deleteDoc(doc(db,"members",m.id));await loadMembers();}catch(e){alert("삭제 실패: "+e.code);}}
 resetForm();
