@@ -101,19 +101,47 @@ wire("mapBtn2", CONFIG.mapLink);
 // 계좌
 {const a=document.getElementById("acctInfo"); if(a) a.innerHTML=`${CONFIG.account.display}<span>${CONFIG.account.bank} · 예금주 ${CONFIG.account.holder}</span>`;}
 
-// 셋리스트
-{const box=document.getElementById("setlistBox"); if(box) box.innerHTML = SETLIST.map((t,i)=>`
-  <div class="track">
-    <div class="track-head">
-      <div class="star"><b>${t.star}</b>${t.kr} · No.${String(i+1).padStart(2,"0")}</div>
-      <div><div class="ttl">${t.title}</div><div class="tartist">${t.team}</div></div>
-      <span class="tplus">+</span>
-    </div>
-    <div class="track-body"><div class="inner">
-      <div class="crew">${t.crew}</div>
-      <div class="lyric">${t.lyric}</div>
-    </div></div>
-  </div>`).join("");}
+// 셋리스트 (Firebase: teams+songs 기반 팀별. 없으면 기존 SETLIST 자리표시)
+(function(){
+  const box=document.getElementById("setlistBox"); if(!box) return;
+  const esc=s=>String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const pad=n=>String(n).padStart(2,"0");
+  const flat=()=>SETLIST.map((t,i)=>`<div class="track"><div class="track-head"><div class="star"><b>${t.star}</b>${t.kr} · No.${pad(i+1)}</div><div><div class="ttl">${t.title}</div><div class="tartist">${t.team}</div></div><span class="tplus">+</span></div><div class="track-body"><div class="inner"><div class="crew">${t.crew}</div><div class="lyric">${t.lyric}</div></div></div></div>`).join("");
+  if(!CONFIG.firebase){ box.innerHTML=flat(); return; }
+  (async ()=>{
+    let fs,db;
+    try{
+      const appMod=await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+      fs=await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+      const a=appMod.getApps().length?appMod.getApp():appMod.initializeApp(CONFIG.firebase);
+      db=fs.getFirestore(a);
+    }catch(e){ box.innerHTML=flat(); return; }
+    try{
+      const {collection,getDocs,query,orderBy}=fs;
+      const [tSnap,sSnap]=await Promise.all([
+        getDocs(query(collection(db,"teams"),orderBy("order"))),
+        getDocs(query(collection(db,"songs"),orderBy("order")))
+      ]);
+      const teams=tSnap.docs.map(d=>({id:d.id,...d.data()}));
+      const songs=sSnap.docs.map(d=>({id:d.id,...d.data()}));
+      if(!teams.length || !songs.length){ box.innerHTML=flat(); return; }
+      box.classList.add("by-team");
+      let html="";
+      teams.forEach((t,ti)=>{
+        const sg=songs.filter(x=>x.team===t.id);
+        if(!sg.length) return;
+        html+=`<div class="set-stage"><div class="stage-head"><div><div class="sh-idx">STAGE ${pad(ti+1)}</div><div class="sh-name">${esc(t.name||"")}</div></div><div class="sh-line"></div><span class="sh-count">${sg.length}곡</span></div><div class="setlist">`;
+        sg.forEach((x,si)=>{
+          const lyr=(x.lyrics||"").trim();
+          html+=`<div class="track"><div class="track-head song"><div class="tnum">${pad(si+1)}</div><div><div class="ttl">${esc(x.title||"곡 제목")}</div>${x.artist?`<div class="tartist">${esc(x.artist)}</div>`:""}</div><span class="tplus">+</span></div><div class="track-body"><div class="inner song">${x.session?`<div class="set-session">${esc(x.session)}</div>`:""}${lyr?`<div class="set-lyric">${esc(lyr)}</div>`:'<div class="set-empty">가사는 공연 전 공개됩니다</div>'}</div></div></div>`;
+        });
+        html+="</div></div>";
+      });
+      box.innerHTML = html || flat();
+      const kr=document.querySelector("#setlist .kr"); if(kr) kr.textContent="곡을 눌러 참여 세션과 가사를 펼쳐보세요";
+    }catch(e){ box.innerHTML=flat(); }
+  })();
+})();
 
 // 멤버
 /* 멤버: Firebase(teams+members) 기반 팀별 렌더. 팀 없으면 기존 MEMBERS 목록 */
