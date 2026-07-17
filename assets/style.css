@@ -329,3 +329,18 @@ footer{border-top:1px solid var(--line);padding:70px 0 50px;position:relative;z-
 .foot-brand p{word-break:keep-all;max-width:40ch}
 
 .ls-starlabel{display:none}
+
+/* 멤버 - 팀별 구성 */
+.member-grid.by-team{display:flex;flex-direction:column;gap:36px}
+.team-head{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.team-head .th-star{font-family:var(--mono);font-size:.62rem;letter-spacing:.24em;color:var(--gold-soft)}
+.team-head .th-name{font-family:var(--kr-serif);font-weight:700;font-size:1.25rem;letter-spacing:.03em;margin-top:5px}
+.team-head .th-line{flex:1;height:1px;background:linear-gradient(90deg,rgba(217,169,78,.35),transparent)}
+.team-head .th-count{font-family:var(--mono);font-size:.62rem;color:var(--muted)}
+.team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.member.compact{aspect-ratio:auto;justify-content:flex-start;padding:16px 15px}
+.member.compact .part{font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;color:var(--gold-soft);text-transform:uppercase}
+.member.compact .nm{margin-top:6px}
+.member.compact .quote{max-height:none;opacity:1;margin-top:9px}
+.member.compact.vocal{border-color:rgba(217,169,78,.3);background:rgba(244,214,138,.05)}
+@media(max-width:820px){.team-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}}

@@ -116,8 +116,47 @@ wire("mapBtn2", CONFIG.mapLink);
   </div>`).join("");}
 
 // 멤버
-{const grid=document.getElementById("memberGrid"); if(grid) grid.innerHTML = MEMBERS.map(([no,name,quote])=>`
-  <div class="member"><span class="pos">No. ${no}</span><div class="nm">${name}</div><div class="quote">${quote}</div></div>`).join("");}
+/* 멤버: Firebase(teams+members) 기반 팀별 렌더. 팀 없으면 기존 MEMBERS 목록 */
+(function(){
+  const grid=document.getElementById("memberGrid"); if(!grid) return;
+  const esc=s=>String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const flat=()=>MEMBERS.map(([no,name,quote])=>`<div class="member"><span class="pos">No. ${no}</span><div class="nm">${esc(name)}</div><div class="quote">${esc(quote)}</div></div>`).join("");
+  if(!CONFIG.firebase){ grid.innerHTML=flat(); return; }
+  (async ()=>{
+    let fs,db;
+    try{
+      const appMod=await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+      fs=await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+      const a=appMod.getApps().length?appMod.getApp():appMod.initializeApp(CONFIG.firebase);
+      db=fs.getFirestore(a);
+    }catch(e){ grid.innerHTML=flat(); return; }
+    try{
+      const {collection,getDocs,query,orderBy}=fs;
+      const [tSnap,mSnap]=await Promise.all([
+        getDocs(query(collection(db,"teams"),orderBy("order"))),
+        getDocs(query(collection(db,"members"),orderBy("order")))
+      ]);
+      const teams=tSnap.docs.map(d=>({id:d.id,...d.data()}));
+      const members=mSnap.docs.map(d=>({id:d.id,...d.data()})).filter(m=>m.message&&m.message.trim());
+      if(!teams.length){ grid.innerHTML=flat(); return; }
+      grid.classList.add("by-team");
+      let html="";
+      teams.forEach(t=>{
+        const mem=members.filter(m=>Array.isArray(m.teams)&&m.teams.some(x=>x.team===t.id));
+        if(!mem.length) return;
+        html+=`<div class="team-section"><div class="team-head"><div><div class="th-star">${esc(t.star||"")}</div><div class="th-name">${esc(t.name||"")}</div></div><div class="th-line"></div><span class="th-count">${mem.length}</span></div><div class="team-grid">`;
+        mem.forEach(m=>{
+          const part=((m.teams.find(x=>x.team===t.id))||{}).part||"";
+          const voc=/vocal|보컬/i.test(part);
+          html+=`<div class="member compact${voc?' vocal':''}"><span class="part">${part?esc(part)+' · ':''}NO.${esc(m.gen||"")}</span><div class="nm">${esc(m.name||"")}</div><div class="quote">${esc(m.message||"")}</div></div>`;
+        });
+        html+="</div></div>";
+      });
+      grid.innerHTML = html || '<p style="color:var(--muted);text-align:center">아직 등록된 멤버가 없어요.</p>';
+      const kr=document.querySelector("#members .kr"); if(kr) kr.textContent="일곱 팀, 북두칠성으로 무대에 오릅니다";
+    }catch(e){ grid.innerHTML=flat(); }
+  })();
+})();
 
 /* ============================================================
    INTERACTION
