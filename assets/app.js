@@ -139,16 +139,19 @@ wire("mapBtn2", CONFIG.mapLink);
       const teams=tSnap.docs.map(d=>({id:d.id,...d.data()}));
       const members=mSnap.docs.map(d=>({id:d.id,...d.data()})).filter(m=>m.message&&m.message.trim());
       if(!teams.length){ grid.innerHTML=flat(); return; }
+      const partsOf=x=>(x.parts&&x.parts.length?x.parts:(x.part?[x.part]:[]));
       grid.classList.add("by-team");
       let html="";
-      teams.forEach(t=>{
+      teams.forEach((t,ti)=>{
         const mem=members.filter(m=>Array.isArray(m.teams)&&m.teams.some(x=>x.team===t.id));
         if(!mem.length) return;
-        html+=`<div class="team-section"><div class="team-head"><div><div class="th-star">${esc(t.star||"")}</div><div class="th-name">${esc(t.name||"")}</div></div><div class="th-line"></div><span class="th-count">${mem.length}</span></div><div class="team-grid">`;
+        html+=`<div class="team-section"><div class="team-head"><div><div class="th-star">TEAM ${String(ti+1).padStart(2,"0")}</div><div class="th-name">${esc(t.name||"")}</div></div><div class="th-line"></div><span class="th-count">${mem.length}</span></div><div class="team-grid">`;
         mem.forEach(m=>{
-          const part=((m.teams.find(x=>x.team===t.id))||{}).part||"";
-          const voc=/vocal|보컬/i.test(part);
-          html+=`<div class="member compact${voc?' vocal':''}"><span class="part">${part?esc(part)+' · ':''}NO.${esc(m.gen||"")}</span><div class="nm">${esc(m.name||"")}</div><div class="quote">${esc(m.message||"")}</div></div>`;
+          const membership=m.teams.find(x=>x.team===t.id)||{};
+          const parts=partsOf(membership);
+          const label=parts.join(" · ");
+          const voc=parts.some(p=>/vocal|보컬/i.test(p));
+          html+=`<div class="member compact${voc?' vocal':''}"><span class="part">${label?esc(label)+' · ':''}NO.${esc(m.gen||"")}</span><div class="nm">${esc(m.name||"")}</div><div class="quote">${esc(m.message||"")}</div></div>`;
         });
         html+="</div></div>";
       });
