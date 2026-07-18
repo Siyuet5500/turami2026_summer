@@ -893,7 +893,7 @@ prefersReduced?staticDraw():requestAnimationFrame(frame);
      const msg=(hgMsg.value||"").trim(), name=(hgName.value||"").trim();
      if(!msg){hgMsg.focus();return;}
      hgAdd.disabled=true; const old=hgAdd.textContent; hgAdd.textContent="띄우는 중…";
-     try{ await WishStore.add({name,msg}); hgMsg.value="";hgName.value="";hgDone.textContent="은하수에 당신의 별이 떴어요 ✦"; }
+     try{ await WishStore.add({name,msg}); hgMsg.value="";hgName.value="";hgDone.textContent="GUESTBOOK 페이지에서 확인할 수 있습니다 ✦"; }
      catch(err){ hgDone.textContent="잠시 후 다시 시도해 주세요."; }
      hgAdd.textContent=old; hgAdd.disabled=false;
    }
