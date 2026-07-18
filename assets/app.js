@@ -169,7 +169,7 @@ wire("mapBtn2", CONFIG.mapLink);
       teams.forEach((t,ti)=>{
         const mem=members.filter(m=>Array.isArray(m.teams)&&m.teams.some(x=>x.team===t.id));
         if(!mem.length) return;
-        html+=`<div class="team-section"><div class="team-head"><div><div class="th-star">TEAM ${String(ti+1).padStart(2,"0")}</div><div class="th-name">${esc(t.name||"")}</div></div><div class="th-line"></div><span class="th-count">${mem.length}</span></div><div class="team-grid">`;
+        html+=`<div class="team-section"><div class="team-head"><div><div class="th-star">TEAM</div><div class="th-name">${esc(t.name||"")}</div></div><div class="th-line"></div><span class="th-count">${mem.length}</span></div><div class="team-grid">`;
         mem.forEach(m=>{
           const membership=m.teams.find(x=>x.team===t.id)||{};
           const parts=partsOf(membership);
