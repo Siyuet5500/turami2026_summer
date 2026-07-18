@@ -499,6 +499,7 @@ const WishStore = (()=>{
   }
   async function add(w){
     await ready; w.ts=Date.now();
+    if(/hidden/i.test(location.pathname) && !w.source) w.source="hidden";  // 히든에서 남긴 별
     if(fb){const {collection,addDoc}=fb.fs;await addDoc(collection(fb.db,"wishes"),w);return;}
     const list=await all();list.push(w);
     try{localStorage.setItem(KEY,JSON.stringify(list));}catch(_){}
@@ -525,6 +526,8 @@ function layoutWishes(){
     w.y=30*devicePixelRatio+seed2*(H-60*devicePixelRatio);
     w.r=(2.2+ (i%3)*0.7)*devicePixelRatio;
     w.ph=seed*6.28; w.tw=0.02+seed2*0.02;
+    w.hidden=(w.source==="hidden");
+    w.hue=hashStr((w.name||"")+"|hue")%360;
   });
 }
 function gbDraw(){
@@ -539,13 +542,22 @@ function gbDraw(){
   gbx.fillStyle=band;gbx.fillRect(0,0,W,H);
   const t=Date.now()/1000;
   wishStars.forEach((w,i)=>{
-    const tw=0.55+Math.sin(t* (w.tw*30) +w.ph)*0.35;
+    const tw=0.55+Math.sin(t*(w.tw*30)+w.ph)*0.35;
     const hov=(i===gbHover);
-    if(hov){const g=gbx.createRadialGradient(w.x,w.y,0,w.x,w.y,w.r*7);
-      g.addColorStop(0,"rgba(244,214,138,.7)");g.addColorStop(1,"rgba(244,214,138,0)");
-      gbx.fillStyle=g;gbx.beginPath();gbx.arc(w.x,w.y,w.r*7,0,7);gbx.fill();}
-    gbx.beginPath();gbx.arc(w.x,w.y,hov?w.r*1.6:w.r,0,7);
-    gbx.fillStyle=hov?"#fff":`rgba(244,232,200,${tw})`;gbx.fill();
+    const isH=w.hidden, R=w.r*(isH?1.5:1);
+    if(isH){ // 히든 별: 이름 기반 색 + 글로우 + 링
+      const g=gbx.createRadialGradient(w.x,w.y,0,w.x,w.y,R*6);
+      g.addColorStop(0,`hsla(${w.hue},85%,68%,${0.5*tw})`);g.addColorStop(1,"hsla(0,0%,0%,0)");
+      gbx.fillStyle=g;gbx.beginPath();gbx.arc(w.x,w.y,R*6,0,7);gbx.fill();
+      gbx.strokeStyle=`hsla(${w.hue},85%,72%,${0.35*tw})`;gbx.lineWidth=1;
+      gbx.beginPath();gbx.arc(w.x,w.y,R*2.4,0,7);gbx.stroke();
+    }
+    if(hov){const g=gbx.createRadialGradient(w.x,w.y,0,w.x,w.y,R*7);
+      g.addColorStop(0,isH?`hsla(${w.hue},90%,70%,.7)`:"rgba(244,214,138,.7)");g.addColorStop(1,"hsla(0,0%,0%,0)");
+      gbx.fillStyle=g;gbx.beginPath();gbx.arc(w.x,w.y,R*7,0,7);gbx.fill();}
+    gbx.beginPath();gbx.arc(w.x,w.y,hov?R*1.6:R,0,7);
+    gbx.fillStyle=hov?"#fff":(isH?`hsl(${w.hue},90%,${Math.round(60+tw*15)}%)`:`rgba(244,232,200,${tw})`);
+    gbx.fill();
   });
   requestAnimationFrame(gbDraw);
 }
@@ -565,7 +577,8 @@ gbSky.addEventListener("mouseleave",()=>{gbHover=-1;hideTip();});
 gbSky.addEventListener("click",e=>{const i=gbPick(e.clientX,e.clientY);if(i>=0)showTip(wishStars[i],e.clientX,e.clientY,true);});
 function showTip(w,cx,cy,sticky){
   const wrap=gbSky.parentElement.getBoundingClientRect();
-  gbTip.innerHTML=`<div class="t-msg">${escapeHtml(w.msg)}</div><div class="t-name">— ${escapeHtml(w.name||"익명")}</div>`;
+  const mark=w.hidden?`<div class="t-hidden" style="color:hsl(${w.hue},85%,72%);font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.1em;margin-bottom:5px">✦ 히든에서 온 별</div>`:"";
+  gbTip.innerHTML=mark+`<div class="t-msg">${escapeHtml(w.msg)}</div><div class="t-name">— ${escapeHtml(w.name||"익명")}</div>`;
   gbTip.classList.add("show");                 // 먼저 보이게 해서 크기를 잰다
   const tw=gbTip.offsetWidth, th=gbTip.offsetHeight, pad=14;
   let x=cx-wrap.left+14, y=cy-wrap.top+14;
