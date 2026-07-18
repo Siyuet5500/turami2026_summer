@@ -116,6 +116,9 @@
 
   <section id="tabGuest" class="hidden">
     <div class="bar"><span class="count" id="gbCount">불러오는 중…</span>
+      <button class="btn" id="gbfAll" type="button">전체</button>
+      <button class="btn" id="gbfNormal" type="button">일반</button>
+      <button class="btn" id="gbfHidden" type="button">히든</button>
       <button class="btn" id="gbAll" type="button">전체선택</button>
       <button class="btn" id="gbNone" type="button">선택해제</button>
       <button class="btn" id="gbExport" type="button">백업(JSON)</button>
@@ -193,6 +196,7 @@ const firebaseConfig = {
 const app=initializeApp(firebaseConfig), auth=getAuth(app), db=getFirestore(app);
 const $=id=>document.getElementById(id);
 const esc=s=>String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function hashLite(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
 const PARTS=["Vocal","Guitar","Guitar 2","Bass","Drum","Keyboard","Synth","Percussion"];
 
 $("loginBtn").addEventListener("click", async ()=>{ $("loginErr").textContent="";
@@ -232,13 +236,17 @@ function drawPv(){const r=pv.getBoundingClientRect();pv.width=r.width*devicePixe
 let wishes=[];
 async function loadGuest(){try{const snap=await getDocs(query(collection(db,"wishes"),orderBy("ts","desc")));wishes=snap.docs.map(d=>({id:d.id,...d.data()}));renderGuest();}catch(e){$("gbCount").textContent="불러오기 실패";}}
 function fdate(ts){if(!ts)return"";return new Date(ts).toLocaleString("ko-KR",{month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"});}
-function renderGuest(){$("gbCount").textContent="총 "+wishes.length+"개";const list=$("gbList");if(!wishes.length){list.innerHTML='<div class="empty">아직 남겨진 별이 없어요.</div>';return;}list.innerHTML="";wishes.forEach(w=>{const row=document.createElement("div");row.className="row";row.dataset.id=w.id;row.innerHTML=`<input type="checkbox" class="chk" /><div class="body"><div class="nm gold">${esc(w.name)||"익명"}</div><div class="sub" style="color:#e9edf9;font-size:.9rem">${esc(w.msg)}</div><div class="dt">${fdate(w.ts)} · ${w.id}</div></div><div class="acts"><button class="mini edit-btn">수정</button><button class="mini del-btn">삭제</button></div>`;row.querySelector(".chk").addEventListener("change",e=>row.classList.toggle("sel",e.target.checked));row.querySelector(".del-btn").addEventListener("click",()=>delWish(w));row.querySelector(".edit-btn").addEventListener("click",()=>editWish(row,w));list.appendChild(row);});}
+let gbFilter="all";
+function gbFiltered(){return gbFilter==="hidden"?wishes.filter(w=>w.source==="hidden"):gbFilter==="normal"?wishes.filter(w=>w.source!=="hidden"):wishes;}
+function markFilter(){[["gbfAll","all"],["gbfNormal","normal"],["gbfHidden","hidden"]].forEach(([id,v])=>{const b=$(id);if(b)b.classList.toggle("btn-gold",gbFilter===v);});}
+function renderGuest(){const shown=gbFiltered();const hc=wishes.filter(w=>w.source==="hidden").length;$("gbCount").textContent="총 "+wishes.length+"개 · 히든 "+hc+"개"+(gbFilter!=="all"?" · 표시 "+shown.length:"");markFilter();const list=$("gbList");if(!shown.length){list.innerHTML='<div class="empty">표시할 별이 없어요.</div>';return;}list.innerHTML="";shown.forEach(w=>{const isH=w.source==="hidden";const hue=isH?(hashLite((w.name||"")+"|hue")%360):0;const badge=isH?`<span style="font-family:'Space Mono',monospace;font-size:.56rem;letter-spacing:.1em;color:hsl(${hue},80%,72%);border:1px solid hsla(${hue},80%,72%,.5);border-radius:999px;padding:2px 7px;margin-left:6px">✦ 히든</span>`:"";const row=document.createElement("div");row.className="row";row.dataset.id=w.id;row.innerHTML=`<input type="checkbox" class="chk" /><div class="body"><div class="nm gold">${esc(w.name)||"익명"}${badge}</div><div class="sub" style="color:#e9edf9;font-size:.9rem">${esc(w.msg)}</div><div class="dt">${fdate(w.ts)} · ${w.id}</div></div><div class="acts"><button class="mini edit-btn">수정</button><button class="mini del-btn">삭제</button></div>`;row.querySelector(".chk").addEventListener("change",e=>row.classList.toggle("sel",e.target.checked));row.querySelector(".del-btn").addEventListener("click",()=>delWish(w));row.querySelector(".edit-btn").addEventListener("click",()=>editWish(row,w));list.appendChild(row);});}
 function editWish(row,w){const body=row.querySelector(".body"),acts=row.querySelector(".acts");body.innerHTML=`<input class="e-nm" maxlength="12" value="${esc(w.name)}" placeholder="이름" style="width:100%;margin-bottom:6px" /><textarea class="e-ms" maxlength="60">${esc(w.msg)}</textarea>`;acts.innerHTML=`<button class="mini save-btn">저장</button><button class="mini cancel-btn">취소</button>`;acts.querySelector(".cancel-btn").onclick=renderGuest;acts.querySelector(".save-btn").onclick=async()=>{const name=row.querySelector(".e-nm").value.trim(),msg=row.querySelector(".e-ms").value.trim();if(!msg){alert("내용을 입력하세요.");return;}try{await updateDoc(doc(db,"wishes",w.id),{name,msg,ts:w.ts||Date.now()});w.name=name;w.msg=msg;renderGuest();}catch(e){alert("수정 실패: "+e.code);}};}
 async function delWish(w){if(!confirm("삭제할까요?\n"+(w.name||"익명")+" : "+w.msg))return;try{await deleteDoc(doc(db,"wishes",w.id));wishes=wishes.filter(x=>x.id!==w.id);renderGuest();}catch(e){alert("삭제 실패: "+e.code);}}
 $("gbAll").onclick=()=>document.querySelectorAll("#gbList .chk").forEach(c=>{c.checked=true;c.dispatchEvent(new Event("change"));});
 $("gbNone").onclick=()=>document.querySelectorAll("#gbList .chk").forEach(c=>{c.checked=false;c.dispatchEvent(new Event("change"));});
 $("gbDel").onclick=async()=>{const ids=[...document.querySelectorAll("#gbList .row")].filter(r=>r.querySelector(".chk").checked).map(r=>r.dataset.id);if(!ids.length){alert("선택된 항목이 없어요.");return;}if(!confirm(ids.length+"개를 삭제할까요? 되돌릴 수 없어요."))return;let ok=0;for(const id of ids){try{await deleteDoc(doc(db,"wishes",id));ok++;}catch(e){}}wishes=wishes.filter(w=>!ids.includes(w.id));renderGuest();alert(ok+"개 삭제 완료.");};
 $("gbExport").onclick=()=>{const blob=new Blob([JSON.stringify(wishes,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="turami-guestbook-"+new Date().toISOString().slice(0,10)+".json";a.click();};
+[["gbfAll","all"],["gbfNormal","normal"],["gbfHidden","hidden"]].forEach(([id,v])=>{const b=$(id);if(b)b.onclick=()=>{gbFilter=v;renderGuest();};});
 
 /* 팀 (별자리 없음) */
 let teams=[];
