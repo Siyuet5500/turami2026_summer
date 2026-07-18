@@ -20,14 +20,10 @@ const CONFIG = {
     number  : "3333361550617"      // 복사용(숫자만)
   },
 
-  // 히든 티저 (별자리를 완성하면 해금) — 유튜브/오디오 임베드 코드를 넣으면 영상이 뜹니다
-  teaserEmbed : "",   // 예: '<iframe src="https://www.youtube.com/embed/VIDEO_ID" allowfullscreen></iframe>'
-  timeline : [
-    ["D-30", "티켓 선예매 오픈"],
-    ["D-7",  "셋리스트 전체 공개"],
-    ["D-1",  "리허설 비하인드 스토리"],
-    ["D-DAY","2026 뚜라미 하계공연 · 북두칠성"],
-  ],
+  encore : {
+    title : "그날 밤, 여덟 번째 별이 뜹니다",
+    note  : ""   // 앵콜 예고 문구 (나중에 채우세요). 줄바꿈은 \n 로.
+  },
 
   // 방명록 공유 백엔드 (선택). 비워두면 이 기기에만 저장(localStorage).
   // Firebase 웹 설정 객체를 그대로 넣으면 전체 관객이 공유하는 은하수가 됩니다.
@@ -693,11 +689,12 @@ const unlockModal=document.getElementById("unlockModal");
 let unlockedOnce=false;
 function openUnlock(){
   if(!unlockedOnce){
-    const tEl=document.getElementById("umTeaser");
-    tEl.innerHTML = CONFIG.teaserEmbed ? CONFIG.teaserEmbed
-      : `<div class="um-placeholder">여기에 히든 티저 영상이 들어갑니다.<br/>CONFIG의 <b>teaserEmbed</b>에 유튜브 임베드 코드를 넣어주세요.</div>`;
-    document.getElementById("umTimeline").innerHTML=(CONFIG.timeline||[]).map(([t,d])=>
-      `<div class="um-tl-row"><span class="tl-t">${t}</span><span class="tl-d">${d}</span></div>`).join("");
+    const e=CONFIG.encore||{};
+      document.getElementById("umEncore").innerHTML =
+        `<div class="um-encore-tag">HINT</div>`+
+        `<div class="um-encore-eyebrow">ENCORE · 여덟 번째 별</div>`+
+        `<div class="um-encore-title">${e.title||"여기에 앵콜 힌트가 들어갑니다"}</div>`+
+        (e.note?`<div class="um-encore-note">${e.note.replace(/\n/g,"<br/>")}</div>`:"");
     unlockedOnce=true;
   }
   unlockModal.classList.add("on");unlockModal.setAttribute("aria-hidden","false");
@@ -887,3 +884,19 @@ prefersReduced?staticDraw():requestAnimationFrame(frame);
     if(sync) sync.textContent="운영자와 실시간 동기화 중 ✦";
   }, ()=>{});
 })();
+
+/* ★ 히든 발견자 방명록 — 남기면 은하수에 특별한 별(source:hidden 자동) */
+{const hgAdd=document.getElementById("hgAdd");
+ if(hgAdd){
+   const hgMsg=document.getElementById("hgMsg"), hgName=document.getElementById("hgName"), hgDone=document.getElementById("hgDone");
+   async function hgSubmit(){
+     const msg=(hgMsg.value||"").trim(), name=(hgName.value||"").trim();
+     if(!msg){hgMsg.focus();return;}
+     hgAdd.disabled=true; const old=hgAdd.textContent; hgAdd.textContent="띄우는 중…";
+     try{ await WishStore.add({name,msg}); hgMsg.value="";hgName.value="";hgDone.textContent="은하수에 당신의 별이 떴어요 ✦"; }
+     catch(err){ hgDone.textContent="잠시 후 다시 시도해 주세요."; }
+     hgAdd.textContent=old; hgAdd.disabled=false;
+   }
+   hgAdd.addEventListener("click",hgSubmit);
+   hgMsg.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();hgSubmit();}});
+ }}

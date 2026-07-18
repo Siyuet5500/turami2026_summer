@@ -359,3 +359,23 @@ footer{border-top:1px solid var(--line);padding:70px 0 50px;position:relative;z-
 .set-lyric{font-family:var(--kr-serif);color:var(--starlight);font-size:1.02rem;line-height:2.15;white-space:pre-line;border-left:2px solid var(--line);padding-left:20px}
 .set-empty{color:var(--muted);font-size:.9rem}
 @media(max-width:820px){.track-head.song{grid-template-columns:34px 1fr auto;gap:12px}.track-body .inner.song{padding-left:34px}}
+
+/* 히든 해금 모달 - 앵콜 예고 + 발견자 방명록 */
+.unlock-modal .um-card{max-height:90vh;overflow-y:auto}
+.um-encore{margin:24px 0;padding:22px 20px;border:1px solid rgba(191,164,107,.28);background:rgba(244,214,138,.05);border-radius:12px;text-align:center}
+.um-encore-eyebrow{font-family:var(--mono);font-size:.6rem;letter-spacing:.24em;color:var(--gold-soft);margin-bottom:12px}
+.um-encore-title{font-family:var(--kr-serif);font-size:1.2rem;color:var(--starlight);letter-spacing:.02em}
+.um-encore-note{font-size:.82rem;color:var(--muted);margin-top:10px;line-height:1.75}
+.um-gb{border-top:1px solid var(--line);padding-top:22px;margin-top:4px}
+.um-gb-title{font-family:var(--kr-serif);font-size:.98rem;text-align:center;color:var(--starlight);margin:0}
+.um-gb-sub{font-size:.75rem;color:var(--muted);text-align:center;margin:5px 0 16px}
+.um-gb-input{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:9px;color:#fff;padding:11px 13px;font-size:.92rem;margin-bottom:8px;box-sizing:border-box;font-family:var(--sans)}
+.um-gb-input:focus{outline:none;border-color:var(--gold-soft)}
+textarea.um-gb-input{min-height:56px;resize:vertical}
+.um-gb-btn{width:100%;margin-top:2px;background:linear-gradient(160deg,var(--gold-bright),var(--gold-soft));color:#0a0d14;border:0;border-radius:10px;padding:13px;font-family:var(--mono);font-size:.74rem;letter-spacing:.14em;font-weight:700;cursor:pointer}
+.um-gb-btn:hover{filter:brightness(1.06)}
+.um-gb-btn:disabled{opacity:.6;cursor:default}
+.um-gb-done{text-align:center;font-size:.8rem;color:var(--gold-soft);min-height:1em;margin:10px 0 0}
+
+.um-encore{position:relative}
+.um-encore-tag{position:absolute;top:11px;left:15px;font-family:var(--mono);font-size:.5rem;letter-spacing:.2em;color:rgba(191,164,107,.6)}
