@@ -175,7 +175,7 @@ wire("mapBtn2", CONFIG.mapLink);
           const parts=partsOf(membership);
           const label=parts.join(" · ");
           const voc=parts.some(p=>/vocal|보컬/i.test(p));
-          html+=`<div class="member compact${voc?' vocal':''}"><span class="part">${label?esc(label)+' · ':''}NO.${esc(m.gen||"")}</span><div class="nm">${esc(m.name||"")}</div><div class="quote">${esc(m.message||"")}</div></div>`;
+          html+=`<div class="member compact${voc?' vocal':''}"><span class="part">NO.${esc(m.gen||"")}</span><div class="nm">${esc(m.name||"")}</div><div class="quote">${esc(m.message||"")}</div></div>`;
         });
         html+="</div></div>";
       });
