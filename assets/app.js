@@ -153,7 +153,7 @@ wire("mapBtn2", CONFIG.mapLink);
           else { body.style.maxHeight=body.scrollHeight+"px"; requestAnimationFrame(()=>{ body.style.maxHeight="0px"; }); }
         }
       });
-      const kr=document.querySelector("#setlist .kr"); if(kr) kr.textContent="무대를 눌러 곡을 펼치고, 곡을 눌러 참여 세션과 가사를 확인하세요";
+      const kr=document.querySelector("#setlist .kr"); if(kr) kr.textContent="팀을 선택해 셋리를 펼치고, 곡을 눌러 참여 세션과 가사를 확인하세요";
     }catch(e){ box.innerHTML=flat(); }
   })();
 })();
@@ -259,13 +259,6 @@ if(navlinks) navlinks.querySelectorAll("a").forEach(a=>a.addEventListener("click
   g.addEventListener("click",go);
   g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();go();}});
 });
-
-// setlist accordion
-{const box=document.getElementById("setlistBox"); if(box) box.addEventListener("click",e=>{
-  const t=e.target.closest(".track"); if(!t)return;
-  const body=t.querySelector(".track-body"), open=t.classList.toggle("open");
-  body.style.maxHeight=open?body.querySelector(".inner").scrollHeight+"px":"0";
-});}
 
 // copy account
 {const acct=document.getElementById("acct"),copyLab=document.getElementById("copyLab");
