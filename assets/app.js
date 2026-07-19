@@ -1,7 +1,7 @@
 const CONFIG = {
   // 공연 일시 (카운트다운 기준) — "YYYY-MM-DDTHH:MM:SS+09:00"
-  concertDate : "2026-07-19T15:00:00+09:00",
-  concertEndDate : "2026-07-19T17:00:00+09:00",   // 공연 종료(이후 마무리 문구)
+  concertDate : "2026-08-01T18:00:00+09:00",
+  concertEndDate : "2026-08-01T22:00:00+09:00",   // 공연 종료(이후 마무리 문구)
   dateText    : "2026. 08. 01 (토) 오후 6시",
   venue       : "아트홀 베짱이 · 서울 마포구 독막로15길 3-12 B1",
 
@@ -751,7 +751,7 @@ if(!prefersReduced){
   addEventListener("pointerleave",()=>{tgX=0;tgY=0;},{passive:true});
 }
 let last=0;
-if(!prefersReduced) setTimeout(()=>{ if(shoot.length<2) spawn(); }, 4400);
+if(!prefersReduced) setTimeout(()=>{ if(shoot.length<2){ spawn(); last=performance.now(); } }, 4400);
 function frame(t){
   pxX+=(tgX-pxX)*0.06; pxY+=(tgY-pxY)*0.06;
   const tf=`translate(${(-pxX*16).toFixed(2)}px,${(-pxY*12).toFixed(2)}px)`;
