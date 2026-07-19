@@ -380,10 +380,10 @@ textarea.um-gb-input{min-height:56px;resize:vertical}
 .um-encore{position:relative}
 .um-encore-tag{position:absolute;top:11px;left:15px;font-family:var(--mono);font-size:.5rem;letter-spacing:.2em;color:rgba(191,164,107,.6)}
 
-.cd-live-eyebrow{font-family:var(--mono);font-size:.6rem;letter-spacing:.3em;color:var(--gold-soft);margin-bottom:20px;text-transform:uppercase}
+.cd-live-eyebrow{font-family:var(--mono);font-size:.82rem;letter-spacing:.34em;color:var(--gold-soft);margin-bottom:22px;text-transform:uppercase}
 .cd-live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#ff5a5a;margin-right:9px;vertical-align:middle;box-shadow:0 0 10px #ff5a5a;animation:nsBlink 1.4s ease-in-out infinite}
-.cd-live-now{position:relative;display:inline-block;font-family:var(--kr-serif);font-size:clamp(1.8rem,5vw,2.4rem);letter-spacing:.05em;color:#fff;animation:nsBreathe 4.5s ease-in-out infinite}
-.cd-live-now::after{content:"";position:absolute;left:50%;top:50%;width:120%;height:220%;transform:translate(-50%,-50%);background:radial-gradient(closest-side,rgba(244,214,138,.4),rgba(244,214,138,0) 70%);filter:blur(8px);z-index:-1;animation:nsHalo 4.5s ease-in-out infinite;pointer-events:none}
+.cd-live-now{position:relative;display:inline-block;font-family:var(--kr-serif);font-size:clamp(1.8rem,5vw,2.4rem);letter-spacing:.05em;color:#fff;animation:nsBreathe 6.5s ease-in-out infinite}
+.cd-live-now::after{content:"";position:absolute;left:50%;top:50%;width:120%;height:220%;transform:translate(-50%,-50%);background:radial-gradient(closest-side,rgba(244,214,138,.4),rgba(244,214,138,0) 70%);filter:blur(8px);z-index:-1;animation:nsHalo 6.5s ease-in-out infinite;pointer-events:none}
 @keyframes nsBreathe{0%,100%{color:#fff;text-shadow:0 0 14px rgba(244,214,138,.4),0 0 30px rgba(244,214,138,.2)}50%{color:#fff;text-shadow:0 0 20px rgba(244,214,138,.7),0 0 46px rgba(244,214,138,.4),0 0 72px rgba(244,214,138,.18)}}
 @keyframes nsHalo{0%,100%{opacity:.5;transform:translate(-50%,-50%) scale(1)}50%{opacity:.85;transform:translate(-50%,-50%) scale(1.1)}}
 @keyframes nsBlink{0%,100%{opacity:1}50%{opacity:.3}}
