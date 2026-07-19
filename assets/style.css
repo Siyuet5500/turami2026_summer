@@ -385,14 +385,12 @@ textarea.um-gb-input{min-height:56px;resize:vertical}
 .cd-live-now{position:relative;display:inline-block;font-family:var(--kr-serif);font-size:clamp(1.8rem,5vw,2.4rem);letter-spacing:.05em;color:#fff;animation:nsBreathe 3.25s ease-in-out infinite alternate}
 .cd-live-now::after{content:"";position:absolute;left:50%;top:50%;width:120%;height:220%;transform:translate(-50%,-50%);background:radial-gradient(closest-side,rgba(244,214,138,.4),rgba(244,214,138,0) 70%);filter:blur(8px);z-index:-1;animation:nsHalo 3.25s ease-in-out infinite alternate;pointer-events:none}
 @keyframes nsBreathe{
-  0%   {text-shadow:0 0 14px rgba(244,214,138,.38),0 0 30px rgba(244,214,138,.18)}
-  50%  {text-shadow:0 0 22px rgba(244,214,138,.72),0 0 48px rgba(244,214,138,.42),0 0 74px rgba(244,214,138,.2)}
-  100% {text-shadow:0 0 14px rgba(244,214,138,.38),0 0 30px rgba(244,214,138,.18)}
+  from {text-shadow:0 0 14px rgba(244,214,138,.38),0 0 30px rgba(244,214,138,.18)}
+  to   {text-shadow:0 0 22px rgba(244,214,138,.72),0 0 48px rgba(244,214,138,.42),0 0 74px rgba(244,214,138,.2)}
 }
 @keyframes nsHalo{
-  0%   {opacity:.5;transform:translate(-50%,-50%) scale(1)}
-  50%  {opacity:.85;transform:translate(-50%,-50%) scale(1.1)}
-  100% {opacity:.5;transform:translate(-50%,-50%) scale(1)}
+  from {opacity:.5;transform:translate(-50%,-50%) scale(1)}
+  to   {opacity:.85;transform:translate(-50%,-50%) scale(1.1)}
 }
 @keyframes nsBlink{0%,100%{opacity:1}50%{opacity:.3}}
 @media(prefers-reduced-motion:reduce){.cd-live-now,.cd-live-now::after,.cd-live-dot{animation:none}}
