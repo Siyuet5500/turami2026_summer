@@ -22,8 +22,8 @@ const CONFIG = {
   },
 
   encore : {
-    title : "그날 밤, 여덟 번째 별이 뜹니다",
-    note  : ""   // 앵콜 예고 문구 (나중에 채우세요). 줄바꿈은 \n 로.
+    title : "AGAINST ALL",
+    note  : "P.E."   // 앵콜 예고 문구 (나중에 채우세요). 줄바꿈은 \n 로.
   },
 
   // 방명록 공유 백엔드 (선택). 비워두면 이 기기에만 저장(localStorage).
