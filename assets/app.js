@@ -193,25 +193,28 @@ wire("mapBtn2", CONFIG.mapLink);
 const CONCERT = new Date(CONFIG.concertDate);
 const pad=n=>String(n).padStart(2,"0");
 const CONCERT_END = new Date(CONFIG.concertEndDate || CONFIG.concertDate);
+let cdState="";
 function tick(){
   const now=new Date();
   const diff=CONCERT-now;
   const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
   const cd=document.getElementById("countdown");
   if(now>=CONCERT_END){                       // 공연 후
-    if(cd)cd.innerHTML="<div class='cd-unit'><span class='cd-num cd-msg'>공연이 막을 내렸습니다</span><span class='cd-sub'>함께해 주셔서 감사합니다 ✦</span></div>";
+    if(cd && cdState!=="after"){cdState="after";
+      cd.innerHTML="<div class='cd-unit'><span class='cd-num cd-msg'>공연이 막을 내렸습니다</span><span class='cd-sub'>함께해 주셔서 감사합니다 ✦</span></div>";}
     return;
   }
   if(diff<=0){                                // 공연 중
-    if(cd)cd.innerHTML="<div class='cd-unit'><div class='cd-live-eyebrow'><span class='cd-live-dot'></span>LIVE NOW</div><span class='cd-live-now'>지금, 무대에서</span></div>";
+    if(cd && cdState!=="live"){cdState="live";
+      cd.innerHTML="<div class='cd-unit'><div class='cd-live-eyebrow'><span class='cd-live-dot'></span>LIVE NOW</div><span class='cd-live-now'>지금, 무대에서</span></div>";}
     return;
   }
-  set("cd-d",pad(Math.floor(diff/864e5)));     // 공연 전
+  cdState="before";                            // 공연 전
+  set("cd-d",pad(Math.floor(diff/864e5)));
   set("cd-h",pad(Math.floor(diff%864e5/36e5)));
   set("cd-m",pad(Math.floor(diff%36e5/6e4)));
   set("cd-s",pad(Math.floor(diff%6e4/1e3)));
-}
-tick();setInterval(tick,1000);
+}tick();setInterval(tick,1000);
 
 // nav (멀티페이지)
 const nav=document.getElementById("nav");
