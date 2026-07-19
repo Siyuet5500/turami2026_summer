@@ -1,6 +1,7 @@
 const CONFIG = {
   // 공연 일시 (카운트다운 기준) — "YYYY-MM-DDTHH:MM:SS+09:00"
-  concertDate : "2026-08-01T18:00:00+09:00",
+  concertDate : "2026-07-19T18:00:00+09:00",
+  concertEndDate : "2026-07-19T22:00:00+09:00",   // 공연 종료(이후 마무리 문구)
   dateText    : "2026. 08. 01 (토) 오후 6시",
   venue       : "아트홀 베짱이 · 서울 마포구 독막로15길 3-12 B1",
 
@@ -191,15 +192,21 @@ wire("mapBtn2", CONFIG.mapLink);
 // countdown — Days / Hrs / Min / Sec
 const CONCERT = new Date(CONFIG.concertDate);
 const pad=n=>String(n).padStart(2,"0");
+const CONCERT_END = new Date(CONFIG.concertEndDate || CONFIG.concertDate);
 function tick(){
-  const diff=CONCERT-new Date();
+  const now=new Date();
+  const diff=CONCERT-now;
   const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
-  if(diff<=0){
-    const cd=document.getElementById("countdown");
-    if(cd)cd.innerHTML="<div class='cd-unit'><span class='cd-num'>지금, 무대에서</span></div>";
+  const cd=document.getElementById("countdown");
+  if(now>=CONCERT_END){                       // 공연 후
+    if(cd)cd.innerHTML="<div class='cd-unit'><span class='cd-num cd-msg'>공연이 막을 내렸습니다</span><span class='cd-sub'>함께해 주셔서 감사합니다 ✦</span></div>";
     return;
   }
-  set("cd-d",pad(Math.floor(diff/864e5)));
+  if(diff<=0){                                // 공연 중
+    if(cd)cd.innerHTML="<div class='cd-unit'><div class='cd-live-eyebrow'><span class='cd-live-dot'></span>LIVE NOW</div><span class='cd-live-now'>지금, 무대에서</span></div>";
+    return;
+  }
+  set("cd-d",pad(Math.floor(diff/864e5)));     // 공연 전
   set("cd-h",pad(Math.floor(diff%864e5/36e5)));
   set("cd-m",pad(Math.floor(diff%36e5/6e4)));
   set("cd-s",pad(Math.floor(diff%6e4/1e3)));
