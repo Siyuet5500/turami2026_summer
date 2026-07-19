@@ -98,10 +98,11 @@ wire("mapBtn2", CONFIG.mapLink);
 // 계좌
 {const a=document.getElementById("acctInfo"); if(a) a.innerHTML=`${CONFIG.account.display}<span>${CONFIG.account.bank} · 예금주 ${CONFIG.account.holder}</span>`;}
 
-// 셋리스트 (Firebase: teams+songs 기반 팀별. 없으면 기존 SETLIST 자리표시)
+// 셋리스트 (팀 접기: 무대 → 곡 → 가사)
 (function(){
   const box=document.getElementById("setlistBox"); if(!box) return;
   const esc=s=>String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const hl=s=>esc(s).replace(/\*([^*\n]+)\*/g,'<span class="lyric-hl">$1</span>');
   const pad=n=>String(n).padStart(2,"0");
   const flat=()=>SETLIST.map((t,i)=>`<div class="track"><div class="track-head"><div class="star"><b>${t.star}</b>${t.kr} · No.${pad(i+1)}</div><div><div class="ttl">${t.title}</div><div class="tartist">${t.team}</div></div><span class="tplus">+</span></div><div class="track-body"><div class="inner"><div class="crew">${t.crew}</div><div class="lyric">${t.lyric}</div></div></div></div>`).join("");
   if(!CONFIG.firebase){ box.innerHTML=flat(); return; }
@@ -121,21 +122,38 @@ wire("mapBtn2", CONFIG.mapLink);
       ]);
       const teams=tSnap.docs.map(d=>({id:d.id,...d.data()}));
       const songs=sSnap.docs.map(d=>({id:d.id,...d.data()}));
-      if(!teams.length || !songs.length){ box.innerHTML=flat(); return; }
-      box.classList.add("by-team");
+      if(!teams.length){ box.innerHTML=flat(); return; }
       let html="";
       teams.forEach((t,ti)=>{
         const sg=songs.filter(x=>x.team===t.id);
-        if(!sg.length) return;
-        html+=`<div class="set-stage"><div class="stage-head"><div><div class="sh-idx">STAGE ${pad(ti+1)}</div><div class="sh-name">${esc(t.name||"")}</div></div><div class="sh-line"></div><span class="sh-count">${sg.length}곡</span></div><div class="setlist">`;
-        sg.forEach((x,si)=>{
+        let tracks="";
+        if(!sg.length) tracks=`<div class="set-empty" style="padding:12px 8px">곡 준비 중이에요</div>`;
+        else sg.forEach((x,si)=>{
           const lyr=(x.lyrics||"").trim();
-          html+=`<div class="track"><div class="track-head song"><div class="tnum">${pad(si+1)}</div><div><div class="ttl">${esc(x.title||"곡 제목")}</div>${x.artist?`<div class="tartist">${esc(x.artist)}</div>`:""}</div><span class="tplus">+</span></div><div class="track-body"><div class="inner song">${x.session?`<div class="set-session">${esc(x.session)}</div>`:""}${lyr?`<div class="set-lyric">${esc(lyr)}</div>`:'<div class="set-empty">가사는 공연 전 공개됩니다</div>'}</div></div></div>`;
+          tracks+=`<div class="track"><div class="track-head song"><div class="tnum">${pad(si+1)}</div><div><div class="ttl">${esc(x.title||"곡")}</div>${x.artist?`<div class="tartist">${esc(x.artist)}</div>`:""}</div><span class="tplus">+</span></div><div class="track-body"><div class="inner song">${x.session?`<div class="set-session">${esc(x.session)}</div>`:""}${lyr?`<div class="set-lyric">${hl(lyr)}</div>`:'<div class="set-empty">가사는 공연 전 공개됩니다</div>'}</div></div></div>`;
         });
-        html+="</div></div>";
+        html+=`<div class="set-team"><div class="set-team-head"><div class="stt-idx">STAGE ${pad(ti+1)}</div><div class="stt-name">${esc(t.name||"")}</div><div class="stt-line"></div><span class="stt-count">${sg.length}곡</span><span class="stt-chev">+</span></div><div class="set-team-body"><div class="set-tracks">${tracks}</div></div></div>`;
       });
-      box.innerHTML = html || flat();
-      const kr=document.querySelector("#setlist .kr"); if(kr) kr.textContent="곡을 눌러 참여 세션과 가사를 펼쳐보세요";
+      box.innerHTML=html;
+      box.addEventListener("click",e=>{
+        const th=e.target.closest(".track-head");
+        if(th){
+          const tr=th.closest(".track"), b=tr.querySelector(".track-body"), inner=b.querySelector(".inner");
+          const open=tr.classList.toggle("open");
+          b.style.maxHeight=open?inner.scrollHeight+"px":"0px";
+          const tb=tr.closest(".set-team-body"); if(tb) tb.style.maxHeight="none";  // 부모 무대 높이 고정 해제(가사 잘림 방지)
+          return;
+        }
+        const teamHead=e.target.closest(".set-team-head");
+        if(teamHead){
+          const team=teamHead.closest(".set-team"), body=team.querySelector(".set-team-body");
+          const open=team.classList.toggle("open");
+          if(open){ body.style.maxHeight=body.scrollHeight+"px";
+            body.addEventListener("transitionend",function te(){ if(team.classList.contains("open")) body.style.maxHeight="none"; body.removeEventListener("transitionend",te); }); }
+          else { body.style.maxHeight=body.scrollHeight+"px"; requestAnimationFrame(()=>{ body.style.maxHeight="0px"; }); }
+        }
+      });
+      const kr=document.querySelector("#setlist .kr"); if(kr) kr.textContent="무대를 눌러 곡을 펼치고, 곡을 눌러 참여 세션과 가사를 확인하세요";
     }catch(e){ box.innerHTML=flat(); }
   })();
 })();
