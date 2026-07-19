@@ -921,3 +921,14 @@ prefersReduced?staticDraw():requestAnimationFrame(frame);
    hgAdd.addEventListener("click",hgSubmit);
    hgMsg.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();hgSubmit();}});
  }}
+
+/* 맨 위로 버튼 (전 페이지 공통) */
+(function(){
+  const btn=document.createElement("button");
+  btn.id="toTop"; btn.type="button"; btn.setAttribute("aria-label","맨 위로");
+  btn.innerHTML="↑";
+  document.body.appendChild(btn);
+  const onScroll=()=>btn.classList.toggle("show", window.scrollY>400);
+  window.addEventListener("scroll",onScroll,{passive:true}); onScroll();
+  btn.addEventListener("click",()=>window.scrollTo({top:0,behavior:"smooth"}));
+})();
