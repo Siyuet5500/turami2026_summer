@@ -46,23 +46,22 @@ header.nav.scrolled{background:rgba(8,9,14,.85);backdrop-filter:blur(14px);paddi
 .burger{display:none;flex-direction:column;gap:5px;background:none;border:0;cursor:pointer;padding:6px}
 .burger span{width:24px;height:2px;background:var(--starlight);transition:.3s}
 
-/* 홈 히어로 배치 다듬기 */
-.hero .wrap{max-width:640px;padding-left:clamp(20px,5vw,64px)}
-.hero .meta-line{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+//* 홈 히어로 — 정돈된 좌측 배치 */
+.hero{justify-content:center;padding-top:150px}
+.hero .wrap{align-items:flex-start;text-align:left;max-width:660px;padding-left:clamp(20px,5vw,60px);margin:0}
+.hero .meta-line{display:flex;align-items:center;gap:12px;margin-bottom:14px}
 .hero .meta-line::before{content:"";width:30px;height:1px;background:var(--gold);flex:none}
-.hero .superscript{margin:0 0 18px 42px}          /* 라인 뒤로 살짝 들여쓰기 */
-.hero h1{font-size:clamp(3.6rem,12vw,7.2rem);letter-spacing:.04em;line-height:.94;margin-top:2px}
-.hero .latin{display:flex;align-items:center;gap:16px;margin-top:14px}
-.hero .latin::after{content:"";height:1px;flex:1;max-width:120px;background:linear-gradient(90deg,rgba(86,182,166,.5),transparent)}
-.hero .tagline{margin-top:26px;line-height:1.9}
-.countdown{margin-top:34px}
-.hero-cta{margin-top:34px}
+.hero .superscript{margin:0 0 20px 0}
+.hero h1{font-size:clamp(3.6rem,11vw,7rem);letter-spacing:.04em;line-height:.96;padding-left:0}
+.hero .latin{display:inline-flex;align-items:center;gap:16px;margin-top:16px}
+.hero .latin::after{content:"";height:1px;width:90px;background:linear-gradient(90deg,var(--gold-soft),transparent)}
+.hero .tagline{margin-top:28px;max-width:34ch}
+.countdown{margin-top:38px}
+.hero-cta{margin-top:36px}
 @media(max-width:760px){
-  .hero .wrap{padding-left:0;align-items:center}
+  .hero .wrap{align-items:center;text-align:center;padding-left:0}
   .hero .meta-line{justify-content:center}
-  .hero .superscript{margin-left:0}
   .hero .latin{justify-content:center}
-  .hero .latin::after{display:none}
 }
 
 .countdown{display:flex;gap:clamp(18px,5vw,46px);margin:48px 0 8px;justify-content:center}
