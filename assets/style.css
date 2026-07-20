@@ -439,3 +439,12 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{width:0;height:0;display:none}
 .tk-divider{height:1px;background:linear-gradient(90deg,rgba(191,164,107,.5),transparent);margin:20px 0 0}
 @keyframes tkTwinkle{0%,100%{opacity:.3}50%{opacity:.7}}
 @media(prefers-reduced-motion:reduce){.tk-dipper circle{animation:none}}
+
+/* 예매 카드 정렬 + 선예매 정보 */
+.ticket-grid .tk-card{display:flex;flex-direction:column}
+.tk-foot{margin-top:auto}
+.tk-info{margin-top:20px;display:flex;flex-direction:column;gap:10px}
+.tk-info-row{display:flex;justify-content:space-between;align-items:center;font-size:.9rem;padding:9px 0;border-bottom:1px solid var(--line)}
+.tk-info-row .k{font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-soft)}
+.tk-info-row .v{color:var(--starlight)}
+.tk-divider{height:1px;background:linear-gradient(90deg,rgba(191,164,107,.5),transparent);margin:0 0 20px}
