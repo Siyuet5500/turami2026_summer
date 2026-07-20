@@ -856,14 +856,23 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
         ctx.fillStyle="rgba(215,255,248,"+Math.max(0,1-s.life*.6)+")";ctx.beginPath();ctx.arc(ex,ey,1.8*DPR,0,7);ctx.fill();}};
   }
 
-  /* ---------- 7. 깊은 성운 (guestbook — 방명록 은하수는 #gbSky) ---------- */
+  /* ---------- 7. 떠오르는 빛 입자 (guestbook — 방명록 은하수는 #gbSky) ---------- */
   function quietField(){
-    let blobs,stars;
-    build=()=>{blobs=[];for(let i=0;i<5;i++)blobs.push({x:Math.random(),y:Math.random(),r:.32+Math.random()*.34,ph:Math.random()*6.28,sp:.22+Math.random()*.3,h:Math.random()});
-      stars=[];const n=scale(110);for(let i=0;i<n;i++)stars.push({x:Math.random(),y:Math.random(),s:.3+Math.random()*.9,tw:Math.random()*6.28,sp:.35+Math.random()*.7});};
+    let motes;
+    build=()=>{motes=[];const n=scale(90);for(let i=0;i<n;i++)motes.push(mk(Math.random()));};
+    function mk(yInit){return {x:Math.random(),y:yInit,r:.6+Math.random()*2,sp:.00002+Math.random()*.00006,drift:(Math.random()-.5)*.00003,tw:Math.random()*6.28,tsp:.4+Math.random()*.9,big:Math.random()<.16};}
     step=t=>{ctx.fillStyle=INK;ctx.fillRect(0,0,W,H);ctx.globalCompositeOperation="lighter";
-      for(const b of blobs){const pr=b.r*Math.min(W,H)*(.9+.12*Math.sin(t/3000*b.sp+b.ph));const px=(b.x+.018*Math.sin(t/6000+b.ph))*W,py=(b.y+.018*Math.cos(t/7000+b.ph))*H;const c=b.h<.5?"58,150,140":"46,120,132";const g=ctx.createRadialGradient(px,py,0,px,py,pr);g.addColorStop(0,"rgba("+c+",.11)");g.addColorStop(.5,"rgba("+c+",.04)");g.addColorStop(1,"rgba("+c+",0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,pr,0,7);ctx.fill();}
-      for(const s of stars){const tw=.25+.55*Math.pow(.5+.5*Math.sin(t/720*s.sp+s.tw),1.8);const px=s.x*W,py=s.y*H;ctx.fillStyle="rgba(150,220,210,"+tw+")";ctx.beginPath();ctx.arc(px,py,s.s*DPR,0,7);ctx.fill();}
+      for(const m of motes){
+        m.y-=m.sp*16.7; m.x+=m.drift*16.7*Math.sin(t/2000+m.tw);
+        if(m.y<-0.03){Object.assign(m,mk(1.03));}
+        const tw=.35+.65*Math.pow(.5+.5*Math.sin(t/700*m.tsp+m.tw),1.7);
+        const px=m.x*W,py=m.y*H,r=m.r*DPR;
+        const g=ctx.createRadialGradient(px,py,0,px,py,r*(m.big?6:4));
+        g.addColorStop(0,"rgba("+(m.big?"180,245,235":"130,222,205")+","+(tw*.55)+")");
+        g.addColorStop(1,"rgba(130,222,205,0)");
+        ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,r*(m.big?6:4),0,7);ctx.fill();
+        ctx.fillStyle="rgba(210,250,242,"+tw+")";ctx.beginPath();ctx.arc(px,py,r*.7,0,7);ctx.fill();
+      }
       ctx.globalCompositeOperation="source-over";};
   }
 
