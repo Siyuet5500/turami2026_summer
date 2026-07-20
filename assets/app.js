@@ -809,16 +809,23 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
       ctx.globalCompositeOperation="source-over";};
   }
 
-  /* ---------- 4. 산개성단 + 연결선 (members) ---------- */
+  /* ---------- 4. 성좌 그리드 (members) ---------- */
   function openCluster(){
-    let stars,N;
-    build=()=>{N=Math.max(26,Math.min(60,scale(52)));stars=[];for(let i=0;i<N;i++)stars.push({x:Math.random(),y:Math.random(),sz:.6+Math.random()*2,tw:Math.random()*6.28,sp:.4+Math.random()*.9,vx:(Math.random()-.5)*.00005,vy:(Math.random()-.5)*.00005});};
-    step=t=>{ctx.fillStyle=INK;ctx.fillRect(0,0,W,H);
-      for(const s of stars){s.x+=s.vx;s.y+=s.vy;if(s.x<0||s.x>1)s.vx*=-1;if(s.y<0||s.y>1)s.vy*=-1;}
-      ctx.lineWidth=DPR*.6;const lim=Math.min(W,H)*.22;
-      for(let i=0;i<N;i++)for(let j=i+1;j<N;j++){const a=stars[i],b=stars[j];const dx=(a.x-b.x)*W,dy=(a.y-b.y)*H;const d=Math.hypot(dx,dy);if(d<lim){ctx.strokeStyle="rgba(120,215,200,"+(.1*(1-d/lim))+")";ctx.beginPath();ctx.moveTo(a.x*W,a.y*H);ctx.lineTo(b.x*W,b.y*H);ctx.stroke();}}
+    let nodes,rings; const CN=[[.28,.5],[.5,.5],[.72,.5]];
+    build=()=>{
+      nodes=[];const n=Math.max(20,Math.min(46,scale(40)));
+      for(let i=0;i<n;i++){const ci=i%CN.length;const ang=Math.random()*6.28;const rad=(.06+Math.random()*.2);
+        nodes.push({cx:CN[ci][0],cy:CN[ci][1],ang,rad,sz:.6+Math.random()*1.8,tw:Math.random()*6.28,sp:.4+Math.random()*.8,osp:(.06+Math.random()*.12)*(Math.random()<.5?1:-1)});}
+      rings=CN.map((c,i)=>({x:c[0],y:c[1],r:.1+i*.03,ph:Math.random()*6.28}));
+    };
+    step=t=>{ctx.fillStyle=INK;ctx.fillRect(0,0,W,H);const asp=W/H;
+      ctx.lineWidth=DPR*.7;
+      for(const r of rings){const rr=r.r*Math.min(W,H)*(1+.04*Math.sin(t/2600+r.ph));ctx.strokeStyle="rgba(90,182,166,.10)";ctx.beginPath();ctx.ellipse(r.x*W,r.y*H,rr,rr*.62,0,0,7);ctx.stroke();}
+      const pos=nodes.map(nd=>{const a=nd.ang+t/1000*nd.osp;return {x:(nd.cx+Math.cos(a)*nd.rad/asp)*W,y:(nd.cy+Math.sin(a)*nd.rad)*H,nd};});
+      const lim=Math.min(W,H)*.16;
+      for(let i=0;i<pos.length;i++)for(let j=i+1;j<pos.length;j++){const dx=pos[i].x-pos[j].x,dy=pos[i].y-pos[j].y;const d=Math.hypot(dx,dy);if(d<lim){ctx.strokeStyle="rgba(120,215,200,"+(.12*(1-d/lim))+")";ctx.beginPath();ctx.moveTo(pos[i].x,pos[i].y);ctx.lineTo(pos[j].x,pos[j].y);ctx.stroke();}}
       ctx.globalCompositeOperation="lighter";
-      for(const s of stars){const tw=.4+.6*Math.pow(.5+.5*Math.sin(t/650*s.sp+s.tw),1.6);const px=s.x*W,py=s.y*H,r=s.sz*DPR;const g=ctx.createRadialGradient(px,py,0,px,py,r*4.5);g.addColorStop(0,"rgba(150,232,218,"+(tw*.5)+")");g.addColorStop(1,"rgba(150,232,218,0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,r*4.5,0,7);ctx.fill();ctx.fillStyle="rgba(210,250,242,"+tw+")";ctx.beginPath();ctx.arc(px,py,r,0,7);ctx.fill();}
+      for(const p of pos){const tw=.4+.6*Math.pow(.5+.5*Math.sin(t/650*p.nd.sp+p.nd.tw),1.6);const r=p.nd.sz*DPR;const g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,r*5);g.addColorStop(0,"rgba(150,232,218,"+(tw*.5)+")");g.addColorStop(1,"rgba(150,232,218,0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(p.x,p.y,r*5,0,7);ctx.fill();ctx.fillStyle="rgba(210,250,242,"+tw+")";ctx.beginPath();ctx.arc(p.x,p.y,r,0,7);ctx.fill();}
       ctx.globalCompositeOperation="source-over";};
   }
 
@@ -849,12 +856,15 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
         ctx.fillStyle="rgba(215,255,248,"+Math.max(0,1-s.life*.6)+")";ctx.beginPath();ctx.arc(ex,ey,1.8*DPR,0,7);ctx.fill();}};
   }
 
-  /* ---------- 7. 잔잔한 별밭 (guestbook — 방명록 은하수는 #gbSky가 담당) ---------- */
+  /* ---------- 7. 깊은 성운 (guestbook — 방명록 은하수는 #gbSky) ---------- */
   function quietField(){
-    let stars;
-    build=()=>{stars=[];const n=scale(150);for(let i=0;i<n;i++)stars.push({x:Math.random(),y:Math.random(),sz:.3+Math.random()*1.1,tw:Math.random()*6.28,sp:.4+Math.random()});};
-    step=t=>{ctx.fillStyle=INK;ctx.fillRect(0,0,W,H);
-      for(const s of stars){const tw=.25+.5*Math.pow(.5+.5*Math.sin(t/750*s.sp+s.tw),1.6);const px=s.x*W,py=s.y*H;ctx.fillStyle="rgba(170,225,215,"+tw+")";ctx.beginPath();ctx.arc(px,py,s.sz*DPR,0,7);ctx.fill();}};
+    let blobs,stars;
+    build=()=>{blobs=[];for(let i=0;i<5;i++)blobs.push({x:Math.random(),y:Math.random(),r:.32+Math.random()*.34,ph:Math.random()*6.28,sp:.22+Math.random()*.3,h:Math.random()});
+      stars=[];const n=scale(110);for(let i=0;i<n;i++)stars.push({x:Math.random(),y:Math.random(),s:.3+Math.random()*.9,tw:Math.random()*6.28,sp:.35+Math.random()*.7});};
+    step=t=>{ctx.fillStyle=INK;ctx.fillRect(0,0,W,H);ctx.globalCompositeOperation="lighter";
+      for(const b of blobs){const pr=b.r*Math.min(W,H)*(.9+.12*Math.sin(t/3000*b.sp+b.ph));const px=(b.x+.018*Math.sin(t/6000+b.ph))*W,py=(b.y+.018*Math.cos(t/7000+b.ph))*H;const c=b.h<.5?"58,150,140":"46,120,132";const g=ctx.createRadialGradient(px,py,0,px,py,pr);g.addColorStop(0,"rgba("+c+",.11)");g.addColorStop(.5,"rgba("+c+",.04)");g.addColorStop(1,"rgba("+c+",0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,pr,0,7);ctx.fill();}
+      for(const s of stars){const tw=.25+.55*Math.pow(.5+.5*Math.sin(t/720*s.sp+s.tw),1.8);const px=s.x*W,py=s.y*H;ctx.fillStyle="rgba(150,220,210,"+tw+")";ctx.beginPath();ctx.arc(px,py,s.s*DPR,0,7);ctx.fill();}
+      ctx.globalCompositeOperation="source-over";};
   }
 
   /* ---------- 8. 고리 성단 + 깊은 성운 (hidden) ---------- */
