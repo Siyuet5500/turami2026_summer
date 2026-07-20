@@ -727,48 +727,165 @@ addEventListener("keydown",e=>{if(e.key==="Escape")closeUnlock();});
 }
 
 /* ============================================================
-   AMBIENT STARFIELD  +  rare shooting star
+   PER-PAGE SPACE BACKGROUND  (별무리 : CLUSTAR)
+   app.js 의 기존 "AMBIENT STARFIELD ..." 블록(608번째 줄부터 파일 끝까지)을
+   이 블록으로 통째로 교체하세요. #sky 캔버스 하나에 페이지별 효과를 그립니다.
+   페이지 구분은 <body data-page="home|about|setlist|members|ticket|memento|guestbook|hidden">
    ============================================================ */
-const prefersReduced=matchMedia("(prefers-reduced-motion:reduce)").matches;
-const cv=document.getElementById("sky"),ctx=cv.getContext("2d");
-let W,H,stars=[],shoot=[];
-function resize(){W=cv.width=innerWidth*devicePixelRatio;H=cv.height=innerHeight*devicePixelRatio;cv.style.width=innerWidth+"px";cv.style.height=innerHeight+"px";build();}
-function build(){
-  const n=Math.min(130,Math.floor(W*H/26000));
-  stars=Array.from({length:n},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.05*devicePixelRatio+.25,base:Math.random()*.38+.16,tw:Math.random()*.016+.003,ph:Math.random()*6.28,gold:Math.random()<.08}));
-}
-function spawn(){shoot.push({x:Math.random()*W*.8,y:Math.random()*H*.35,len:(Math.random()*160+110)*devicePixelRatio,sp:(Math.random()*5+6)*devicePixelRatio,ang:Math.PI*.78,life:1});}
+const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
+(function(){
+  const cv = document.getElementById("sky"); if(!cv) return;
+  const ctx = cv.getContext("2d");
+  const DPR = Math.min(devicePixelRatio||1, 2);
+  let W, H;
+  const gauss = ()=>{let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(6.283*v);};
+  const TEAL=[120,222,205], TEALW=[210,250,242], BLUE=[150,225,255], INK="#141619";
 
-// 시차(parallax) 깊이감 — 마우스를 따라 밤하늘이 미세하게 흐름
-const heroConst=document.querySelector(".hero-constellation");
-const heroNav=document.querySelector(".hero-navstars");
-let tgX=0,tgY=0,pxX=0,pxY=0;
-if(!prefersReduced){
-  addEventListener("pointermove",e=>{
-    if(e.pointerType==="touch")return;
-    tgX=e.clientX/innerWidth-0.5; tgY=e.clientY/innerHeight-0.5;
-  },{passive:true});
-  addEventListener("pointerleave",()=>{tgX=0;tgY=0;},{passive:true});
-}
-let last=0;
-if(!prefersReduced) setTimeout(()=>{ if(shoot.length<2){ spawn(); last=performance.now(); } }, 4400);
-function frame(t){
-  pxX+=(tgX-pxX)*0.06; pxY+=(tgY-pxY)*0.06;
-  const tf=`translate(${(-pxX*16).toFixed(2)}px,${(-pxY*12).toFixed(2)}px)`;
-  if(heroConst)heroConst.style.transform=tf;
-  if(heroNav)heroNav.style.transform=tf;
-  ctx.clearRect(0,0,W,H);
-  ctx.save();
-  ctx.translate(pxX*6*devicePixelRatio, pxY*5*devicePixelRatio);
-  for(const s of stars){s.ph+=s.tw;const a=(s.base+Math.sin(s.ph)*.25)*.8;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,7);ctx.fillStyle=s.gold?`rgba(217,193,138,${a})`:`rgba(236,233,225,${a})`;ctx.fill();}
-  for(let i=shoot.length-1;i>=0;i--){const m=shoot[i];const dx=Math.cos(m.ang)*m.len,dy=Math.sin(m.ang)*m.len;const g=ctx.createLinearGradient(m.x,m.y,m.x-dx,m.y-dy);g.addColorStop(0,`rgba(217,193,138,${.7*m.life})`);g.addColorStop(1,"rgba(217,193,138,0)");ctx.strokeStyle=g;ctx.lineWidth=1.3*devicePixelRatio;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(m.x,m.y);ctx.lineTo(m.x-dx,m.y-dy);ctx.stroke();ctx.beginPath();ctx.arc(m.x,m.y,1.4*devicePixelRatio,0,7);ctx.fillStyle=`rgba(245,240,225,${m.life})`;ctx.fill();m.x+=Math.cos(m.ang)*m.sp;m.y+=Math.sin(m.ang)*m.sp;m.life-=.012;if(m.life<=0||m.y>H+50)shoot.splice(i,1);}
-  ctx.restore();
-  if(t-last>6000&&shoot.length<1&&Math.random()<.4){spawn();last=t;}
-  requestAnimationFrame(frame);
-}
-function staticDraw(){ctx.clearRect(0,0,W,H);for(const s of stars){ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,7);ctx.fillStyle=s.gold?"rgba(244,214,138,.6)":"rgba(233,237,249,.55)";ctx.fill();}}
-resize();addEventListener("resize",resize);
-prefersReduced?staticDraw():requestAnimationFrame(frame);
+  const page = (document.body.dataset.page || (location.pathname.split("/").pop().replace(".html","")||"home")).toLowerCase();
+
+  /* 히어로 시차(내비 별) — 홈에서만 은은하게 */
+  const heroConst=document.querySelector(".hero-constellation");
+  const heroNav=document.querySelector(".hero-navstars");
+  let tgX=0,tgY=0,pxX=0,pxY=0;
+  if(!prefersReduced){
+    addEventListener("pointermove",e=>{if(e.pointerType==="touch")return;tgX=e.clientX/innerWidth-.5;tgY=e.clientY/innerHeight-.5;},{passive:true});
+    addEventListener("pointerleave",()=>{tgX=0;tgY=0;},{passive:true});
+  }
+
+  const area = ()=> (W*H)/(DPR*DPR);
+  const scale = base => Math.max(60, Math.round(base * area()/1400000));
+
+  let build=()=>{}, step=()=>{};
+
+  /* ---------- 1. 나선 은하 (home) ---------- */
+  function galaxy(){
+    let disk,dust,bg; const ARMS=2,WIND=2.4,TILT=.44;
+    build=()=>{disk=[];dust=[];bg=[];
+      const nd=scale(3400);
+      for(let i=0;i<nd;i++){const t=Math.pow(Math.random(),.5);const arm=i%ARMS;const base=arm*Math.PI+t*WIND*6.283;const ang=base+(.28*(1-t)+.05)*gauss();const young=Math.random()<(1-t)*.7;
+        disk.push({r:t,ang,sz:young?(.7+Math.random()*1.2):(.4+Math.random()*.8),col:young?BLUE:(Math.random()<.3?[230,245,225]:TEAL),base:young?.85:.55,tw:Math.random()*6.28,tsp:.4+Math.random()*.9});}
+      const ndu=scale(900);for(let i=0;i<ndu;i++){const t=Math.pow(Math.random(),.6);const arm=i%ARMS;const ang=arm*Math.PI+t*WIND*6.283+.34+.18*gauss();dust.push({r:t,ang,sz:5+Math.random()*11});}
+      const nb=scale(500);for(let i=0;i<nb;i++)bg.push({x:Math.random(),y:Math.random(),s:.3+Math.random()*.8,b:.15+Math.random()*.4,tw:Math.random()*6.28});};
+    let rot=0;
+    step=t=>{ctx.fillStyle=INK;ctx.fillRect(0,0,W,H);const cx=W*.66,cy=H*.5,R=Math.min(W,H)*.62;rot+=.0013;
+      for(const s of bg){const tw=s.b*(.6+.4*Math.sin(t/900+s.tw));ctx.globalAlpha=tw;ctx.fillStyle="rgb(170,215,208)";ctx.fillRect(s.x*W,s.y*H,s.s*DPR,s.s*DPR);}ctx.globalAlpha=1;
+      const halo=ctx.createRadialGradient(cx,cy,0,cx,cy,R);halo.addColorStop(0,"rgba(90,182,166,.14)");halo.addColorStop(.45,"rgba(70,150,150,.05)");halo.addColorStop(1,"rgba(70,150,150,0)");ctx.fillStyle=halo;ctx.beginPath();ctx.ellipse(cx,cy,R,R*TILT,0,0,7);ctx.fill();
+      ctx.globalCompositeOperation="multiply";
+      for(const d of dust){const a=d.ang+rot/(.35+d.r);const rr=d.r*R;const px=cx+Math.cos(a)*rr,py=cy+Math.sin(a)*rr*TILT;const g=ctx.createRadialGradient(px,py,0,px,py,d.sz*DPR);g.addColorStop(0,"rgba(12,13,17,.5)");g.addColorStop(1,"rgba(12,13,17,0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,d.sz*DPR,0,7);ctx.fill();}
+      ctx.globalCompositeOperation="lighter";
+      for(const s of disk){const a=s.ang+rot/(.35+s.r);const rr=s.r*R;const px=cx+Math.cos(a)*rr,py=cy+Math.sin(a)*rr*TILT;const tw=.6+.4*Math.sin(t/700*s.tsp+s.tw);const al=s.base*tw*(.5+.5*(1-s.r));const r=s.sz*DPR;
+        if(s.sz>1.1){const g=ctx.createRadialGradient(px,py,0,px,py,r*3.2);g.addColorStop(0,"rgba("+s.col[0]+","+s.col[1]+","+s.col[2]+","+(al*.5)+")");g.addColorStop(1,"rgba("+s.col[0]+","+s.col[1]+","+s.col[2]+",0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,r*3.2,0,7);ctx.fill();}
+        ctx.fillStyle="rgba("+s.col[0]+","+s.col[1]+","+s.col[2]+","+al+")";ctx.beginPath();ctx.arc(px,py,r,0,7);ctx.fill();}
+      const core=ctx.createRadialGradient(cx,cy,0,cx,cy,R*.32);core.addColorStop(0,"rgba(235,255,248,.9)");core.addColorStop(.2,"rgba(160,235,222,.6)");core.addColorStop(.55,"rgba(90,200,185,.2)");core.addColorStop(1,"rgba(90,200,185,0)");ctx.fillStyle=core;ctx.beginPath();ctx.ellipse(cx,cy,R*.32,R*.32*(TILT+.14),0,0,7);ctx.fill();
+      ctx.globalCompositeOperation="source-over";};
+  }
+
+  /* ---------- 2. 성단 (about) ---------- */
+  function cluster(){
+    let stars; const C=[[.24,.4,.14],[.52,.6,.17],[.76,.34,.13],[.4,.26,.1]];
+    build=()=>{stars=[];for(const [cx,cy,sd] of C){const n=scale(2600);for(let i=0;i<n;i++){const rr=Math.abs(gauss())*sd;const a=Math.random()*6.28;const big=Math.random()<.13;
+      stars.push({x:cx+Math.cos(a)*rr,y:cy+Math.sin(a)*rr*1.1,sz:big?1.5+Math.random()*1.3:.4+Math.random()*.9,col:big?BLUE:TEAL,tw:Math.random()*6.28,sp:.4+Math.random()*.8,dx:(Math.random()-.5)*.00003,dy:(Math.random()-.5)*.00003});}}
+      const nb=scale(1000);for(let i=0;i<nb;i++)stars.push({x:Math.random(),y:Math.random(),sz:.3+Math.random()*.7,col:TEAL,tw:Math.random()*6.28,sp:.4+Math.random(),dx:0,dy:0});};
+    step=t=>{ctx.fillStyle=INK;ctx.fillRect(0,0,W,H);ctx.globalCompositeOperation="lighter";
+      for(const s of stars){s.x+=s.dx;s.y+=s.dy;const tw=.35+.65*Math.pow(.5+.5*Math.sin(t/650*s.sp+s.tw),1.6);const px=s.x*W,py=s.y*H,r=s.sz*DPR;
+        if(s.sz>1.2){const g=ctx.createRadialGradient(px,py,0,px,py,r*4);g.addColorStop(0,"rgba("+s.col[0]+","+s.col[1]+","+s.col[2]+","+(tw*.5)+")");g.addColorStop(1,"rgba(0,0,0,0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,r*4,0,7);ctx.fill();}
+        ctx.fillStyle="rgba("+s.col[0]+","+s.col[1]+","+s.col[2]+","+tw+")";ctx.beginPath();ctx.arc(px,py,r,0,7);ctx.fill();}
+      ctx.globalCompositeOperation="source-over";};
+  }
+
+  /* ---------- 3. 초신성 방사 (setlist) ---------- */
+  function supernova(){
+    let ps,bg;
+    build=()=>{ps=[];const n=scale(240);for(let i=0;i<n;i++){const ang=Math.random()*6.28;ps.push({ang,off:Math.random(),sp:.12+Math.random()*.4,sz:Math.random()*1.3+.3,dots:2+((Math.random()*3)|0)});}
+      bg=[];const nb=scale(90);for(let i=0;i<nb;i++)bg.push({x:Math.random(),y:Math.random(),s:.3+Math.random()*.8,tw:Math.random()*6.28});};
+    step=t=>{ctx.fillStyle=INK;ctx.fillRect(0,0,W,H);const cx=W*.72,cy=H*.5,R=Math.max(W,H)*.9;
+      for(const s of bg){const tw=.25+.4*Math.sin(t/800+s.tw);if(tw<0)continue;ctx.fillStyle="rgba(160,220,210,"+tw+")";ctx.beginPath();ctx.arc(s.x*W,s.y*H,s.s*DPR,0,7);ctx.fill();}
+      ctx.globalCompositeOperation="lighter";
+      for(const p of ps){const prog=((t/1000*p.sp+p.off)%1);for(let d=0;d<p.dots;d++){const tt=prog-d*.055;if(tt<0||tt>1)continue;const rr=tt*R;const px=cx+Math.cos(p.ang)*rr,py=cy+Math.sin(p.ang)*rr*.6;const al=(1-tt)*(1-d*.25);ctx.fillStyle="rgba(140,235,215,"+al+")";ctx.beginPath();ctx.arc(px,py,p.sz*DPR*(1-tt*.4),0,7);ctx.fill();}}
+      const g=ctx.createRadialGradient(cx,cy,0,cx,cy,R*.14);g.addColorStop(0,"rgba(210,255,246,.9)");g.addColorStop(.4,"rgba(140,235,215,.45)");g.addColorStop(1,"rgba(140,235,215,0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,R*.14,0,7);ctx.fill();
+      ctx.globalCompositeOperation="source-over";};
+  }
+
+  /* ---------- 4. 산개성단 + 연결선 (members) ---------- */
+  function openCluster(){
+    let stars,N;
+    build=()=>{N=Math.max(26,Math.min(60,scale(52)));stars=[];for(let i=0;i<N;i++)stars.push({x:Math.random(),y:Math.random(),sz:.6+Math.random()*2,tw:Math.random()*6.28,sp:.4+Math.random()*.9,vx:(Math.random()-.5)*.00005,vy:(Math.random()-.5)*.00005});};
+    step=t=>{ctx.fillStyle=INK;ctx.fillRect(0,0,W,H);
+      for(const s of stars){s.x+=s.vx;s.y+=s.vy;if(s.x<0||s.x>1)s.vx*=-1;if(s.y<0||s.y>1)s.vy*=-1;}
+      ctx.lineWidth=DPR*.6;const lim=Math.min(W,H)*.22;
+      for(let i=0;i<N;i++)for(let j=i+1;j<N;j++){const a=stars[i],b=stars[j];const dx=(a.x-b.x)*W,dy=(a.y-b.y)*H;const d=Math.hypot(dx,dy);if(d<lim){ctx.strokeStyle="rgba(120,215,200,"+(.1*(1-d/lim))+")";ctx.beginPath();ctx.moveTo(a.x*W,a.y*H);ctx.lineTo(b.x*W,b.y*H);ctx.stroke();}}
+      ctx.globalCompositeOperation="lighter";
+      for(const s of stars){const tw=.4+.6*Math.pow(.5+.5*Math.sin(t/650*s.sp+s.tw),1.6);const px=s.x*W,py=s.y*H,r=s.sz*DPR;const g=ctx.createRadialGradient(px,py,0,px,py,r*4.5);g.addColorStop(0,"rgba(150,232,218,"+(tw*.5)+")");g.addColorStop(1,"rgba(150,232,218,0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,r*4.5,0,7);ctx.fill();ctx.fillStyle="rgba(210,250,242,"+tw+")";ctx.beginPath();ctx.arc(px,py,r,0,7);ctx.fill();}
+      ctx.globalCompositeOperation="source-over";};
+  }
+
+  /* ---------- 5. 성운 (ticket) ---------- */
+  function nebula(){
+    let blobs,stars;
+    build=()=>{blobs=[];for(let i=0;i<6;i++)blobs.push({x:Math.random(),y:Math.random(),r:.3+Math.random()*.3,ph:Math.random()*6.28,sp:.3+Math.random()*.4,h:Math.random()});
+      stars=[];const n=scale(130);for(let i=0;i<n;i++)stars.push({x:Math.random(),y:Math.random(),s:.3+Math.random()*1,tw:Math.random()*6.28,sp:.4+Math.random()});};
+    step=t=>{ctx.fillStyle=INK;ctx.fillRect(0,0,W,H);ctx.globalCompositeOperation="lighter";
+      for(const b of blobs){const pr=b.r*Math.min(W,H)*(.9+.12*Math.sin(t/2600*b.sp+b.ph));const px=(b.x+.02*Math.sin(t/5000+b.ph))*W,py=(b.y+.02*Math.cos(t/6000+b.ph))*H;const c=b.h<.5?"90,190,175":"70,160,175";const g=ctx.createRadialGradient(px,py,0,px,py,pr);g.addColorStop(0,"rgba("+c+",.1)");g.addColorStop(.5,"rgba("+c+",.04)");g.addColorStop(1,"rgba("+c+",0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,pr,0,7);ctx.fill();}
+      for(const s of stars){const tw=.3+.6*Math.sin(t/700*s.sp+s.tw);if(tw<0)continue;ctx.fillStyle="rgba(190,240,230,"+tw+")";ctx.beginPath();ctx.arc(s.x*W,s.y*H,s.s*DPR,0,7);ctx.fill();}
+      ctx.globalCompositeOperation="source-over";};
+  }
+
+  /* ---------- 6. 별밭 + 유성 (memento) ---------- */
+  function meteorField(){
+    let stars,shoot=[],last=0;
+    build=()=>{stars=[];const n=scale(200);for(let i=0;i<n;i++)stars.push({x:Math.random(),y:Math.random(),sz:.3+Math.random()*1.3,tw:Math.random()*6.28,sp:.4+Math.random()});shoot=[];};
+    function spawn(){shoot.push({x:Math.random()*W*.6+W*.1,y:Math.random()*H*.3,len:0,max:Math.min(W,H)*(.4+Math.random()*.35),sp:10*DPR,life:0});}
+    step=t=>{ctx.fillStyle=INK;ctx.fillRect(0,0,W,H);
+      for(const s of stars){const tw=.3+.55*Math.pow(.5+.5*Math.sin(t/700*s.sp+s.tw),1.5);const px=s.x*W,py=s.y*H,r=s.sz*DPR;
+        if(s.sz>1){ctx.globalCompositeOperation="lighter";const g=ctx.createRadialGradient(px,py,0,px,py,r*4);g.addColorStop(0,"rgba(150,230,215,"+(tw*.4)+")");g.addColorStop(1,"rgba(150,230,215,0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,r*4,0,7);ctx.fill();ctx.globalCompositeOperation="source-over";}
+        ctx.fillStyle="rgba(200,242,232,"+tw+")";ctx.beginPath();ctx.arc(px,py,r,0,7);ctx.fill();}
+      if(t-last>2600&&shoot.length<2&&Math.random()<.5){spawn();last=t;}
+      shoot=shoot.filter(s=>s.life<1.5);
+      for(const s of shoot){s.life+=.018;s.len=Math.min(s.max,s.len+s.sp);const ang=Math.PI*.75;const ex=s.x+Math.cos(ang)*s.len,ey=s.y+Math.sin(ang)*s.len;const tx=s.x+Math.cos(ang)*(s.len-80*DPR),ty=s.y+Math.sin(ang)*(s.len-80*DPR);
+        const g=ctx.createLinearGradient(tx,ty,ex,ey);g.addColorStop(0,"rgba(150,235,218,0)");g.addColorStop(1,"rgba(200,250,242,"+Math.max(0,1-s.life*.6)+")");ctx.strokeStyle=g;ctx.lineWidth=1.6*DPR;ctx.beginPath();ctx.moveTo(tx,ty);ctx.lineTo(ex,ey);ctx.stroke();
+        ctx.fillStyle="rgba(215,255,248,"+Math.max(0,1-s.life*.6)+")";ctx.beginPath();ctx.arc(ex,ey,1.8*DPR,0,7);ctx.fill();}};
+  }
+
+  /* ---------- 7. 잔잔한 별밭 (guestbook — 방명록 은하수는 #gbSky가 담당) ---------- */
+  function quietField(){
+    let stars;
+    build=()=>{stars=[];const n=scale(150);for(let i=0;i<n;i++)stars.push({x:Math.random(),y:Math.random(),sz:.3+Math.random()*1.1,tw:Math.random()*6.28,sp:.4+Math.random()});};
+    step=t=>{ctx.fillStyle=INK;ctx.fillRect(0,0,W,H);
+      for(const s of stars){const tw=.25+.5*Math.pow(.5+.5*Math.sin(t/750*s.sp+s.tw),1.6);const px=s.x*W,py=s.y*H;ctx.fillStyle="rgba(170,225,215,"+tw+")";ctx.beginPath();ctx.arc(px,py,s.sz*DPR,0,7);ctx.fill();}};
+  }
+
+  /* ---------- 8. 고리 성단 + 깊은 성운 (hidden) ---------- */
+  function ringCluster(){
+    let pts,bg,blobs;
+    build=()=>{pts=[];const n=scale(1500);for(let i=0;i<n;i++){const a=Math.random()*6.28;const rr=1+gauss()*.16;const big=Math.random()<.12;pts.push({a,rr,sz:big?1.5+Math.random()*1.4:.4+Math.random()*.9,col:big?BLUE:TEAL,base:big?.9:.55,tw:Math.random()*6.28,sp:.4+Math.random()*.9,rsp:.6+Math.random()*.8});}
+      bg=[];const nb=scale(90);for(let i=0;i<nb;i++)bg.push({x:Math.random(),y:Math.random(),s:.3+Math.random()*.7,tw:Math.random()*6.28});
+      blobs=[];for(let i=0;i<4;i++)blobs.push({x:Math.random(),y:Math.random(),r:.35+Math.random()*.3,ph:Math.random()*6.28,sp:.2+Math.random()*.3});};
+    let rot=0;
+    step=t=>{ctx.fillStyle="#0f1113";ctx.fillRect(0,0,W,H);const cx=W*.5,cy=H*.5,R=Math.min(W,H)*.34;rot+=.001;
+      ctx.globalCompositeOperation="lighter";
+      for(const b of blobs){const pr=b.r*Math.min(W,H)*(.9+.1*Math.sin(t/3200*b.sp+b.ph));const px=(b.x+.015*Math.sin(t/6000+b.ph))*W,py=(b.y+.015*Math.cos(t/7000+b.ph))*H;const g=ctx.createRadialGradient(px,py,0,px,py,pr);g.addColorStop(0,"rgba(50,140,130,.08)");g.addColorStop(.5,"rgba(45,110,120,.03)");g.addColorStop(1,"rgba(45,110,120,0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,pr,0,7);ctx.fill();}
+      for(const s of bg){const tw=.2+.4*Math.sin(t/800+s.tw);if(tw<0)continue;ctx.fillStyle="rgba(150,215,205,"+tw+")";ctx.beginPath();ctx.arc(s.x*W,s.y*H,s.s*DPR,0,7);ctx.fill();}
+      for(const p of pts){const a=p.a+rot*p.rsp;const rr=p.rr*R;const px=cx+Math.cos(a)*rr,py=cy+Math.sin(a)*rr*.82;const tw=p.base*(.5+.5*Math.sin(t/650*p.sp+p.tw));const r=p.sz*DPR;
+        if(p.sz>1.2){const g=ctx.createRadialGradient(px,py,0,px,py,r*3.4);g.addColorStop(0,"rgba("+p.col[0]+","+p.col[1]+","+p.col[2]+","+(tw*.5)+")");g.addColorStop(1,"rgba("+p.col[0]+","+p.col[1]+","+p.col[2]+",0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,r*3.4,0,7);ctx.fill();}
+        ctx.fillStyle="rgba("+p.col[0]+","+p.col[1]+","+p.col[2]+","+tw+")";ctx.beginPath();ctx.arc(px,py,r,0,7);ctx.fill();}
+      ctx.globalCompositeOperation="source-over";
+      const inner=ctx.createRadialGradient(cx,cy,0,cx,cy,R*.7);inner.addColorStop(0,"rgba(15,17,19,.6)");inner.addColorStop(.7,"rgba(15,17,19,.15)");inner.addColorStop(1,"rgba(15,17,19,0)");ctx.fillStyle=inner;ctx.beginPath();ctx.arc(cx,cy,R*.7,0,7);ctx.fill();};
+  }
+
+  const MAP={home:galaxy,about:cluster,setlist:supernova,members:openCluster,ticket:nebula,memento:meteorField,guestbook:quietField,hidden:ringCluster};
+  (MAP[page]||galaxy)();
+
+  function resize(){W=cv.width=innerWidth*DPR;H=cv.height=innerHeight*DPR;cv.style.width=innerWidth+"px";cv.style.height=innerHeight+"px";build();}
+  resize();addEventListener("resize",resize);
+
+  function loop(t){
+    if(!prefersReduced){pxX+=(tgX-pxX)*.06;pxY+=(tgY-pxY)*.06;const tf=`translate(${(-pxX*16).toFixed(2)}px,${(-pxY*12).toFixed(2)}px)`;if(heroConst)heroConst.style.transform=tf;if(heroNav)heroNav.style.transform=tf;}
+    step(t);
+    requestAnimationFrame(loop);
+  }
+  if(prefersReduced){ step(0); }         /* 모션 최소화: 한 프레임만 */
+  else requestAnimationFrame(loop);
+})();
 
 /* ============================================================
    ★ NAVER MAP — 오시는 길 (키 있으면 지도 임베드, 없으면 버튼만)
