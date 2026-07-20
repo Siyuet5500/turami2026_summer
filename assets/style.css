@@ -46,22 +46,32 @@ header.nav.scrolled{background:rgba(8,9,14,.85);backdrop-filter:blur(14px);paddi
 .burger{display:none;flex-direction:column;gap:5px;background:none;border:0;cursor:pointer;padding:6px}
 .burger span{width:24px;height:2px;background:var(--starlight);transition:.3s}
 
-//* 홈 히어로 — 정돈된 좌측 배치 */
-.hero{justify-content:center;padding-top:150px}
-.hero .wrap{align-items:flex-start;text-align:left;max-width:660px;padding-left:clamp(20px,5vw,60px);margin:0}
-.hero .meta-line{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+/* ===== 홈 히어로 최종 정리 (파일 맨 아래에 두어 덮어쓰기) ===== */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-start;
+  padding:clamp(130px,18vh,190px) 0 90px;text-align:left}
+.hero .wrap{display:flex;flex-direction:column;align-items:flex-start;
+  max-width:660px;padding-left:clamp(20px,5vw,60px);margin:0}
+.hero .meta-line{display:flex;align-items:center;gap:12px;margin:0 0 14px;
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.26em;text-transform:uppercase;color:var(--gold-soft)}
 .hero .meta-line::before{content:"";width:30px;height:1px;background:var(--gold);flex:none}
-.hero .superscript{margin:0 0 20px 0}
-.hero h1{font-size:clamp(3.6rem,11vw,7rem);letter-spacing:.04em;line-height:.96;padding-left:0}
-.hero .latin{display:inline-flex;align-items:center;gap:16px;margin-top:16px}
+.hero .superscript{margin:0 0 18px;font-family:var(--mono);font-size:.7rem;letter-spacing:.38em;text-transform:uppercase;color:var(--muted-2)}
+.hero h1{font-family:var(--kr-serif);font-weight:400;font-size:clamp(3.4rem,10vw,6.6rem);
+  line-height:.98;letter-spacing:.04em;padding-left:0;margin:0;color:var(--starlight)}
+.hero .latin{display:inline-flex;align-items:center;gap:16px;margin:16px 0 0;
+  font-family:var(--mono);font-style:normal;font-weight:700;font-size:clamp(1rem,3vw,1.5rem);
+  letter-spacing:.42em;color:var(--gold)}
 .hero .latin::after{content:"";height:1px;width:90px;background:linear-gradient(90deg,var(--gold-soft),transparent)}
-.hero .tagline{margin-top:28px;max-width:34ch}
-.countdown{margin-top:38px}
-.hero-cta{margin-top:36px}
+.hero .tagline{margin:26px 0 0;max-width:34ch;text-align:left}
+.countdown{margin:36px 0 0;justify-content:flex-start}
+.hero-cta{margin:34px 0 0;justify-content:flex-start}
 @media(max-width:760px){
-  .hero .wrap{align-items:center;text-align:center;padding-left:0}
+  .hero{text-align:center;padding-top:120px}
+  .hero .wrap{align-items:center;padding-left:0}
   .hero .meta-line{justify-content:center}
   .hero .latin{justify-content:center}
+  .hero .latin::after{display:none}
+  .hero .tagline{text-align:center}
+  .countdown,.hero-cta{justify-content:center}
 }
 
 .countdown{display:flex;gap:clamp(18px,5vw,46px);margin:48px 0 8px;justify-content:center}
