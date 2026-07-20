@@ -783,17 +783,20 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
       ctx.globalCompositeOperation="source-over";};
   }
 
-  /* ---------- 2. 성단 (about) ---------- */
+/* ---------- 2. 흐르는 별 먼지 (about — 차분·정보 페이지) ---------- */
   function cluster(){
-    let stars; const C=[[.24,.4,.14],[.52,.6,.17],[.76,.34,.13],[.4,.26,.1]];
-    build=()=>{stars=[];for(const [cx,cy,sd] of C){const n=scale(2600);for(let i=0;i<n;i++){const rr=Math.abs(gauss())*sd;const a=Math.random()*6.28;const big=Math.random()<.13;
-      stars.push({x:cx+Math.cos(a)*rr,y:cy+Math.sin(a)*rr*1.1,sz:big?1.5+Math.random()*1.3:.4+Math.random()*.9,col:big?BLUE:TEAL,tw:Math.random()*6.28,sp:.4+Math.random()*.8,dx:(Math.random()-.5)*.00003,dy:(Math.random()-.5)*.00003});}}
-      const nb=scale(1000);for(let i=0;i<nb;i++)stars.push({x:Math.random(),y:Math.random(),sz:.3+Math.random()*.7,col:TEAL,tw:Math.random()*6.28,sp:.4+Math.random(),dx:0,dy:0});};
-    step=t=>{ctx.fillStyle=INK;ctx.fillRect(0,0,W,H);ctx.globalCompositeOperation="lighter";
-      for(const s of stars){s.x+=s.dx;s.y+=s.dy;const tw=.35+.65*Math.pow(.5+.5*Math.sin(t/650*s.sp+s.tw),1.6);const px=s.x*W,py=s.y*H,r=s.sz*DPR;
-        if(s.sz>1.2){const g=ctx.createRadialGradient(px,py,0,px,py,r*4);g.addColorStop(0,"rgba("+s.col[0]+","+s.col[1]+","+s.col[2]+","+(tw*.5)+")");g.addColorStop(1,"rgba(0,0,0,0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,r*4,0,7);ctx.fill();}
-        ctx.fillStyle="rgba("+s.col[0]+","+s.col[1]+","+s.col[2]+","+tw+")";ctx.beginPath();ctx.arc(px,py,r,0,7);ctx.fill();}
-      ctx.globalCompositeOperation="source-over";};
+    let dust;
+    build=()=>{dust=[];const n=scale(120);for(let i=0;i<n;i++)dust.push(mkd(Math.random(),Math.random()));};
+    function mkd(x,y){return {x,y,r:.3+Math.random()*1.1,sp:.00003+Math.random()*.00004,tw:Math.random()*6.28,tsp:.2+Math.random()*.3,drift:.000004*(Math.random()-.5)};}
+    step=t=>{ctx.fillStyle=INK;ctx.fillRect(0,0,W,H);
+      for(const d of dust){
+        d.x+=d.sp*16.7; d.y+=d.drift*16.7;
+        if(d.x>1.02){d.x=-.02;d.y=Math.random();}
+        const tw=.16+.22*Math.sin(t/1400*d.tsp+d.tw); if(tw<=0)continue;
+        ctx.fillStyle="rgba(150,215,205,"+tw+")";
+        ctx.beginPath();ctx.arc(d.x*W,d.y*H,d.r*DPR,0,7);ctx.fill();
+      }
+    };
   }
 
   /* ---------- 3. 초신성 방사 (setlist) ---------- */
@@ -844,13 +847,13 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
   function meteorField(){
     let stars,shoot=[],last=0;
     build=()=>{stars=[];const n=scale(200);for(let i=0;i<n;i++)stars.push({x:Math.random(),y:Math.random(),sz:.3+Math.random()*1.3,tw:Math.random()*6.28,sp:.4+Math.random()});shoot=[];};
-    function spawn(){shoot.push({x:Math.random()*W*.6+W*.1,y:Math.random()*H*.3,len:0,max:Math.min(W,H)*(.4+Math.random()*.35),sp:10*DPR,life:0});}
+    function spawn(){const startX=Math.random()*W*.5-W*.1;shoot.push({x:startX,y:-H*.1,len:0,max:Math.hypot(W,H)*1.25,sp:11*DPR,life:0});}
     step=t=>{ctx.fillStyle=INK;ctx.fillRect(0,0,W,H);
       for(const s of stars){const tw=.3+.55*Math.pow(.5+.5*Math.sin(t/700*s.sp+s.tw),1.5);const px=s.x*W,py=s.y*H,r=s.sz*DPR;
         if(s.sz>1){ctx.globalCompositeOperation="lighter";const g=ctx.createRadialGradient(px,py,0,px,py,r*4);g.addColorStop(0,"rgba(150,230,215,"+(tw*.4)+")");g.addColorStop(1,"rgba(150,230,215,0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,r*4,0,7);ctx.fill();ctx.globalCompositeOperation="source-over";}
         ctx.fillStyle="rgba(200,242,232,"+tw+")";ctx.beginPath();ctx.arc(px,py,r,0,7);ctx.fill();}
       if(t-last>2600&&shoot.length<2&&Math.random()<.5){spawn();last=t;}
-      shoot=shoot.filter(s=>s.life<1.5);
+      shoot=shoot.filter(s=>s.len<s.max);
       for(const s of shoot){s.life+=.018;s.len=Math.min(s.max,s.len+s.sp);const ang=Math.PI*.75;const ex=s.x+Math.cos(ang)*s.len,ey=s.y+Math.sin(ang)*s.len;const tx=s.x+Math.cos(ang)*(s.len-80*DPR),ty=s.y+Math.sin(ang)*(s.len-80*DPR);
         const g=ctx.createLinearGradient(tx,ty,ex,ey);g.addColorStop(0,"rgba(150,235,218,0)");g.addColorStop(1,"rgba(200,250,242,"+Math.max(0,1-s.life*.6)+")");ctx.strokeStyle=g;ctx.lineWidth=1.6*DPR;ctx.beginPath();ctx.moveTo(tx,ty);ctx.lineTo(ex,ey);ctx.stroke();
         ctx.fillStyle="rgba(215,255,248,"+Math.max(0,1-s.life*.6)+")";ctx.beginPath();ctx.arc(ex,ey,1.8*DPR,0,7);ctx.fill();}};
