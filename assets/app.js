@@ -10,7 +10,7 @@ const CONFIG = {
   naverMapKey : "w775fm1uhs",
 
   // 실제 링크로 교체 (예: "https://...") — 비워두면 '#'
-  ticketLink  : "",   // 선예매 폼/페이지
+  ticketLink  : "https://",   // 선예매 폼/페이지
   mapLink     : "https://map.naver.com/p/search/아트홀%20베짱이",   // 오시는 길 (네이버 지도)
 
   // 계좌 정보

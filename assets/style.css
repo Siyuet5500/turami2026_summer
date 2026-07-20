@@ -436,6 +436,6 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{width:0;height:0;display:none}
 .tk-dipper circle:nth-of-type(4){animation-delay:1.4s}
 .tk-dipper circle:nth-of-type(6){animation-delay:2.1s}
 .tk-dipper circle.tip{fill:#fff;opacity:.75}
-.tk-divider{height:1px;background:linear-gradient(90deg,rgba(191,164,107,.5),transparent);margin:0 0 24px}
+.tk-divider{height:1px;background:linear-gradient(90deg,rgba(191,164,107,.5),transparent);margin:20px 0 0}
 @keyframes tkTwinkle{0%,100%{opacity:.3}50%{opacity:.7}}
 @media(prefers-reduced-motion:reduce){.tk-dipper circle{animation:none}}
