@@ -468,10 +468,19 @@ body:not([data-page="home"])::before{content:"";position:fixed;inset:0;z-index:1
   .scroll-hint{right:50%;transform:translateX(50%)}
 }
 
-/* 히든 입구 — 상단 로고 옆 작은 별 */
-.brand-star{color:var(--muted-2);opacity:.35;text-decoration:none;font-size:.7rem;margin-left:2px;align-self:flex-start;margin-top:6px;transition:opacity .35s var(--ease),color .35s,text-shadow .35s}
-.brand-star:hover,.brand-star:focus-visible{opacity:1;color:var(--gold-bright);text-shadow:0 0 10px rgba(126,214,198,.6);outline:none}
+/* 히든 입구 — 상단 로고 옆 */
+.brand-wrap{display:flex;align-items:flex-start;gap:5px}
+.brand-star{color:var(--gold-bright);text-decoration:none;font-size:.72rem;line-height:1;margin-top:3px;
+  opacity:.7;animation:starPulse 3.4s ease-in-out infinite;transition:opacity .3s,text-shadow .3s,transform .3s}
+.brand-star:hover,.brand-star:focus-visible{opacity:1;transform:scale(1.25);text-shadow:0 0 14px rgba(126,214,198,.95);outline:none}
 
-/* 히든 입구 — 푸터의 작은 별 */
-.hidden-star{color:var(--muted-2);opacity:.4;text-decoration:none;margin-left:8px;transition:opacity .35s var(--ease),color .35s,text-shadow .35s}
-.hidden-star:hover,.hidden-star:focus-visible{opacity:1;color:var(--gold-bright);text-shadow:0 0 10px rgba(126,214,198,.6);outline:none}
+/* 히든 입구 — 푸터 */
+.hidden-star{color:var(--gold-bright);text-decoration:none;margin-left:8px;
+  opacity:.7;animation:starPulse 3.4s ease-in-out infinite;transition:opacity .3s,text-shadow .3s,transform .3s}
+.hidden-star:hover,.hidden-star:focus-visible{opacity:1;transform:scale(1.25);text-shadow:0 0 14px rgba(126,214,198,.95);outline:none}
+
+@keyframes starPulse{
+  0%,100%{opacity:.55;text-shadow:0 0 4px rgba(126,214,198,.4)}
+  50%{opacity:.95;text-shadow:0 0 12px rgba(126,214,198,.85),0 0 20px rgba(126,214,198,.4)}
+}
+@media(prefers-reduced-motion:reduce){.brand-star,.hidden-star{animation:none;opacity:.7}}
