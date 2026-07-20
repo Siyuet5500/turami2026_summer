@@ -760,26 +760,34 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
 
   let build=()=>{}, step=()=>{};
 
-  /* ---------- 1. 나선 은하 (home) ---------- */
+ /* ---------- ① 나선 은하 (home) — 촘촘한 나선팔 + 정교한 코어 ---------- */
   function galaxy(){
-    let disk,dust,bg; const ARMS=2,WIND=2.4,TILT=.44;
+    let disk,dust,bg; const ARMS=2,WIND=3.0,TILT=.42;
     build=()=>{disk=[];dust=[];bg=[];
-      const nd=scale(3400);
-      for(let i=0;i<nd;i++){const t=Math.pow(Math.random(),.5);const arm=i%ARMS;const base=arm*Math.PI+t*WIND*6.283;const ang=base+(.28*(1-t)+.05)*gauss();const young=Math.random()<(1-t)*.7;
-        disk.push({r:t,ang,sz:young?(.7+Math.random()*1.2):(.4+Math.random()*.8),col:young?BLUE:(Math.random()<.3?[230,245,225]:TEAL),base:young?.85:.55,tw:Math.random()*6.28,tsp:.4+Math.random()*.9});}
-      const ndu=scale(900);for(let i=0;i<ndu;i++){const t=Math.pow(Math.random(),.6);const arm=i%ARMS;const ang=arm*Math.PI+t*WIND*6.283+.34+.18*gauss();dust.push({r:t,ang,sz:5+Math.random()*11});}
-      const nb=scale(500);for(let i=0;i<nb;i++)bg.push({x:Math.random(),y:Math.random(),s:.3+Math.random()*.8,b:.15+Math.random()*.4,tw:Math.random()*6.28});};
+      const nd=Math.min(9000,scale(6500));
+      for(let i=0;i<nd;i++){const t=Math.pow(Math.random(),.55);const arm=i%ARMS;
+        const base=arm*Math.PI+t*WIND*6.283;
+        const spread=(.16*(1-t)+.028)*gauss();          // 팔을 또렷하게 (퍼짐 축소)
+        const ang=base+spread;
+        const young=Math.random()<(1-t)*.65;
+        disk.push({r:t,ang,
+          sz:young?(.6+Math.random()*1.0):(.35+Math.random()*.6),
+          col:young?BLUE:(Math.random()<.28?[235,248,228]:TEAL),
+          base:young?.9:.5,tw:Math.random()*6.28,tsp:.4+Math.random()*.9});}
+      const ndu=Math.min(1800,scale(1400));
+      for(let i=0;i<ndu;i++){const t=Math.pow(Math.random(),.6);const arm=i%ARMS;const ang=arm*Math.PI+t*WIND*6.283+.30+.14*gauss();dust.push({r:t,ang,sz:4+Math.random()*10});}
+      const nb=Math.min(700,scale(600));for(let i=0;i<nb;i++)bg.push({x:Math.random(),y:Math.random(),s:.3+Math.random()*.7,b:.12+Math.random()*.35,tw:Math.random()*6.28});};
     let rot=0;
-    step=t=>{ctx.fillStyle=INK;ctx.fillRect(0,0,W,H);const cx=W*.66,cy=H*.5,R=Math.min(W,H)*.62;rot+=.0013;
+    step=t=>{ctx.fillStyle=INK;ctx.fillRect(0,0,W,H);const cx=W*.66,cy=H*.5,R=Math.min(W,H)*.66;rot+=.0011;
       for(const s of bg){const tw=s.b*(.6+.4*Math.sin(t/900+s.tw));ctx.globalAlpha=tw;ctx.fillStyle="rgb(170,215,208)";ctx.fillRect(s.x*W,s.y*H,s.s*DPR,s.s*DPR);}ctx.globalAlpha=1;
-      const halo=ctx.createRadialGradient(cx,cy,0,cx,cy,R);halo.addColorStop(0,"rgba(90,182,166,.14)");halo.addColorStop(.45,"rgba(70,150,150,.05)");halo.addColorStop(1,"rgba(70,150,150,0)");ctx.fillStyle=halo;ctx.beginPath();ctx.ellipse(cx,cy,R,R*TILT,0,0,7);ctx.fill();
+      const halo=ctx.createRadialGradient(cx,cy,0,cx,cy,R);halo.addColorStop(0,"rgba(90,182,166,.16)");halo.addColorStop(.45,"rgba(70,150,150,.05)");halo.addColorStop(1,"rgba(70,150,150,0)");ctx.fillStyle=halo;ctx.beginPath();ctx.ellipse(cx,cy,R,R*TILT,0,0,7);ctx.fill();
       ctx.globalCompositeOperation="multiply";
       for(const d of dust){const a=d.ang+rot/(.35+d.r);const rr=d.r*R;const px=cx+Math.cos(a)*rr,py=cy+Math.sin(a)*rr*TILT;const g=ctx.createRadialGradient(px,py,0,px,py,d.sz*DPR);g.addColorStop(0,"rgba(12,13,17,.5)");g.addColorStop(1,"rgba(12,13,17,0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,d.sz*DPR,0,7);ctx.fill();}
       ctx.globalCompositeOperation="lighter";
-      for(const s of disk){const a=s.ang+rot/(.35+s.r);const rr=s.r*R;const px=cx+Math.cos(a)*rr,py=cy+Math.sin(a)*rr*TILT;const tw=.6+.4*Math.sin(t/700*s.tsp+s.tw);const al=s.base*tw*(.5+.5*(1-s.r));const r=s.sz*DPR;
-        if(s.sz>1.1){const g=ctx.createRadialGradient(px,py,0,px,py,r*3.2);g.addColorStop(0,"rgba("+s.col[0]+","+s.col[1]+","+s.col[2]+","+(al*.5)+")");g.addColorStop(1,"rgba("+s.col[0]+","+s.col[1]+","+s.col[2]+",0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,r*3.2,0,7);ctx.fill();}
+      for(const s of disk){const a=s.ang+rot/(.35+s.r);const rr=s.r*R;const px=cx+Math.cos(a)*rr,py=cy+Math.sin(a)*rr*TILT;const tw=.65+.35*Math.sin(t/700*s.tsp+s.tw);const al=s.base*tw*(.45+.55*(1-s.r));const r=s.sz*DPR;
+        if(s.sz>1){const g=ctx.createRadialGradient(px,py,0,px,py,r*3);g.addColorStop(0,"rgba("+s.col[0]+","+s.col[1]+","+s.col[2]+","+(al*.5)+")");g.addColorStop(1,"rgba("+s.col[0]+","+s.col[1]+","+s.col[2]+",0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,r*3,0,7);ctx.fill();}
         ctx.fillStyle="rgba("+s.col[0]+","+s.col[1]+","+s.col[2]+","+al+")";ctx.beginPath();ctx.arc(px,py,r,0,7);ctx.fill();}
-      const core=ctx.createRadialGradient(cx,cy,0,cx,cy,R*.32);core.addColorStop(0,"rgba(235,255,248,.9)");core.addColorStop(.2,"rgba(160,235,222,.6)");core.addColorStop(.55,"rgba(90,200,185,.2)");core.addColorStop(1,"rgba(90,200,185,0)");ctx.fillStyle=core;ctx.beginPath();ctx.ellipse(cx,cy,R*.32,R*.32*(TILT+.14),0,0,7);ctx.fill();
+      const core=ctx.createRadialGradient(cx,cy,0,cx,cy,R*.3);core.addColorStop(0,"rgba(240,255,250,.95)");core.addColorStop(.18,"rgba(170,238,225,.65)");core.addColorStop(.5,"rgba(90,200,185,.22)");core.addColorStop(1,"rgba(90,200,185,0)");ctx.fillStyle=core;ctx.beginPath();ctx.ellipse(cx,cy,R*.3,R*.3*(TILT+.16),0,0,7);ctx.fill();
       ctx.globalCompositeOperation="source-over";};
   }
 
@@ -799,16 +807,17 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
     };
   }
 
-  /* ---------- 3. 초신성 방사 (setlist) ---------- */
+  /* ---------- ② 초신성 방사 (setlist) — 촘촘한 방사선 ---------- */
   function supernova(){
     let ps,bg;
-    build=()=>{ps=[];const n=scale(240);for(let i=0;i<n;i++){const ang=Math.random()*6.28;ps.push({ang,off:Math.random(),sp:.12+Math.random()*.4,sz:Math.random()*1.3+.3,dots:2+((Math.random()*3)|0)});}
-      bg=[];const nb=scale(90);for(let i=0;i<nb;i++)bg.push({x:Math.random(),y:Math.random(),s:.3+Math.random()*.8,tw:Math.random()*6.28});};
-    step=t=>{ctx.fillStyle=INK;ctx.fillRect(0,0,W,H);const cx=W*.72,cy=H*.5,R=Math.max(W,H)*.9;
-      for(const s of bg){const tw=.25+.4*Math.sin(t/800+s.tw);if(tw<0)continue;ctx.fillStyle="rgba(160,220,210,"+tw+")";ctx.beginPath();ctx.arc(s.x*W,s.y*H,s.s*DPR,0,7);ctx.fill();}
+    build=()=>{ps=[];const n=Math.min(900,scale(560));
+      for(let i=0;i<n;i++){const ang=Math.random()*6.28;ps.push({ang,off:Math.random(),sp:.1+Math.random()*.36,sz:Math.random()*1.1+.3,dots:3+((Math.random()*4)|0)});}
+      bg=[];const nb=Math.min(160,scale(120));for(let i=0;i<nb;i++)bg.push({x:Math.random(),y:Math.random(),s:.3+Math.random()*.8,tw:Math.random()*6.28});};
+    step=t=>{ctx.fillStyle=INK;ctx.fillRect(0,0,W,H);const cx=W*.72,cy=H*.5,R=Math.max(W,H)*.95;
+      for(const s of bg){const tw=.22+.4*Math.sin(t/800+s.tw);if(tw<0)continue;ctx.fillStyle="rgba(160,220,210,"+tw+")";ctx.beginPath();ctx.arc(s.x*W,s.y*H,s.s*DPR,0,7);ctx.fill();}
       ctx.globalCompositeOperation="lighter";
-      for(const p of ps){const prog=((t/1000*p.sp+p.off)%1);for(let d=0;d<p.dots;d++){const tt=prog-d*.055;if(tt<0||tt>1)continue;const rr=tt*R;const px=cx+Math.cos(p.ang)*rr,py=cy+Math.sin(p.ang)*rr*.6;const al=(1-tt)*(1-d*.25);ctx.fillStyle="rgba(140,235,215,"+al+")";ctx.beginPath();ctx.arc(px,py,p.sz*DPR*(1-tt*.4),0,7);ctx.fill();}}
-      const g=ctx.createRadialGradient(cx,cy,0,cx,cy,R*.14);g.addColorStop(0,"rgba(210,255,246,.9)");g.addColorStop(.4,"rgba(140,235,215,.45)");g.addColorStop(1,"rgba(140,235,215,0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,R*.14,0,7);ctx.fill();
+      for(const p of ps){const prog=((t/1000*p.sp+p.off)%1);for(let d=0;d<p.dots;d++){const tt=prog-d*.045;if(tt<0||tt>1)continue;const rr=tt*R;const px=cx+Math.cos(p.ang)*rr,py=cy+Math.sin(p.ang)*rr*.62;const al=(1-tt)*(1-d*.2);ctx.fillStyle="rgba(140,235,215,"+al+")";ctx.beginPath();ctx.arc(px,py,p.sz*DPR*(1-tt*.35),0,7);ctx.fill();}}
+      const g=ctx.createRadialGradient(cx,cy,0,cx,cy,R*.15);g.addColorStop(0,"rgba(215,255,248,.95)");g.addColorStop(.35,"rgba(150,240,222,.5)");g.addColorStop(1,"rgba(140,235,215,0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,R*.15,0,7);ctx.fill();
       ctx.globalCompositeOperation="source-over";};
   }
 
@@ -879,22 +888,24 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
       ctx.globalCompositeOperation="source-over";};
   }
 
-  /* ---------- 8. 고리 성단 + 깊은 성운 (hidden) ---------- */
+  /* ---------- ③ 고리 성단 (hidden) — 촘촘한 링 ---------- */
   function ringCluster(){
     let pts,bg,blobs;
-    build=()=>{pts=[];const n=scale(1500);for(let i=0;i<n;i++){const a=Math.random()*6.28;const rr=1+gauss()*.16;const big=Math.random()<.12;pts.push({a,rr,sz:big?1.5+Math.random()*1.4:.4+Math.random()*.9,col:big?BLUE:TEAL,base:big?.9:.55,tw:Math.random()*6.28,sp:.4+Math.random()*.9,rsp:.6+Math.random()*.8});}
-      bg=[];const nb=scale(90);for(let i=0;i<nb;i++)bg.push({x:Math.random(),y:Math.random(),s:.3+Math.random()*.7,tw:Math.random()*6.28});
+    build=()=>{pts=[];const n=Math.min(4200,scale(3000));
+      for(let i=0;i<n;i++){const a=Math.random()*6.28;const rr=1+gauss()*.15;const big=Math.random()<.1;
+        pts.push({a,rr,sz:big?1.2+Math.random()*1.3:.35+Math.random()*.8,col:big?BLUE:TEAL,base:big?.9:.5,tw:Math.random()*6.28,sp:.4+Math.random()*.9,rsp:.6+Math.random()*.8});}
+      bg=[];const nb=Math.min(140,scale(100));for(let i=0;i<nb;i++)bg.push({x:Math.random(),y:Math.random(),s:.3+Math.random()*.7,tw:Math.random()*6.28});
       blobs=[];for(let i=0;i<4;i++)blobs.push({x:Math.random(),y:Math.random(),r:.35+Math.random()*.3,ph:Math.random()*6.28,sp:.2+Math.random()*.3});};
     let rot=0;
-    step=t=>{ctx.fillStyle="#0f1113";ctx.fillRect(0,0,W,H);const cx=W*.5,cy=H*.5,R=Math.min(W,H)*.34;rot+=.001;
+    step=t=>{ctx.fillStyle="#0f1113";ctx.fillRect(0,0,W,H);const cx=W*.5,cy=H*.5,R=Math.min(W,H)*.36;rot+=.0009;
       ctx.globalCompositeOperation="lighter";
       for(const b of blobs){const pr=b.r*Math.min(W,H)*(.9+.1*Math.sin(t/3200*b.sp+b.ph));const px=(b.x+.015*Math.sin(t/6000+b.ph))*W,py=(b.y+.015*Math.cos(t/7000+b.ph))*H;const g=ctx.createRadialGradient(px,py,0,px,py,pr);g.addColorStop(0,"rgba(50,140,130,.08)");g.addColorStop(.5,"rgba(45,110,120,.03)");g.addColorStop(1,"rgba(45,110,120,0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,pr,0,7);ctx.fill();}
       for(const s of bg){const tw=.2+.4*Math.sin(t/800+s.tw);if(tw<0)continue;ctx.fillStyle="rgba(150,215,205,"+tw+")";ctx.beginPath();ctx.arc(s.x*W,s.y*H,s.s*DPR,0,7);ctx.fill();}
       for(const p of pts){const a=p.a+rot*p.rsp;const rr=p.rr*R;const px=cx+Math.cos(a)*rr,py=cy+Math.sin(a)*rr*.82;const tw=p.base*(.5+.5*Math.sin(t/650*p.sp+p.tw));const r=p.sz*DPR;
-        if(p.sz>1.2){const g=ctx.createRadialGradient(px,py,0,px,py,r*3.4);g.addColorStop(0,"rgba("+p.col[0]+","+p.col[1]+","+p.col[2]+","+(tw*.5)+")");g.addColorStop(1,"rgba("+p.col[0]+","+p.col[1]+","+p.col[2]+",0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,r*3.4,0,7);ctx.fill();}
+        if(p.sz>1.1){const g=ctx.createRadialGradient(px,py,0,px,py,r*3);g.addColorStop(0,"rgba("+p.col[0]+","+p.col[1]+","+p.col[2]+","+(tw*.5)+")");g.addColorStop(1,"rgba("+p.col[0]+","+p.col[1]+","+p.col[2]+",0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,r*3,0,7);ctx.fill();}
         ctx.fillStyle="rgba("+p.col[0]+","+p.col[1]+","+p.col[2]+","+tw+")";ctx.beginPath();ctx.arc(px,py,r,0,7);ctx.fill();}
       ctx.globalCompositeOperation="source-over";
-      const inner=ctx.createRadialGradient(cx,cy,0,cx,cy,R*.7);inner.addColorStop(0,"rgba(15,17,19,.6)");inner.addColorStop(.7,"rgba(15,17,19,.15)");inner.addColorStop(1,"rgba(15,17,19,0)");ctx.fillStyle=inner;ctx.beginPath();ctx.arc(cx,cy,R*.7,0,7);ctx.fill();};
+      const inner=ctx.createRadialGradient(cx,cy,0,cx,cy,R*.72);inner.addColorStop(0,"rgba(15,17,19,.65)");inner.addColorStop(.7,"rgba(15,17,19,.15)");inner.addColorStop(1,"rgba(15,17,19,0)");ctx.fillStyle=inner;ctx.beginPath();ctx.arc(cx,cy,R*.72,0,7);ctx.fill();};
   }
 
   const MAP={home:galaxy,about:cluster,setlist:supernova,members:openCluster,ticket:nebula,memento:meteorField,guestbook:quietField,hidden:ringCluster};
