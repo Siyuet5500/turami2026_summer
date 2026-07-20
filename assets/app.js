@@ -791,20 +791,22 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
       ctx.globalCompositeOperation="source-over";};
   }
 
-/* ---------- 2. 흐르는 별 먼지 (about — 차분·정보 페이지) ---------- */
+/* ---------- 2. 흐르는 별 먼지 (about — 차분하되 살아있게) ---------- */
   function cluster(){
     let dust;
-    build=()=>{dust=[];const n=scale(120);for(let i=0;i<n;i++)dust.push(mkd(Math.random(),Math.random()));};
-    function mkd(x,y){return {x,y,r:.3+Math.random()*1.1,sp:.00003+Math.random()*.00004,tw:Math.random()*6.28,tsp:.2+Math.random()*.3,drift:.000004*(Math.random()-.5)};}
-    step=t=>{ctx.fillStyle=INK;ctx.fillRect(0,0,W,H);
+    build=()=>{dust=[];const n=scale(220);for(let i=0;i<n;i++)dust.push(mkd(Math.random(),Math.random()));};
+    function mkd(x,y){const big=Math.random()<.14;return {x,y,r:big?(1.2+Math.random()*1.6):(.3+Math.random()*1),sp:.00003+Math.random()*.00005,tw:Math.random()*6.28,tsp:.3+Math.random()*.5,drift:.000005*(Math.random()-.5),big};}
+    step=t=>{ctx.fillStyle=INK;ctx.fillRect(0,0,W,H);ctx.globalCompositeOperation="lighter";
       for(const d of dust){
         d.x+=d.sp*16.7; d.y+=d.drift*16.7;
-        if(d.x>1.02){d.x=-.02;d.y=Math.random();}
-        const tw=.16+.22*Math.sin(t/1400*d.tsp+d.tw); if(tw<=0)continue;
-        ctx.fillStyle="rgba(150,215,205,"+tw+")";
-        ctx.beginPath();ctx.arc(d.x*W,d.y*H,d.r*DPR,0,7);ctx.fill();
+        if(d.x>1.03){d.x=-.03;d.y=Math.random();}
+        const tw=.28+.4*Math.pow(.5+.5*Math.sin(t/1100*d.tsp+d.tw),1.4);
+        const px=d.x*W,py=d.y*H,r=d.r*DPR;
+        if(d.big){const g=ctx.createRadialGradient(px,py,0,px,py,r*4.5);g.addColorStop(0,"rgba(150,232,218,"+(tw*.5)+")");g.addColorStop(1,"rgba(150,232,218,0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,r*4.5,0,7);ctx.fill();}
+        ctx.fillStyle="rgba(180,235,225,"+tw+")";
+        ctx.beginPath();ctx.arc(px,py,r,0,7);ctx.fill();
       }
-    };
+      ctx.globalCompositeOperation="source-over";};
   }
 
   /* ---------- ② 초신성 방사 (setlist) — 촘촘한 방사선 ---------- */
@@ -897,7 +899,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
       bg=[];const nb=Math.min(140,scale(100));for(let i=0;i<nb;i++)bg.push({x:Math.random(),y:Math.random(),s:.3+Math.random()*.7,tw:Math.random()*6.28});
       blobs=[];for(let i=0;i<4;i++)blobs.push({x:Math.random(),y:Math.random(),r:.35+Math.random()*.3,ph:Math.random()*6.28,sp:.2+Math.random()*.3});};
     let rot=0;
-    step=t=>{ctx.fillStyle="#0f1113";ctx.fillRect(0,0,W,H);const cx=W*.68,cy=H*.5,R=Math.min(W,H)*.36;rot+=.0009;
+    step=t=>{ctx.fillStyle="#0f1113";ctx.fillRect(0,0,W,H);const cx=W*.73,cy=H*.5,R=Math.min(W,H)*.36;rot+=.0009;
       ctx.globalCompositeOperation="lighter";
       for(const b of blobs){const pr=b.r*Math.min(W,H)*(.9+.1*Math.sin(t/3200*b.sp+b.ph));const px=(b.x+.015*Math.sin(t/6000+b.ph))*W,py=(b.y+.015*Math.cos(t/7000+b.ph))*H;const g=ctx.createRadialGradient(px,py,0,px,py,pr);g.addColorStop(0,"rgba(50,140,130,.08)");g.addColorStop(.5,"rgba(45,110,120,.03)");g.addColorStop(1,"rgba(45,110,120,0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,pr,0,7);ctx.fill();}
       for(const s of bg){const tw=.2+.4*Math.sin(t/800+s.tw);if(tw<0)continue;ctx.fillStyle="rgba(150,215,205,"+tw+")";ctx.beginPath();ctx.arc(s.x*W,s.y*H,s.s*DPR,0,7);ctx.fill();}
