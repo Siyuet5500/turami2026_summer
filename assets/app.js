@@ -910,7 +910,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
       const inner=ctx.createRadialGradient(cx,cy,0,cx,cy,R*.72);inner.addColorStop(0,"rgba(15,17,19,.65)");inner.addColorStop(.7,"rgba(15,17,19,.15)");inner.addColorStop(1,"rgba(15,17,19,0)");ctx.fillStyle=inner;ctx.beginPath();ctx.arc(cx,cy,R*.72,0,7);ctx.fill();};
   }
 
-  const MAP={home:ringCluster,about:cluster,setlist:galaxy,members:openCluster,ticket:nebula,memento:meteorField,guestbook:quietField,hidden:supernova};
+  const MAP={home:ringCluster,about:cluster,setlist:meteorField,members:openCluster,ticket:nebula,memento:galaxy,guestbook:quietField,hidden:supernova};
   (MAP[page]||galaxy)();
 
   let lastW=innerWidth, lastH=innerHeight;
