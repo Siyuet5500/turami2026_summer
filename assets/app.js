@@ -875,12 +875,29 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
   const MAP={home:galaxy,about:cluster,setlist:supernova,members:openCluster,ticket:nebula,memento:meteorField,guestbook:quietField,hidden:ringCluster};
   (MAP[page]||galaxy)();
 
-  function resize(){W=cv.width=innerWidth*DPR;H=cv.height=innerHeight*DPR;cv.style.width=innerWidth+"px";cv.style.height=innerHeight+"px";build();}
-  resize();addEventListener("resize",resize);
+  let lastW=innerWidth, lastH=innerHeight;
+  function resize(force){
+    // 모바일에서 스크롤 중 주소창이 접히고/펼쳐지며 innerHeight만 바뀌어도 resize 이벤트가 발생함.
+    // 그때마다 파티클 전체를 재생성(build)하면 스크롤할 때마다 버벅임이 생기므로,
+    // 너비가 실제로 바뀌었을 때만(=진짜 리사이즈/회전일 때만) 재빌드한다.
+    const wChanged = innerWidth !== lastW;
+    if(!force && !wChanged) { lastH = innerHeight; return; }
+    lastW=innerWidth; lastH=innerHeight;
+    W=cv.width=innerWidth*DPR;H=cv.height=innerHeight*DPR;cv.style.width=innerWidth+"px";cv.style.height=innerHeight+"px";build();
+  }
+  resize(true);addEventListener("resize",()=>resize(false));
+
+  // 스크롤 중에는 배경 애니메이션을 잠시 멈춰서(마지막 프레임 유지) 메인스레드 부담을 줄인다.
+  let isScrolling=false, scrollT=null;
+  addEventListener("scroll",()=>{
+    isScrolling=true;
+    clearTimeout(scrollT);
+    scrollT=setTimeout(()=>{isScrolling=false;},150);
+  },{passive:true});
 
   function loop(t){
     if(!prefersReduced){pxX+=(tgX-pxX)*.06;pxY+=(tgY-pxY)*.06;const tf=`translate(${(-pxX*16).toFixed(2)}px,${(-pxY*12).toFixed(2)}px)`;if(heroConst)heroConst.style.transform=tf;if(heroNav)heroNav.style.transform=tf;}
-    step(t);
+    if(!isScrolling) step(t);
     requestAnimationFrame(loop);
   }
   if(prefersReduced){ step(0); }         /* 모션 최소화: 한 프레임만 */
@@ -997,8 +1014,14 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
       svgs.forEach(svg=>{ svg.style.top = top+"px"; svg.style.height = h+"px"; svg.style.bottom = "auto"; });
     }
   }
+  let lastAppW = innerWidth;
   apply();
-  addEventListener("resize", apply);
+  addEventListener("resize", ()=>{
+    // 위와 동일: 모바일 주소창 토글로 인한 높이 변화는 무시하고, 너비가 바뀔 때만 재계산
+    if(innerWidth === lastAppW) return;
+    lastAppW = innerWidth;
+    apply();
+  });
   addEventListener("load", apply);
   if(document.fonts && document.fonts.ready) document.fonts.ready.then(apply);
 })();

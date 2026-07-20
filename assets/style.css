@@ -297,6 +297,8 @@ footer{border-top:1px solid var(--line);padding:70px 0 50px;position:relative;z-
   .navlinks.open a{font-size:1.1rem;letter-spacing:.2em}
   .drawer-close{position:fixed;top:24px;right:26px;z-index:61;background:none;border:0;color:var(--starlight);font-size:2rem;cursor:pointer;display:none}
   .drawer-close.show{display:block}
+  /* 모바일에서는 스크롤 내내 유지되는 고정 헤더의 blur 강도를 낮춰 스크롤 시 부담을 줄임 */
+  header.nav.scrolled{backdrop-filter:blur(8px)}
 }
 @media(max-width:520px){
   .track-head{grid-template-columns:1fr auto;gap:8px}
