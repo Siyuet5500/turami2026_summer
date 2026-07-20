@@ -199,7 +199,7 @@ wire("mapBtn2", CONFIG.mapLink);
         html+="</div></div>";
       });
       grid.innerHTML = html || '<p style="color:var(--muted);text-align:center">아직 등록된 멤버가 없어요.</p>';
-      const kr=document.querySelector("#members .kr"); if(kr) kr.textContent="일곱 팀, 북두칠성으로 무대에 오릅니다";
+      const kr=document.querySelector("#members .kr"); if(kr) kr.textContent="일곱 팀, 흩어진 별들이 하나의 무대로 모입니다";
     }catch(e){ grid.innerHTML=flat(); }
   })();
 })();
@@ -271,17 +271,14 @@ if(acct) acct.addEventListener("click",async()=>{
 const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}})},{threshold:.12});
 document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
 
-/* ============================================================
-   ★ KEEPSAKE TICKET  — 이름 → 당신의 별 배정 + 티켓 이미지 발급
-   ============================================================ */
 const DIPPER_STARS = [
-  {en:"DUBHE",  kr:"두베"},   {en:"MERAK",  kr:"메라크"},
-  {en:"PHECDA", kr:"페크다"}, {en:"MEGREZ", kr:"메그레즈"},
-  {en:"ALIOTH", kr:"알리오트"},{en:"MIZAR", kr:"미자르"},
-  {en:"ALKAID", kr:"알카이드"}
+  {en:"ALCYONE", kr:"알키오네"}, {en:"MAIA",    kr:"마이아"},
+  {en:"ELECTRA", kr:"엘렉트라"}, {en:"MEROPE",  kr:"메로페"},
+  {en:"TAYGETA", kr:"타이게타"}, {en:"CELAENO", kr:"켈라이노"},
+  {en:"STEROPE", kr:"스테로페"}
 ];
-// 북두칠성 좌표 (티켓 캔버스 좌표계 비율 0~1)
-const DIPPER_PTS = [[.12,.20],[.30,.27],[.47,.34],[.62,.40],[.65,.62],[.90,.64],[.92,.41]];
+// 별무리(플레이아데스) 좌표 — 티켓 캔버스 박스 비율 0~1
+const DIPPER_PTS = [[.34,.28],[.50,.19],[.63,.33],[.44,.45],[.58,.52],[.73,.42],[.29,.57]];
 
 function hashStr(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
 
@@ -297,7 +294,7 @@ async function genTicket(){
   const h=hashStr(name+"|turami2026");
   const starIdx=h%7;
   const star=DIPPER_STARS[starIdx];
-  const serial="URSA-2026-"+String(h%10000).padStart(4,"0");
+  const serial="CLST-2026-"+String(h%10000).padStart(4,"0");
 
   // 폰트 로드 보장
   try{ await Promise.all([
@@ -310,9 +307,9 @@ async function genTicket(){
   const W=tCanvas.width, H=tCanvas.height, ctx=tctx;
   ctx.clearRect(0,0,W,H);
 
-  // 배경
+  // 배경 (차콜 + 청록 기운)
   const bg=ctx.createLinearGradient(0,0,0,H);
-  bg.addColorStop(0,"#0d1530"); bg.addColorStop(.55,"#0a1024"); bg.addColorStop(1,"#06090f");
+  bg.addColorStop(0,"#16201f"); bg.addColorStop(.55,"#111a1b"); bg.addColorStop(1,"#0c1113");
   ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
 
   // 별가루 (seed 고정)
@@ -321,77 +318,82 @@ async function genTicket(){
   for(let i=0;i<150;i++){
     const x=rnd()*W,y=rnd()*H*.55,r=rnd()*1.4+.3,a=rnd()*.5+.15;
     ctx.beginPath();ctx.arc(x,y,r,0,7);
-    ctx.fillStyle=rnd()<.12?`rgba(244,214,138,${a})`:`rgba(233,237,249,${a})`;ctx.fill();
+    ctx.fillStyle=rnd()<.14?`rgba(126,214,198,${a})`:`rgba(232,237,233,${a})`;ctx.fill();
   }
 
-  // 외곽 골드 테두리
-  ctx.strokeStyle="rgba(217,169,78,.55)";ctx.lineWidth=2;
+  // 외곽 청록 테두리
+  ctx.strokeStyle="rgba(126,214,198,.5)";ctx.lineWidth=2;
   roundRect(ctx,18,18,W-36,H-36,18);ctx.stroke();
 
   // 상단 라벨
   ctx.textAlign="center";
-  ctx.fillStyle="#caa97a";ctx.font='700 17px "Space Mono"';
+  ctx.fillStyle="#7ed6c6";ctx.font='700 17px "Space Mono"';
   ctx.fillText("H O N G I K   U N I V E R S I T Y", W/2, 70);
-  ctx.fillStyle="#8a93b8";ctx.font='400 15px "Space Mono"';
+  ctx.fillStyle="#8a9490";ctx.font='400 15px "Space Mono"';
   ctx.fillText("창작곡 밴드 동아리 뚜라미", W/2, 96);
-  ctx.fillStyle="#5d678f";ctx.font='400 14px "Space Mono"';
+  ctx.fillStyle="#565f5b";ctx.font='400 14px "Space Mono"';
   ctx.fillText("2026  SUMMER  CONCERT", W/2, 150);
 
   // 타이틀
   const tg=ctx.createLinearGradient(0,170,0,250);
-  tg.addColorStop(0,"#ffffff");tg.addColorStop(.55,"#f4d68a");tg.addColorStop(1,"#d9a94e");
+  tg.addColorStop(0,"#ffffff");tg.addColorStop(.55,"#7ed6c6");tg.addColorStop(1,"#56b6a6");
   ctx.fillStyle=tg;ctx.font='700 70px "Gowun Batang"';
-  ctx.fillText("북두칠성", W/2, 230);
-  ctx.fillStyle="#caa97a";ctx.font='italic 400 22px "Fraunces", serif';
-  ctx.fillText("Ursa Major", W/2, 268);
+  ctx.fillText("별무리", W/2, 230);
+  ctx.fillStyle="#56b6a6";ctx.font='700 22px "Space Mono"';
+  ctx.save();ctx.font='700 20px "Space Mono"';
+  drawSpaced(ctx,"C L U S T A R", W/2, 266, 2);
+  ctx.restore();
 
-  // 북두칠성 별자리 (당신의 별 강조)
-  const cx0=70,cy0=300,cw=W-140,ch=170;
-  ctx.strokeStyle="rgba(217,169,78,.4)";ctx.lineWidth=1.4;
-  ctx.beginPath();
-  DIPPER_PTS.forEach((p,i)=>{const x=cx0+p[0]*cw,y=cy0+p[1]*ch;i?ctx.lineTo(x,y):ctx.moveTo(x,y);});
-  // 손잡이-그릇 닫기 (마지막 → 4번째)
-  ctx.lineTo(cx0+DIPPER_PTS[3][0]*cw, cy0+DIPPER_PTS[3][1]*ch);
-  ctx.stroke();
+  // 별무리(성단) — 흩어진 별 + 당신의 별 강조 (선 없이)
+  const cx0=70,cy0=298,cw=W-140,ch=178;
+  // 성단 먼지(주변 잔별)
+  for(let i=0;i<34;i++){
+    const x=cx0+rnd()*cw, y=cy0+rnd()*ch, r=rnd()*1.3+.4, a=rnd()*.4+.12;
+    ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fillStyle=`rgba(150,225,212,${a})`;ctx.fill();
+  }
   DIPPER_PTS.forEach((p,i)=>{
-    const x=cx0+p[0]*cw,y=cy0+p[1]*ch, me=(i===starIdx);
-    if(me){const g=ctx.createRadialGradient(x,y,0,x,y,22);g.addColorStop(0,"rgba(244,214,138,.9)");g.addColorStop(1,"rgba(244,214,138,0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,22,0,7);ctx.fill();}
-    ctx.beginPath();ctx.arc(x,y,me?5:3,0,7);ctx.fillStyle=me?"#ffffff":"#f4d68a";ctx.fill();
+    const x=cx0+p[0]*cw, y=cy0+p[1]*ch, me=(i===starIdx);
+    const gr=ctx.createRadialGradient(x,y,0,x,y,me?26:12);
+    gr.addColorStop(0,me?"rgba(180,245,235,.95)":"rgba(126,214,198,.5)");
+    gr.addColorStop(1,"rgba(126,214,198,0)");
+    ctx.fillStyle=gr;ctx.beginPath();ctx.arc(x,y,me?26:12,0,7);ctx.fill();
+    ctx.beginPath();ctx.arc(x,y,me?5:2.6,0,7);ctx.fillStyle=me?"#ffffff":"#b7ecdf";ctx.fill();
+    if(me){ctx.strokeStyle="rgba(126,214,198,.5)";ctx.lineWidth=1.2;ctx.beginPath();ctx.arc(x,y,12,0,7);ctx.stroke();}
   });
 
   // 구분선
-  ctx.strokeStyle="rgba(38,48,90,.9)";ctx.lineWidth=1;
+  ctx.strokeStyle="rgba(90,145,135,.5)";ctx.lineWidth=1;
   ctx.beginPath();ctx.moveTo(60,540);ctx.lineTo(W-60,540);ctx.stroke();
 
   // 이름
-  ctx.fillStyle="#8a93b8";ctx.font='700 14px "Space Mono"';
+  ctx.fillStyle="#8a9490";ctx.font='700 14px "Space Mono"';
   ctx.fillText("A D M I T   O N E", W/2, 580);
-  ctx.fillStyle="#e9edf9";ctx.font='700 52px "Gowun Batang"';
+  ctx.fillStyle="#e8ede9";ctx.font='700 52px "Gowun Batang"';
   ctx.fillText(name, W/2, 642);
 
   // 당신의 별
-  ctx.fillStyle="#caa97a";ctx.font='700 15px "Space Mono"';
+  ctx.fillStyle="#7ed6c6";ctx.font='700 15px "Space Mono"';
   ctx.fillText("✦  YOUR STAR", W/2, 706);
-  ctx.fillStyle="#f4d68a";ctx.font='700 30px "Gowun Batang"';
+  ctx.fillStyle="#7ed6c6";ctx.font='700 30px "Gowun Batang"';
   ctx.fillText(star.kr+"  ·  "+star.en, W/2, 744);
 
   // 일시 / 장소
-  ctx.fillStyle="#8a93b8";ctx.font='400 19px "Gowun Batang"';
+  ctx.fillStyle="#8a9490";ctx.font='400 19px "Gowun Batang"';
   ctx.fillText(CONFIG.dateText, W/2, 810);
   ctx.font='400 16px "Gowun Batang"';
   ctx.fillText(stripVenue(CONFIG.venue), W/2, 838);
 
   // 천공 점선
-  ctx.strokeStyle="rgba(138,147,184,.4)";ctx.setLineDash([6,8]);ctx.lineWidth=1.2;
+  ctx.strokeStyle="rgba(140,148,144,.4)";ctx.setLineDash([6,8]);ctx.lineWidth=1.2;
   ctx.beginPath();ctx.moveTo(40,892);ctx.lineTo(W-40,892);ctx.stroke();ctx.setLineDash([]);
-  ctx.fillStyle="#06090f";
+  ctx.fillStyle="#0c1113";
   ctx.beginPath();ctx.arc(18,892,14,0,7);ctx.fill();
   ctx.beginPath();ctx.arc(W-18,892,14,0,7);ctx.fill();
 
   // 스텁: 일련번호
-  ctx.fillStyle="#5d678f";ctx.font='400 15px "Space Mono"';
+  ctx.fillStyle="#565f5b";ctx.font='400 15px "Space Mono"';
   ctx.fillText(serial, W/2, 952);
-  ctx.fillStyle="#8a93b8";ctx.font='400 16px "Gowun Batang"';
+  ctx.fillStyle="#8a9490";ctx.font='400 16px "Gowun Batang"';
   ctx.fillText("우리가 만든 노래로, 우리만의 밤을 켭니다.", W/2, 1000);
 
   lastTicketURL=tCanvas.toDataURL("image/png");
@@ -402,6 +404,7 @@ async function genTicket(){
 }
 function roundRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
 function stripVenue(v){const n=(v.split("·")[0]||v).trim();return n.length>26?n.slice(0,25)+"…":n;}
+function drawSpaced(ctx,text,cx,y,extra){const w=ctx.measureText(text).width;ctx.textAlign="left";let x=cx-w/2;for(const ch of text){ctx.fillText(ch,x,y);x+=ctx.measureText(ch).width;}ctx.textAlign="center";}
 
 document.getElementById("mkGen").addEventListener("click",genTicket);
 document.getElementById("mkName").addEventListener("keydown",e=>{if(e.key==="Enter")genTicket();});
