@@ -426,3 +426,16 @@ textarea.um-gb-input{min-height:56px;resize:vertical}
 /* 스크롤바 숨기기 (스크롤 기능은 유지) */
 html{scrollbar-width:none;-ms-overflow-style:none}
 html::-webkit-scrollbar,body::-webkit-scrollbar{width:0;height:0;display:none}
+
+/* 선예매 카드 - 별 모티프 + 골드 라인 */
+.tk-card{position:relative;overflow:hidden}
+.tk-dipper{position:absolute;top:22px;right:24px;width:88px;opacity:.85;pointer-events:none}
+.tk-dipper path{stroke:var(--gold);stroke-width:.8;opacity:.22;fill:none;stroke-linejoin:round}
+.tk-dipper circle{fill:var(--gold-bright);opacity:.5;animation:tkTwinkle 4.5s ease-in-out infinite}
+.tk-dipper circle:nth-of-type(2){animation-delay:.7s}
+.tk-dipper circle:nth-of-type(4){animation-delay:1.4s}
+.tk-dipper circle:nth-of-type(6){animation-delay:2.1s}
+.tk-dipper circle.tip{fill:#fff;opacity:.75}
+.tk-divider{height:1px;background:linear-gradient(90deg,rgba(191,164,107,.5),transparent);margin:0 0 24px}
+@keyframes tkTwinkle{0%,100%{opacity:.3}50%{opacity:.7}}
+@media(prefers-reduced-motion:reduce){.tk-dipper circle{animation:none}}
