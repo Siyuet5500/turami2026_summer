@@ -467,3 +467,7 @@ body:not([data-page="home"])::before{content:"";position:fixed;inset:0;z-index:1
   .countdown,.hero-cta{justify-content:center}
   .scroll-hint{right:50%;transform:translateX(50%)}
 }
+
+/* 히든 입구 — 푸터의 작은 별 */
+.hidden-star{color:var(--muted-2);opacity:.4;text-decoration:none;margin-left:8px;transition:opacity .35s var(--ease),color .35s,text-shadow .35s}
+.hidden-star:hover,.hidden-star:focus-visible{opacity:1;color:var(--gold-bright);text-shadow:0 0 10px rgba(126,214,198,.6);outline:none}
