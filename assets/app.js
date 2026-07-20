@@ -887,6 +887,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
   else requestAnimationFrame(loop);
 })();
 
+
 /* ============================================================
    ★ NAVER MAP — 오시는 길 (키 있으면 지도 임베드, 없으면 버튼만)
    ============================================================ */
