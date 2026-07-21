@@ -502,3 +502,10 @@ body:not([data-page="home"])::before{content:"";position:fixed;inset:0;z-index:1
   50%{opacity:.95;text-shadow:0 0 12px rgba(126,214,198,.85),0 0 20px rgba(126,214,198,.4)}
 }
 @media(prefers-reduced-motion:reduce){.brand-star,.hidden-star{animation:none;opacity:.7}}
+
+/* 모바일에서 meta-line 두 줄로 */
+@media(max-width:760px){
+  .hero .meta-line{flex-wrap:wrap;justify-content:center;gap:2px 0;line-height:1.7}
+  .hero .meta-line>span{display:block;width:100%;text-align:center}
+  .hero .meta-line .ml-sep{display:none}
+}
