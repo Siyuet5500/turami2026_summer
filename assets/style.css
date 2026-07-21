@@ -510,3 +510,27 @@ body:not([data-page="home"])::before{content:"";position:fixed;inset:0;z-index:1
   .hero .meta-line .ml-sep{display:none}
   .hero .meta-line::before{display:none}
 }
+
+/* ===== 모바일 히어로 가운데 정렬 (파일 맨 끝에 둘 것) ===== */
+@media(max-width:760px){
+  .hero .wrap{
+    align-items:center;
+    text-align:center;
+    width:100%;
+    max-width:520px;
+    margin-left:auto;
+    margin-right:auto;
+    padding-left:0;
+    padding-right:0;
+    padding-inline:24px;
+    box-sizing:border-box;
+  }
+  .hero .meta-line,
+  .hero .superscript,
+  .hero .tagline{margin-left:auto;margin-right:auto;text-align:center}
+  .hero .latin{justify-content:center}
+  .hero .latin::after{display:none}
+  .countdown,
+  .hero-cta{justify-content:center;width:100%}
+  .hero-cta .btn{flex:1;max-width:200px;justify-content:center;text-align:center}
+}
