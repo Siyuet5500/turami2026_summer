@@ -932,7 +932,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
   document.addEventListener("visibilitychange",()=>{docHidden=document.hidden;});
 
   // 30fps 상한 — 부하를 절반으로. 스크롤 중에도 멈추지 않고 계속 그린다.
-  const FRAME=1000/30; let lastDraw=0;
+  const FRAME=1000/(isMobile?30:60); let lastDraw=0;
   function loop(t){
     requestAnimationFrame(loop);
     if(docHidden) return;
