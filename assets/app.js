@@ -683,7 +683,7 @@ function conDraw(){
   cox.strokeStyle="rgba(90,145,135,.3)";cox.lineWidth=2.5*DPRc;cox.beginPath();cox.arc(cx,cy,GATHER,0,7);cox.stroke();
   cox.strokeStyle="rgba(126,214,198,.95)";cox.lineWidth=3*DPRc;cox.lineCap="round";
   cox.beginPath();cox.arc(cx,cy,GATHER,-1.5708,-1.5708+progress*6.283);cox.stroke();
-  if(progress>=1 && !done){ done=true; conStatus.innerHTML="✦ 별무리 완성! 단서를 해금합니다…"; setTimeout(openUnlock,650); }
+  if(progress>=1 && !done){ done=true; conStatus.innerHTML="✦ 별무리 완성! 단서를 해금합니다 ✦"; setTimeout(openUnlock,650); }
   else if(!done && down){ conStatus.innerHTML=`${Math.round(progress*100)}% — 흩어진 빛을 계속 모으세요`; }
   requestAnimationFrame(conDraw);
 }
