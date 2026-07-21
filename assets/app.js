@@ -758,7 +758,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
   }
 
   const area = ()=> (W*H)/(DPR*DPR);
-  const MOBILE_FACTOR = isMobile ? 0.45 : 1;
+  const MOBILE_FACTOR = isMobile ? 0.7 : 1;
   const scale = base => Math.max(40, Math.round(base * MOBILE_FACTOR * area()/1400000));
 
   let build=()=>{}, step=()=>{};
@@ -902,7 +902,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
       bg=[];const nb=Math.min(140,scale(100));for(let i=0;i<nb;i++)bg.push({x:Math.random(),y:Math.random(),s:.3+Math.random()*.7,tw:Math.random()*6.28});
       blobs=[];for(let i=0;i<4;i++)blobs.push({x:Math.random(),y:Math.random(),r:.35+Math.random()*.3,ph:Math.random()*6.28,sp:.2+Math.random()*.3});};
     let rot=0;
-    step=t=>{ctx.fillStyle="#0f1113";ctx.fillRect(0,0,W,H);const cx=W*.73,cy=H*.5,R=Math.min(W,H)*.36;rot+=.0009;
+    step=t=>{ctx.fillStyle="#0f1113";ctx.fillRect(0,0,W,H);const cx=W*(isMobile?.5:.73),cy=H*.5,R=Math.min(W,H)*.36;rot+=.0009;
       ctx.globalCompositeOperation="lighter";
       for(const b of blobs){const pr=b.r*Math.min(W,H)*(.9+.1*Math.sin(t/3200*b.sp+b.ph));const px=(b.x+.015*Math.sin(t/6000+b.ph))*W,py=(b.y+.015*Math.cos(t/7000+b.ph))*H;const g=ctx.createRadialGradient(px,py,0,px,py,pr);g.addColorStop(0,"rgba(50,140,130,.08)");g.addColorStop(.5,"rgba(45,110,120,.03)");g.addColorStop(1,"rgba(45,110,120,0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,pr,0,7);ctx.fill();}
       for(const s of bg){const tw=.2+.4*Math.sin(t/800+s.tw);if(tw<0)continue;ctx.fillStyle="rgba(150,215,205,"+tw+")";ctx.beginPath();ctx.arc(s.x*W,s.y*H,s.s*DPR,0,7);ctx.fill();}
