@@ -193,7 +193,8 @@ footer{border-top:1px solid var(--line);padding:70px 0 50px;position:relative;z-
 .socials{display:flex;flex-direction:column;gap:12px}
 .socials a{font-family:var(--mono);font-size:.74rem;letter-spacing:.14em;color:var(--muted);display:flex;align-items:center;gap:12px;transition:.25s}
 .socials a:hover{color:var(--gold-bright)}
-.socials a::before{content:"\2192";color:var(--gold-soft)}
+.socials a::before{content:none}
+.socials a .si{width:15px;height:15px;flex:none;color:var(--gold-bright)}
 .copyright{margin-top:50px;padding-top:26px;border-top:1px solid var(--line);font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;color:var(--muted-2);text-align:center}
 
 /* ========= MEMENTO (keepsake ticket) ========= */
