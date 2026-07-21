@@ -797,7 +797,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
   function cluster(){
     let dust;
     build=()=>{dust=[];const n=scale(220);for(let i=0;i<n;i++)dust.push(mkd(Math.random(),Math.random()));};
-    function mkd(x,y){const big=Math.random()<.14;return {x,y,r:big?(1.2+Math.random()*1.6):(.3+Math.random()*1),sp:.00003+Math.random()*.00005,tw:Math.random()*6.28,tsp:.3+Math.random()*.5,drift:.000005*(Math.random()-.5),big};}
+    function mkd(x,y){const big=Math.random()<.14;return {x,y,r:big?(1.2+Math.random()*1.6):(.3+Math.random()*1),sp:.000015+Math.random()*.000025,tw:Math.random()*6.28,tsp:.3+Math.random()*.5,drift:.000005*(Math.random()-.5),big};}
     step=t=>{ctx.fillStyle=INK;ctx.fillRect(0,0,W,H);ctx.globalCompositeOperation="lighter";
       for(const d of dust){
         d.x+=d.sp*16.7; d.y+=d.drift*16.7;
