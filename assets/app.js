@@ -130,7 +130,7 @@ wire("mapBtn2", CONFIG.mapLink);
         if(!sg.length) tracks=`<div class="set-empty" style="padding:12px 8px">곡 준비 중이에요</div>`;
         else sg.forEach((x,si)=>{
           const lyr=(x.lyrics||"").trim();
-          tracks+=`<div class="track"><div class="track-head song"><div class="tnum">${pad(si+1)}</div><div><div class="ttl">${esc(x.title||"곡")}</div>${x.artist?`<div class="tartist">${esc(x.artist)}</div>`:""}</div><span class="tplus">+</span></div><div class="track-body"><div class="inner song">${x.session?`<div class="set-session">${esc(x.session)}</div>`:""}${lyr?`<div class="set-lyric">${hl(lyr)}</div>`:'<div class="set-empty">가사는 공연 전 공개됩니다</div>'}</div></div></div>`;
+          tracks+=`<div class="track"><div class="track-head song"><div class="tnum">${pad(si+1)}</div><div><div class="ttl">${esc(x.title||"곡")}</div>${x.artist?`<div class="tartist">${esc(x.artist)}</div>`:""}</div><span class="tplus">+</span></div><div class="track-body"><div class="inner song">${x.session?`<div class="set-session">${esc(x.session)}</div>`:""}${lyr?`<div class="set-lyric">${hl(lyr)}</div>`:''}</div></div></div>`;
         });
         html+=`<div class="set-team"><div class="set-team-head"><div class="stt-idx">STAGE ${pad(ti+1)}</div><div class="stt-name">${esc(t.name||"")}</div><div class="stt-line"></div><span class="stt-count">${sg.length}곡</span><span class="stt-chev">+</span></div><div class="set-team-body"><div class="set-tracks">${tracks}</div></div></div>`;
       });
