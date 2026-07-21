@@ -650,7 +650,7 @@ if(document.getElementById("connectCanvas")){
 const conC=document.getElementById("connectCanvas"), cox=conC.getContext("2d");
 const conStatus=document.getElementById("connectStatus");
 const DPRc=Math.min(devicePixelRatio||1,2);
-const NSTARS=80, TARGET=38;          // 전체 별 수 / 중앙에 모으면 완성되는 수
+const NSTARS=80, TARGET=55;          // 전체 별 수 / 중앙에 모으면 완성되는 수
 let stars=[], down=false, px=-999, py=-999, done=false, progress=0;
 
 function conResize(){
