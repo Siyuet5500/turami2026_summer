@@ -425,10 +425,11 @@ const LS_COLORS=[
   {name:"블루",  rgb:[120,170,255]},
   {name:"바이올렛",rgb:[185,150,255]},
   {name:"로즈",  rgb:[255,150,180]},
+  {name:"청록", rgb:[126,214,198]},
 ];
 let lsColor=LS_COLORS[0].rgb, lsRAF=null, lsWake=null;
 let lsPattern="pulse";
-const LS_PRESET={gold:[244,214,138],white:[255,255,255],blue:[120,170,255],violet:[185,150,255],rose:[255,150,180],green:[150,240,170],red:[255,110,110]};
+const LS_PRESET={gold:[244,214,138],white:[255,255,255],blue:[120,170,255],violet:[185,150,255],rose:[255,150,180],green:[150,240,170],red:[255,110,110],teal:[126,214,198]};
 function hsl2rgb(h,s,l){h/=360;const a=s*Math.min(l,1-l);const f=n=>{const k=(n+h*12)%12;return l-a*Math.max(-1,Math.min(k-3,9-k,1));};return [f(0)*255,f(8)*255,f(4)*255];}
 function rgb2hsl(r,g,b){r/=255;g/=255;b/=255;const mx=Math.max(r,g,b),mn=Math.min(r,g,b);let h,s,l=(mx+mn)/2;if(mx===mn){h=s=0;}else{const d=mx-mn;s=l>0.5?d/(2-mx-mn):d/(mx+mn);switch(mx){case r:h=(g-b)/d+(g<b?6:0);break;case g:h=(b-r)/d+2;break;default:h=(r-g)/d+4;}h*=60;}return [h,s,l];}
 const lsOverlay=document.getElementById("lsOverlay"),
@@ -1013,7 +1014,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
       }
     });
     const info = new naver.maps.InfoWindow({
-      content: '<div class="tm-info"><div class="v">아트홀 베짱이</div><div class="t">2026 뚜라미 하계공연</div><div class="a">6호선 상수역 1번 출구 · 도보 5분</div></div>',
+      content: '<div class="tm-info"><div class="v">아트홀 베짱이</div><div class="t">2026 뚜라미 여름공연</div><div class="a">6호선 상수역 1번 출구 · 도보 5분</div></div>',
       borderWidth: 0,
       backgroundColor: "transparent",
       disableAnchor: true,

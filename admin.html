@@ -49,7 +49,7 @@
   .preview canvas{position:absolute;inset:0;width:100%;height:100%}
   .now{font-size:.82rem;color:var(--muted);text-align:center;margin:0 0 20px}.now b{color:#fff;font-weight:500}
   .sec{font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
-  .colors{display:grid;grid-template-columns:repeat(7,1fr);gap:9px;margin-bottom:22px}
+  .colors{display:grid;grid-template-columns:repeat(8,1fr);gap:9px;margin-bottom:22px}
   .sw{aspect-ratio:1;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:.12s;box-shadow:0 0 0 1px rgba(255,255,255,.08) inset}
   .sw:hover{transform:scale(1.08)}.sw.sel{border-color:#fff;transform:scale(1.12)}
   .pats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
@@ -216,7 +216,7 @@ document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{
 }));
 
 /* 응원봉 */
-const COLORS=[{k:"gold",n:"골드",rgb:[244,214,138]},{k:"white",n:"화이트",rgb:[255,255,255]},{k:"blue",n:"블루",rgb:[120,170,255]},{k:"violet",n:"바이올렛",rgb:[185,150,255]},{k:"rose",n:"로즈",rgb:[255,150,180]},{k:"green",n:"그린",rgb:[150,240,170]},{k:"red",n:"레드",rgb:[255,110,110]}];
+const COLORS=[{k:"gold",n:"골드",rgb:[244,214,138]},{k:"white",n:"화이트",rgb:[255,255,255]},{k:"blue",n:"블루",rgb:[120,170,255]},{k:"violet",n:"바이올렛",rgb:[185,150,255]},{k:"rose",n:"로즈",rgb:[255,150,180]},{k:"green",n:"그린",rgb:[150,240,170]},{k:"red",n:"레드",rgb:[255,110,110]},{k:"teal",n:"청록",rgb:[126,214,198]}];
 const PATS=[{k:"pulse",n:"맥동"},{k:"solid",n:"은은"},{k:"blink",n:"깜빡"},{k:"wave",n:"물결"},{k:"rainbow",n:"무지개"},{k:"off",n:"끄기"}];
 let cur={color:"gold",pattern:"pulse"},lightInit=false;
 function initLight(){ if(lightInit)return; lightInit=true;
