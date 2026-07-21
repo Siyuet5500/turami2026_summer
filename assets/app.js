@@ -739,7 +739,8 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
 (function(){
   const cv = document.getElementById("sky"); if(!cv) return;
   const ctx = cv.getContext("2d");
-  const DPR = Math.min(devicePixelRatio||1, 2);
+  const isMobile = matchMedia("(max-width:760px)").matches || matchMedia("(pointer:coarse)").matches;
+  const DPR = Math.min(devicePixelRatio||1, isMobile?1.5:2);
   let W, H;
   const gauss = ()=>{let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(6.283*v);};
   const TEAL=[120,222,205], TEALW=[210,250,242], BLUE=[150,225,255], INK="#141619";
@@ -756,7 +757,8 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
   }
 
   const area = ()=> (W*H)/(DPR*DPR);
-  const scale = base => Math.max(60, Math.round(base * area()/1400000));
+  const MOBILE_FACTOR = isMobile ? 0.45 : 1;
+  const scale = base => Math.max(40, Math.round(base * MOBILE_FACTOR * area()/1400000));
 
   let build=()=>{}, step=()=>{};
 
@@ -925,20 +927,25 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
   }
   resize(true);addEventListener("resize",()=>resize(false));
 
-  // 스크롤 중에는 배경 애니메이션을 잠시 멈춰서(마지막 프레임 유지) 메인스레드 부담을 줄인다.
-  let isScrolling=false, scrollT=null;
-  addEventListener("scroll",()=>{
-    isScrolling=true;
-    clearTimeout(scrollT);
-    scrollT=setTimeout(()=>{isScrolling=false;},150);
-  },{passive:true});
+// 탭이 백그라운드일 때는 정지 (배터리·부하 절약)
+  let docHidden=false;
+  document.addEventListener("visibilitychange",()=>{docHidden=document.hidden;});
 
+  // 30fps 상한 — 부하를 절반으로. 스크롤 중에도 멈추지 않고 계속 그린다.
+  const FRAME=1000/30; let lastDraw=0;
   function loop(t){
-    if(!prefersReduced){pxX+=(tgX-pxX)*.06;pxY+=(tgY-pxY)*.06;const tf=`translate(${(-pxX*16).toFixed(2)}px,${(-pxY*12).toFixed(2)}px)`;if(heroConst)heroConst.style.transform=tf;if(heroNav)heroNav.style.transform=tf;}
-    if(!isScrolling) step(t);
     requestAnimationFrame(loop);
+    if(docHidden) return;
+    // 내비 별 시차 (데스크톱 전용, 가벼움)
+    if(!prefersReduced && !isMobile && (heroConst||heroNav)){
+      pxX+=(tgX-pxX)*.06;pxY+=(tgY-pxY)*.06;
+      const tf=`translate(${(-pxX*16).toFixed(2)}px,${(-pxY*12).toFixed(2)}px)`;
+      if(heroConst)heroConst.style.transform=tf;if(heroNav)heroNav.style.transform=tf;
+    }
+    if(t-lastDraw<FRAME) return;   // 프레임 상한
+    lastDraw=t; step(t);
   }
-  if(prefersReduced){ step(0); }         /* 모션 최소화: 한 프레임만 */
+  if(prefersReduced){ step(0); }
   else requestAnimationFrame(loop);
 })();
 
