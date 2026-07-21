@@ -505,7 +505,8 @@ body:not([data-page="home"])::before{content:"";position:fixed;inset:0;z-index:1
 
 /* 모바일에서 meta-line 두 줄로 */
 @media(max-width:760px){
-  .hero .meta-line{flex-wrap:wrap;justify-content:center;gap:2px 0;line-height:1.7}
-  .hero .meta-line>span{display:block;width:100%;text-align:center}
+  .hero .meta-line{display:block;text-align:center;line-height:1.7}
+  .hero .meta-line>span{display:block}
   .hero .meta-line .ml-sep{display:none}
+  .hero .meta-line::before{display:none}
 }
