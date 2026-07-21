@@ -642,74 +642,60 @@ gbResize(); gbDraw(); gbLoad();
 }
 
 /* ============================================================
-   ★ HIDDEN — 별자리 잇기 → 티저 해금
+   ★ HIDDEN — 흩어진 별을 쓸어 모아 별무리 완성 → 단서 해금
+   app.js 의 646~730줄(기존 '별자리 잇기' if 블록 전체)을 이 블록으로 교체.
+   해금 모달·앵콜 힌트·방명록은 그대로 유지됩니다.
    ============================================================ */
 if(document.getElementById("connectCanvas")){
 const conC=document.getElementById("connectCanvas"), cox=conC.getContext("2d");
 const conStatus=document.getElementById("connectStatus");
-// 북두칠성 순서 (비율좌표)
-const CON_PTS=[[.10,.30],[.27,.40],[.44,.50],[.60,.58],[.63,.82],[.88,.84],[.90,.58]];
-let conNodes=[], conNext=1, conDone=false, conDrag=false, conPointer=null;
+const DPRc=Math.min(devicePixelRatio||1,2);
+const NSTARS=80, TARGET=38;          // 전체 별 수 / 중앙에 모으면 완성되는 수
+let stars=[], down=false, px=-999, py=-999, done=false, progress=0;
 
 function conResize(){
   const r=conC.getBoundingClientRect();
-  conC.width=r.width*devicePixelRatio;conC.height=r.height*devicePixelRatio;
-  conNodes=CON_PTS.map(p=>({x:p[0]*conC.width,y:p[1]*conC.height}));
+  conC.width=r.width*DPRc; conC.height=r.height*DPRc;
+  if(!stars.length){
+    for(let i=0;i<NSTARS;i++)stars.push({x:Math.random()*conC.width,y:Math.random()*conC.height,vx:0,vy:0,r:(.8+Math.random()*2)*DPRc,tw:Math.random()*6.28});
+  }
 }
+function conPos(e){const r=conC.getBoundingClientRect();const cx=(e.touches?e.touches[0].clientX:e.clientX);const cy=(e.touches?e.touches[0].clientY:e.clientY);return {x:(cx-r.left)*DPRc,y:(cy-r.top)*DPRc};}
+
 function conDraw(){
   const W=conC.width,H=conC.height,t=Date.now()/1000;
   cox.clearRect(0,0,W,H);
-  // 가이드 선 (흐릿)
-  cox.strokeStyle="rgba(138,147,184,.18)";cox.lineWidth=1.2*devicePixelRatio;cox.setLineDash([5*devicePixelRatio,7*devicePixelRatio]);
-  cox.beginPath();conNodes.forEach((n,i)=>i?cox.lineTo(n.x,n.y):cox.moveTo(n.x,n.y));cox.stroke();cox.setLineDash([]);
-  // 완성된 선 (밝게)
-  if(conNext>1){
-    cox.strokeStyle=conDone?"rgba(244,214,138,.95)":"rgba(244,214,138,.7)";
-    cox.lineWidth=(conDone?2.4:1.8)*devicePixelRatio;cox.lineCap="round";
-    if(conDone)cox.shadowColor="rgba(244,214,138,.8)",cox.shadowBlur=14*devicePixelRatio;
-    cox.beginPath();for(let i=0;i<conNext;i++){const n=conNodes[i];i?cox.lineTo(n.x,n.y):cox.moveTo(n.x,n.y);}
-    // 드래그 중 현재 포인터까지 선
-    if(conDrag&&conPointer&&!conDone){cox.lineTo(conPointer.x,conPointer.y);}
-    cox.stroke();cox.shadowBlur=0;
+  const cx=W/2, cy=H/2, GATHER=Math.min(W,H)*.22, PULL=150*DPRc;
+  let inCenter=0;
+  cox.globalCompositeOperation="lighter";
+  for(const s of stars){
+    if(down && !done){const dx=px-s.x,dy=py-s.y,d=Math.hypot(dx,dy);if(d<PULL){const f=(1-d/PULL)*.022;s.vx+=(cx-s.x)*f;s.vy+=(cy-s.y)*f;}}
+    s.vx*=.9; s.vy*=.9; s.x+=s.vx; s.y+=s.vy;
+    const dc=Math.hypot(s.x-cx,s.y-cy), near=dc<GATHER; if(near)inCenter++;
+    const tw=.5+.5*Math.sin(t*2+s.tw);
+    if(near){const g=cox.createRadialGradient(s.x,s.y,0,s.x,s.y,s.r*4);g.addColorStop(0,`rgba(150,232,218,${tw*.55})`);g.addColorStop(1,"rgba(150,232,218,0)");cox.fillStyle=g;cox.beginPath();cox.arc(s.x,s.y,s.r*4,0,7);cox.fill();}
+    cox.fillStyle=near?`rgba(215,255,248,${tw})`:`rgba(140,190,182,${.4+.3*tw})`;
+    cox.beginPath();cox.arc(s.x,s.y,s.r,0,7);cox.fill();
   }
-  // 노드
-  conNodes.forEach((n,i)=>{
-    const linked=i<conNext, isNext=(i===conNext&&!conDone)||(i===0&&conNext===1);
-    const pulse=0.6+Math.sin(t*3)*0.4;
-    if(isNext){const g=cox.createRadialGradient(n.x,n.y,0,n.x,n.y,20*devicePixelRatio);
-      g.addColorStop(0,`rgba(244,214,138,${0.5*pulse})`);g.addColorStop(1,"rgba(244,214,138,0)");
-      cox.fillStyle=g;cox.beginPath();cox.arc(n.x,n.y,20*devicePixelRatio,0,7);cox.fill();}
-    cox.beginPath();cox.arc(n.x,n.y,(linked?5.5:isNext?5:3.4)*devicePixelRatio,0,7);
-    cox.fillStyle=linked?"#fff":isNext?"#f4d68a":"rgba(138,147,184,.6)";cox.fill();
-    // START 라벨
-    if(i===0&&conNext===1){cox.fillStyle="#f4d68a";cox.font=`${10*devicePixelRatio}px "Space Mono",monospace`;cox.textAlign="center";cox.fillText("START",n.x,n.y-14*devicePixelRatio);}
-  });
+  cox.globalCompositeOperation="source-over";
+  // 진행 링 (중앙)
+  progress=Math.min(1,inCenter/TARGET);
+  cox.strokeStyle="rgba(90,145,135,.3)";cox.lineWidth=2.5*DPRc;cox.beginPath();cox.arc(cx,cy,GATHER,0,7);cox.stroke();
+  cox.strokeStyle="rgba(126,214,198,.95)";cox.lineWidth=3*DPRc;cox.lineCap="round";
+  cox.beginPath();cox.arc(cx,cy,GATHER,-1.5708,-1.5708+progress*6.283);cox.stroke();
+  if(progress>=1 && !done){ done=true; conStatus.innerHTML="✦ 별무리 완성! 단서를 해금합니다…"; setTimeout(openUnlock,650); }
+  else if(!done && down){ conStatus.innerHTML=`${Math.round(progress*100)}% — 흩어진 빛을 계속 모으세요`; }
   requestAnimationFrame(conDraw);
 }
-function conPos(e){const r=conC.getBoundingClientRect();const cx=(e.touches?e.touches[0].clientX:e.clientX);const cy=(e.touches?e.touches[0].clientY:e.clientY);return {x:(cx-r.left)*devicePixelRatio,y:(cy-r.top)*devicePixelRatio};}
-function conHit(pos,idx){const n=conNodes[idx];return Math.hypot(n.x-pos.x,n.y-pos.y)<28*devicePixelRatio;}
-function tryConnect(pos){        // conNext = 다음 필요한 별 (0번은 시작 앵커)
-  if(conDone)return;
-  if(conHit(pos,conNext)){
-    conNext++;
-    if(conNext>=conNodes.length){conComplete();}
-    else conStatus.innerHTML=`${conNext-1} / ${conNodes.length-1} 연결됨 — 다음 별로 이어보세요`;
-  }
-}
-function conStart(e){ e.preventDefault(); conDrag=true; const p=conPos(e); conPointer=p; tryConnect(p); }
-function conMove(e){ if(!conDrag||conDone)return; conPointer=conPos(e); tryConnect(conPointer); }
-function conEnd(){conDrag=false;conPointer=null;}
-function conComplete(){
-  conDone=true;conDrag=false;
-  conStatus.innerHTML="✦ 북두칠성 완성! 티저를 해금합니다…";
-  setTimeout(openUnlock,650);
-}
+function conStart(e){ if(done)return; e.preventDefault(); down=true; const p=conPos(e); px=p.x; py=p.y; }
+function conMove(e){ if(!down||done)return; e.preventDefault(); const p=conPos(e); px=p.x; py=p.y; }
+function conEnd(){ down=false; px=py=-999; }
 conC.addEventListener("mousedown",conStart); conC.addEventListener("mousemove",conMove); addEventListener("mouseup",conEnd);
 conC.addEventListener("touchstart",conStart,{passive:false}); conC.addEventListener("touchmove",conMove,{passive:false}); addEventListener("touchend",conEnd);
-document.getElementById("connectReset").addEventListener("click",()=>{conNext=1;conDone=false;conStatus.innerHTML="반짝이는 <b>START</b> 별을 누른 뒤, 순서대로 다음 별로 이어보세요";});
+document.getElementById("connectReset").addEventListener("click",()=>{done=false;progress=0;stars=[];conResize();conStatus.innerHTML="화면을 <b>문질러</b> 흩어진 별을 가운데로 모으세요";});
 conResize(); addEventListener("resize",conResize); conDraw();
 
-// 해금 모달
+// 해금 모달 (기존 유지)
 const unlockModal=document.getElementById("unlockModal");
 let unlockedOnce=false;
 function openUnlock(){
@@ -729,6 +715,7 @@ document.getElementById("umClose").addEventListener("click",closeUnlock);
 unlockModal.addEventListener("click",e=>{if(e.target===unlockModal)closeUnlock();});
 addEventListener("keydown",e=>{if(e.key==="Escape")closeUnlock();});
 }
+
 
 /* ============================================================
    PER-PAGE SPACE BACKGROUND  (별무리 : CLUSTAR)
