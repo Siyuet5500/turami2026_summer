@@ -987,7 +987,6 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
     };
     let rot=0;
     const COL_TEAL="rgb(160,240,222)", COL_WISP="rgb(220,230,228)", COL_RING="rgb(232,238,236)";
-    const NEB=isMobile?2:1;
     let cg=null,_cgx=0,_cgy=0,_cgr=0;
     step=t=>{
       ctx.fillStyle="#101011";ctx.fillRect(0,0,W,H);
@@ -1006,8 +1005,8 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
         const px=cx+Math.cos(a)*rr+Math.sin(w.v*20+t/2000)*8*DPR*flow;
         const py=yv+Math.sin(a)*rr*0.13 - w.reach*flow*26*DPR*(w.v<0.5?1:-1);
         const al=(1-flow)*0.5, r=w.sz*DPR;
-        if(w.teal){ctx.fillStyle=COL_TEAL;ctx.globalAlpha=Math.min(1,al*1.1*NEB);}
-        else{ctx.fillStyle=COL_WISP;ctx.globalAlpha=Math.min(1,al*0.8*NEB);}
+        if(w.teal){ctx.fillStyle=COL_TEAL;ctx.globalAlpha=Math.min(1,al*1.1);}
+        else{ctx.fillStyle=COL_WISP;ctx.globalAlpha=al*0.8;}
         ctx.beginPath();ctx.arc(px,py,r,0,7);ctx.fill();
       }
       for(const ring of rings){
@@ -1022,8 +1021,8 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
           const z=Math.sin(a), depth=0.26+0.74*(z*0.5+0.5);
           const al=depth*(0.5+0.35*Math.sin(t/900+ring.v*8)), r=(0.45+0.55*depth)*DPR;
           const teal=ring.rowTeal&&(j%3===0);
-          if(teal){ctx.fillStyle=COL_TEAL;ctx.globalAlpha=Math.min(1,al*1.15*NEB);ctx.beginPath();ctx.arc(px,py,r*1.3,0,7);ctx.fill();}
-          else{ctx.fillStyle=COL_RING;ctx.globalAlpha=Math.min(1,al*1.05*NEB);ctx.beginPath();ctx.arc(px,py,r,0,7);ctx.fill();}
+          if(teal){ctx.fillStyle=COL_TEAL;ctx.globalAlpha=Math.min(1,al*1.15);ctx.beginPath();ctx.arc(px,py,r*1.3,0,7);ctx.fill();}
+          else{ctx.fillStyle=COL_RING;ctx.globalAlpha=Math.min(1,al*1.05);ctx.beginPath();ctx.arc(px,py,r,0,7);ctx.fill();}
         }
       }
       ctx.globalAlpha=1;
