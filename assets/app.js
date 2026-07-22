@@ -813,6 +813,51 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
       ctx.globalCompositeOperation="source-over";};
   }
 
+/* ============================================================
+   소용돌이 flow field (vortexField) — HIDDEN 배경
+   ① app.js 배경 엔진 안, 다른 효과 함수 근처(예: function supernova 아래)에 붙여넣기
+   ② MAP 줄에서  hidden:supernova  →  hidden:vortexField  로 변경
+   ※ 트레일(잔상) 방식이라 매 프레임 전체를 지우지 않고 살짝만 덮습니다(엔진 호환 처리 완료).
+   ============================================================ */
+  function vortexField(){
+    let PS, N, cx, cy, rmax, tt;
+    const nz=(px,py)=>Math.sin(px*0.9+Math.cos(py*0.7))*0.6+Math.sin(py*1.3+Math.cos(px*0.5))*0.4;
+    function spawn(i){const a=Math.random()*6.28;const r=Math.pow(Math.random(),0.5)*rmax;PS[i]={x:cx+Math.cos(a)*r,y:cy+Math.sin(a)*r,life:60+(Math.random()*260|0),teal:Math.random()<0.16};}
+    build=()=>{
+      cx=W*0.5; cy=H*0.5; rmax=Math.min(W,H)*0.42; tt=0;
+      N=isMobile?1500:3400; PS=[];
+      for(let i=0;i<N;i++)spawn(i);
+      ctx.fillStyle="#0a0c0d"; ctx.fillRect(0,0,W,H);          // 어두운 베이스 1회
+    };
+    step=t=>{
+      tt+=0.015;
+      ctx.fillStyle="rgba(10,12,13,0.09)"; ctx.fillRect(0,0,W,H);   // 트레일 페이드
+      ctx.strokeStyle="rgba(120,150,145,.03)"; ctx.lineWidth=1*DPR;
+      for(let k=1;k<=3;k++){ctx.beginPath();ctx.arc(cx,cy,rmax*0.32*k,0,7);ctx.stroke();}
+      ctx.globalCompositeOperation="lighter";
+      const spd=1.25*DPR, swirl=1.0, pull=0.16;
+      for(let i=0;i<N;i++){
+        const p=PS[i];
+        const dx=p.x-cx, dy=p.y-cy;
+        const r=Math.hypot(dx,dy)||1e-6, ang=Math.atan2(dy,dx);
+        const n=nz((dx/rmax)*2.4,(dy/rmax)*2.4+tt)*0.6;
+        let vx=(-Math.sin(ang)*swirl - Math.cos(ang)*pull)+(-Math.sin(ang+n))*0.5;
+        let vy=( Math.cos(ang)*swirl - Math.sin(ang)*pull)+( Math.cos(ang+n))*0.5;
+        const vl=Math.hypot(vx,vy)||1e-6;
+        p.x+=vx/vl*spd; p.y+=vy/vl*spd; p.life--;
+        if(p.life<0 || r<rmax*0.04 || r>rmax*1.15){spawn(i);continue;}
+        const al=0.5*(1-Math.min(1,r/(rmax*1.1)))+0.06;
+        ctx.fillStyle=p.teal?"rgba(150,235,215,"+(al*0.95)+")":"rgba(232,238,236,"+(al*0.85)+")";
+        ctx.fillRect(p.x,p.y,1.15*DPR,1.15*DPR);
+      }
+      const cg=ctx.createRadialGradient(cx,cy,0,cx,cy,rmax*0.3);
+      cg.addColorStop(0,"rgba(150,232,218,.13)");cg.addColorStop(1,"rgba(150,232,218,0)");
+      ctx.fillStyle=cg;ctx.beginPath();ctx.arc(cx,cy,rmax*0.3,0,7);ctx.fill();
+      ctx.globalCompositeOperation="source-over";
+    };
+  }
+
+
   /* ---------- 4. 성좌 그리드 (members) ---------- */
   function openCluster(){
     let nodes,rings; const CN=[[.28,.5],[.5,.5],[.72,.5]];
@@ -970,7 +1015,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
       const inner=ctx.createRadialGradient(cx,cy,0,cx,cy,R*.72);inner.addColorStop(0,"rgba(15,17,19,.65)");inner.addColorStop(.7,"rgba(15,17,19,.15)");inner.addColorStop(1,"rgba(15,17,19,0)");ctx.fillStyle=inner;ctx.beginPath();ctx.arc(cx,cy,R*.72,0,7);ctx.fill();};
   }
 
-  const MAP={home:waveNebula,about:cluster,setlist:meteorField,members:ringCluster,ticket:nebula,memento:galaxy,guestbook:quietField,hidden:supernova};
+  const MAP={home:waveNebula,about:cluster,setlist:meteorField,members:ringCluster,ticket:nebula,memento:galaxy,guestbook:quietField,hidden:vortexField};
   (MAP[page]||galaxy)();
 
   let lastW=innerWidth, lastH=innerHeight;
