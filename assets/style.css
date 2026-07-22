@@ -4,9 +4,11 @@
   --gold:#56b6a6; --gold-bright:#7ed6c6; --gold-soft:#4a9187;
   --starlight:#e8ede9; --muted:#8a9490; --muted-2:#565f5b;
   --serif:"Fraunces", Georgia, serif;
-  --kr-serif:"Gowun Batang", serif;
-  --sans:"Noto Sans KR", system-ui, sans-serif;
-  --mono:"Space Mono", "Noto Sans KR", monospace;
+  --kr-serif:"Nanum Myeongjo", serif;
+  --sans:"Nanum Myeongjo", system-ui, sans-serif;
+  --mono:"Space Mono", "Nanum Myeongjo", monospace;
+  --title:"Song Myung", serif;
+  --latin:"Noto Sans", system-ui, sans-serif;
   --maxw:1140px; --ease:cubic-bezier(.22,.61,.36,1);
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -534,3 +536,9 @@ body:not([data-page="home"]):not([data-page="hidden"])::before{content:"";positi
   .hero-cta{justify-content:center;width:100%}
   .hero-cta .btn{flex:1;max-width:200px;justify-content:center;text-align:center}
 }
+
+/* ===== 폰트 지정 ===== */
+.hero h1{font-family:var(--title)!important}
+.sec-head h2,.sec-head h2 em{font-family:var(--title)!important;font-weight:400}
+.hero .latin{font-family:var(--latin)!important}
+.about-card .concept-en{font-family:var(--latin)!important;font-style:normal;letter-spacing:.2em}
