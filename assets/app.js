@@ -880,6 +880,76 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
       ctx.globalCompositeOperation="source-over";};
   }
 
+/* ============================================================
+   물결 성운 (waveNebula) — 배경 엔진에 추가할 함수
+   app.js 배경 엔진 안, 다른 효과 함수들 근처(예: function ringCluster 바로 위/아래)에
+   이 함수를 붙여넣으세요. 그리고 MAP 줄을 아래처럼 바꾸세요:
+
+   기존:
+     const MAP={home:ringCluster,about:cluster,setlist:meteorField,members:openCluster,ticket:nebula,memento:galaxy,guestbook:quietField,hidden:supernova};
+   변경:
+     const MAP={home:waveNebula,about:cluster,setlist:meteorField,members:ringCluster,ticket:nebula,memento:galaxy,guestbook:quietField,hidden:supernova};
+   (home → waveNebula, members → ringCluster 두 곳만 바뀜)
+   ============================================================ */
+  function waveNebula(){
+    const LOBES=2;
+    const radiusAt=v=>{const wave=Math.pow(Math.abs(Math.cos(v*Math.PI*LOBES)),1.1);const ends=Math.pow(Math.abs(v-0.5)*2,1.5);return 0.14+0.58*wave+0.26*ends;};
+    let rings,wisps,RINGS,PER;
+    build=()=>{
+      RINGS=isMobile?90:200; PER=isMobile?34:56; const NWISP=isMobile?600:2000;
+      rings=[];
+      for(let i=0;i<RINGS;i++){const v=i/(RINGS-1);
+        rings.push({v,phase:Math.random()*6.28,ox:(Math.sin(v*7.1)*0.5+Math.sin(v*3.3+1)*0.5)*0.16,oy:Math.sin(v*4.2+2)*0.04,tilt:Math.sin(v*5.0)*0.9,warp:0.7+Math.random()*1.1,rowTeal:Math.random()<0.14});}
+      wisps=[];
+      for(let i=0;i<NWISP;i++){const v=Math.random(),a=Math.random()*6.28;
+        wisps.push({v,a,reach:0.25+Math.random()*1.2,off:Math.random(),curl:(Math.random()-0.5)*2.6,teal:Math.random()<0.15,sz:0.35+Math.random()*1.2});}
+    };
+    let rot=0;
+    step=t=>{
+      ctx.fillStyle="#0f1113";ctx.fillRect(0,0,W,H);
+      const cx=W*(isMobile?0.5:0.64), cy=H*0.5, hgt=Math.min(H*0.46,W*0.66), rmax=Math.min(W,H)*0.32;
+      rot+=0.0012;
+      ctx.strokeStyle="rgba(120,150,145,.045)";ctx.lineWidth=1*DPR;
+      ctx.beginPath();ctx.moveTo(cx,cy-hgt*1.2);ctx.lineTo(cx,cy+hgt*1.2);ctx.stroke();
+      for(let k=1;k<=3;k++){ctx.beginPath();ctx.arc(cx,cy,rmax*0.5*k,0,7);ctx.stroke();}
+      ctx.globalCompositeOperation="lighter";
+      for(const w of wisps){
+        const baseR=radiusAt(w.v)*rmax, yv=cy+(w.v-0.5)*2*hgt;
+        const spin=rot*(0.5+radiusAt(w.v))+w.curl*0.3;
+        const flow=(t/3000*(0.5+w.off)+w.off)%1;
+        const rr=baseR*(1+w.reach*flow);
+        const a=w.a+spin+flow*w.curl*0.9;
+        const px=cx+Math.cos(a)*rr+Math.sin(w.v*20+t/2000)*8*DPR*flow;
+        const py=yv+Math.sin(a)*rr*0.13 - w.reach*flow*26*DPR*(w.v<0.5?1:-1);
+        const al=(1-flow)*0.5, r=w.sz*DPR;
+        ctx.fillStyle=w.teal?"rgba(150,235,215,"+(al*0.9)+")":"rgba(210,222,220,"+(al*0.6)+")";
+        ctx.beginPath();ctx.arc(px,py,r,0,7);ctx.fill();
+      }
+      for(const ring of rings){
+        const baseR=radiusAt(ring.v)*rmax, yv=cy+(ring.v-0.5)*2*hgt;
+        const ccx=cx+ring.ox*rmax, ccy=yv+ring.oy*rmax;
+        const spin=rot*(0.5+radiusAt(ring.v)*1.0)+ring.phase;
+        for(let j=0;j<PER;j++){
+          const a=(j/PER)*6.283+spin+ring.tilt*Math.sin((j/PER)*6.28);
+          const warp=1+0.20*Math.sin(a*3+ring.v*10+t/2600)*ring.warp+0.11*Math.sin(a*7-t/1800)+0.05*Math.sin(a*13+ring.v*20);
+          const R=baseR*warp;
+          const px=ccx+Math.cos(a)*R, py=ccy+Math.sin(a)*R*0.13;
+          const z=Math.sin(a), depth=0.26+0.74*(z*0.5+0.5);
+          const al=depth*(0.5+0.35*Math.sin(t/900+ring.v*8)), r=(0.45+0.55*depth)*DPR;
+          const teal=ring.rowTeal&&(j%3===0);
+          if(teal){ctx.fillStyle="rgba(150,235,215,"+(al*0.95)+")";ctx.beginPath();ctx.arc(px,py,r*1.25,0,7);ctx.fill();}
+          else{ctx.fillStyle="rgba(226,233,231,"+(al*0.8)+")";ctx.beginPath();ctx.arc(px,py,r,0,7);ctx.fill();}
+        }
+      }
+      const cg=ctx.createRadialGradient(cx,cy,0,cx,cy,rmax*0.5);
+      cg.addColorStop(0,"rgba(150,232,218,.1)");cg.addColorStop(1,"rgba(150,232,218,0)");
+      ctx.fillStyle=cg;ctx.beginPath();ctx.arc(cx,cy,rmax*0.5,0,7);ctx.fill();
+      ctx.globalCompositeOperation="source-over";
+      ctx.strokeStyle="rgba(180,235,225,.4)";ctx.lineWidth=1*DPR;const d=7*DPR;
+      ctx.beginPath();ctx.moveTo(cx,cy-d);ctx.lineTo(cx+d,cy);ctx.lineTo(cx,cy+d);ctx.lineTo(cx-d,cy);ctx.closePath();ctx.stroke();
+    };
+  }
+
   /* ---------- ③ 고리 성단 (hidden) — 촘촘한 링 ---------- */
   function ringCluster(){
     let pts,bg,blobs;
@@ -900,7 +970,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
       const inner=ctx.createRadialGradient(cx,cy,0,cx,cy,R*.72);inner.addColorStop(0,"rgba(15,17,19,.65)");inner.addColorStop(.7,"rgba(15,17,19,.15)");inner.addColorStop(1,"rgba(15,17,19,0)");ctx.fillStyle=inner;ctx.beginPath();ctx.arc(cx,cy,R*.72,0,7);ctx.fill();};
   }
 
-  const MAP={home:ringCluster,about:cluster,setlist:meteorField,members:openCluster,ticket:nebula,memento:galaxy,guestbook:quietField,hidden:supernova};
+  const MAP={home:waveNebula,about:cluster,setlist:meteorField,members:ringCluster,ticket:nebula,memento:galaxy,guestbook:quietField,hidden:supernova};
   (MAP[page]||galaxy)();
 
   let lastW=innerWidth, lastH=innerHeight;
