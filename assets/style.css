@@ -4,7 +4,7 @@
 /* ========= DESIGN TOKENS ========= */
 :root{
   --ink:#101011; --navy:#1b1e22; --navy-2:#24272c; --line:rgba(150,225,215,.10);
-  --gold:#56b6a6; --gold-bright:#7ed6c6; --gold-soft:#4a9187;
+  --gold:#64ABA1; --gold-bright:#8ECFC5; --gold-soft:#4E857E;
   --starlight:#CCCCCC; --muted:#8a9490; --muted-2:#565f5b;
   --serif:"Fraunces", Georgia, serif;
   --kr-serif:"BookkGothic", "Noto Sans KR", serif;
@@ -500,16 +500,16 @@ body:not([data-page="home"]):not([data-page="hidden"])::before{content:"";positi
 .brand-wrap{display:flex;align-items:flex-start;gap:5px}
 .brand-star{color:var(--gold-bright);text-decoration:none;font-size:.72rem;line-height:1;margin-top:3px;
   opacity:.7;animation:starPulse 3.4s ease-in-out infinite, goldTwinkle 10s ease-in-out 2s infinite;transition:opacity .3s,text-shadow .3s,transform .3s}
-.brand-star:hover,.brand-star:focus-visible{opacity:1;transform:scale(1.25);text-shadow:0 0 14px rgba(126,214,198,.95);outline:none}
+.brand-star:hover,.brand-star:focus-visible{opacity:1;transform:scale(1.25);text-shadow:0 0 14px rgba(142,207,197,.95);outline:none}
 
 /* 히든 입구 — 푸터 */
 .hidden-star{color:var(--gold-bright);text-decoration:none;margin-left:8px;
   opacity:.7;animation:starPulse 3.4s ease-in-out infinite, goldTwinkle 10s ease-in-out 7s infinite;transition:opacity .3s,text-shadow .3s,transform .3s}
-.hidden-star:hover,.hidden-star:focus-visible{opacity:1;transform:scale(1.25);text-shadow:0 0 14px rgba(126,214,198,.95);outline:none}
+.hidden-star:hover,.hidden-star:focus-visible{opacity:1;transform:scale(1.25);text-shadow:0 0 14px rgba(142,207,197,.95);outline:none}
 
 @keyframes starPulse{
-  0%,100%{opacity:.55;text-shadow:0 0 4px rgba(126,214,198,.4)}
-  50%{opacity:.95;text-shadow:0 0 12px rgba(126,214,198,.85),0 0 20px rgba(126,214,198,.4)}
+  0%,100%{opacity:.55;text-shadow:0 0 4px rgba(142,207,197,.4)}
+  50%{opacity:.95;text-shadow:0 0 12px rgba(142,207,197,.85),0 0 20px rgba(142,207,197,.4)}
 }
 @keyframes goldTwinkle{
   0%,6%,100%{filter:drop-shadow(0 0 2px rgba(245,198,90,0)) drop-shadow(0 0 4px rgba(245,198,90,0)) brightness(1)}

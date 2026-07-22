@@ -327,7 +327,7 @@ async function genTicket(){
 
   // 상단 라벨
   ctx.textAlign="center";
-  ctx.fillStyle="#7ed6c6";ctx.font='700 17px "Space Mono"';
+  ctx.fillStyle="#8ECFC5";ctx.font='700 17px "Space Mono"';
   ctx.fillText("H O N G I K   U N I V E R S I T Y", W/2, 70);
   ctx.fillStyle="#8a9490";ctx.font='400 15px "Space Mono"';
   ctx.fillText("창작곡 밴드 동아리 뚜라미", W/2, 96);
@@ -336,10 +336,10 @@ async function genTicket(){
 
   // 타이틀
   const tg=ctx.createLinearGradient(0,170,0,250);
-  tg.addColorStop(0,"#ffffff");tg.addColorStop(.55,"#7ed6c6");tg.addColorStop(1,"#56b6a6");
+  tg.addColorStop(0,"#ffffff");tg.addColorStop(.55,"#8ECFC5");tg.addColorStop(1,"#64ABA1");
   ctx.fillStyle=tg;ctx.font='700 70px "Gowun Batang"';
   ctx.fillText("별무리", W/2, 230);
-  ctx.fillStyle="#56b6a6";ctx.font='700 22px "Space Mono"';
+  ctx.fillStyle="#64ABA1";ctx.font='700 22px "Space Mono"';
   ctx.save();ctx.font='700 20px "Space Mono"';
   drawSpaced(ctx,"C L U S T A R", W/2, 266, 2);
   ctx.restore();
@@ -372,9 +372,9 @@ async function genTicket(){
   ctx.fillText(name, W/2, 642);
 
   // 당신의 별
-  ctx.fillStyle="#7ed6c6";ctx.font='700 15px "Space Mono"';
+  ctx.fillStyle="#8ECFC5";ctx.font='700 15px "Space Mono"';
   ctx.fillText("✦  YOUR STAR", W/2, 706);
-  ctx.fillStyle="#7ed6c6";ctx.font='700 30px "Gowun Batang"';
+  ctx.fillStyle="#8ECFC5";ctx.font='700 30px "Gowun Batang"';
   ctx.fillText(star.kr+"  ·  "+star.en, W/2, 744);
 
   // 일시 / 장소
@@ -427,11 +427,11 @@ const LS_COLORS=[
   {k:"rose",  name:"로즈",   rgb:[255,150,180]},
   {k:"green", name:"그린",   rgb:[150,240,170]},
   {k:"red",   name:"레드",   rgb:[255,110,110]},
-  {k:"teal",  name:"청록",   rgb:[126,214,198]},
+  {k:"teal",  name:"청록",   rgb:[142,207,197]},
 ];
 let lsColor=LS_COLORS[0].rgb, lsRAF=null, lsWake=null;
 let lsPattern="pulse";
-const LS_PRESET={gold:[244,214,138],white:[255,255,255],blue:[120,170,255],violet:[185,150,255],rose:[255,150,180],green:[150,240,170],red:[255,110,110],teal:[126,214,198]};
+const LS_PRESET={gold:[244,214,138],white:[255,255,255],blue:[120,170,255],violet:[185,150,255],rose:[255,150,180],green:[150,240,170],red:[255,110,110],teal:[142,207,197]};
 function hsl2rgb(h,s,l){h/=360;const a=s*Math.min(l,1-l);const f=n=>{const k=(n+h*12)%12;return l-a*Math.max(-1,Math.min(k-3,9-k,1));};return [f(0)*255,f(8)*255,f(4)*255];}
 function rgb2hsl(r,g,b){r/=255;g/=255;b/=255;const mx=Math.max(r,g,b),mn=Math.min(r,g,b);let h,s,l=(mx+mn)/2;if(mx===mn){h=s=0;}else{const d=mx-mn;s=l>0.5?d/(2-mx-mn):d/(mx+mn);switch(mx){case r:h=(g-b)/d+(g<b?6:0);break;case g:h=(b-r)/d+2;break;default:h=(r-g)/d+4;}h*=60;}return [h,s,l];}
 const lsOverlay=document.getElementById("lsOverlay"),
