@@ -490,7 +490,7 @@ body:not([data-page="home"]):not([data-page="hidden"])::before{content:"";positi
 .scroll-hint{left:auto;right:40px;transform:none}
 @media(max-width:760px){
   .hero{text-align:center}
-  .hero::before{background:radial-gradient(62% 100% at 50% 50%,rgba(16,16,17,.86),rgba(16,16,17,.5) 50%,transparent 75%)}
+  .hero::before{background:radial-gradient(35% 100% at 50% 30%,rgba(16,16,17,.87),rgba(16,16,17,.87) 20%,transparent 50%)}
   .hero .wrap{align-items:center}
   .hero .superscript,.cd-lab{color:var(--muted)}
   .countdown,.hero-cta{justify-content:center}
