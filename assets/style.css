@@ -498,34 +498,9 @@ body:not([data-page="home"]):not([data-page="hidden"])::before{content:"";positi
 
 /* 히든 입구 — 상단 로고 옆 */
 .brand-wrap{display:flex;align-items:flex-start;gap:5px}
-.brand-star{position:relative;color:var(--gold-bright);text-decoration:none;font-size:.72rem;line-height:1;margin-top:3px;
+.brand-star{color:var(--gold-bright);text-decoration:none;font-size:.72rem;line-height:1;margin-top:3px;
   opacity:.7;animation:starPulse 3.4s ease-in-out infinite, goldTwinkle 10s ease-in-out 2s infinite;transition:opacity .3s,text-shadow .3s,transform .3s}
 .brand-star:hover,.brand-star:focus-visible{opacity:1;transform:scale(1.25);text-shadow:0 0 14px rgba(126,214,198,.95);outline:none}
-
-/* 유성이 대각선으로 떨어져 별에 박힘 — 로고 옆 별에만. 18s에 한 번(트윙클 10s와 서로소라 겹침 드묾).
-   ::before=유성 꼬리(별 중심으로 수렴 후 흡수), ::after=임팩트 순간 퍼지는 골드 링.
-   filter/text-shadow 안 건드려 맥동·트윙클과 독립. transform/opacity 기반이라 프레임당 할당 0. */
-.brand-star::before{content:"";position:absolute;top:50%;left:50%;width:2px;height:22px;border-radius:2px;
-  background:linear-gradient(to bottom,rgba(245,198,90,0),rgba(245,198,90,.95));
-  box-shadow:0 0 6px 1px rgba(245,198,90,.45);transform-origin:50% 100%;
-  transform:translate(-1px,-22px) rotate(45deg) scaleY(0);opacity:0;pointer-events:none;
-  animation:meteorFall 18s ease-in 3s infinite}
-.brand-star::after{content:"";position:absolute;top:50%;left:50%;width:18px;height:18px;border-radius:50%;
-  border:1.5px solid rgba(245,198,90,.9);transform:translate(-50%,-50%) scale(.2);opacity:0;pointer-events:none;
-  animation:impactRing 18s ease-out 3s infinite}
-@keyframes meteorFall{
-  0%{opacity:0;transform:translate(-41px,-62px) rotate(45deg) scaleY(1)}
-  1%{opacity:1}
-  6%{opacity:1;transform:translate(-1px,-22px) rotate(45deg) scaleY(1)}
-  7.2%{opacity:1;transform:translate(-1px,-22px) rotate(45deg) scaleY(.12)}
-  8%,100%{opacity:0;transform:translate(-1px,-22px) rotate(45deg) scaleY(0)}
-}
-@keyframes impactRing{
-  0%,6%,100%{opacity:0;transform:translate(-50%,-50%) scale(.2)}
-  7%{opacity:.85;transform:translate(-50%,-50%) scale(.45)}
-  10%{opacity:.5;transform:translate(-50%,-50%) scale(1)}
-  13%{opacity:0;transform:translate(-50%,-50%) scale(1.7)}
-}
 
 /* 히든 입구 — 푸터 */
 .hidden-star{color:var(--gold-bright);text-decoration:none;margin-left:8px;
@@ -542,8 +517,7 @@ body:not([data-page="home"]):not([data-page="hidden"])::before{content:"";positi
   4%{filter:drop-shadow(0 0 5px rgba(245,198,90,.5)) drop-shadow(0 0 10px rgba(245,198,90,.25)) brightness(1.2)}
 }
 
-@media(prefers-reduced-motion:reduce){.brand-star,.hidden-star{animation:none;opacity:.7}
-  .brand-star::before,.brand-star::after{animation:none;opacity:0}}
+@media(prefers-reduced-motion:reduce){.brand-star,.hidden-star{animation:none;opacity:.7}}
 
 /* 모바일에서 meta-line 두 줄로 */
 @media(max-width:760px){
