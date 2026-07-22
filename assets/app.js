@@ -463,7 +463,17 @@ function lsSyncSel(){
 }
 renderLsColors();
 
-
+let lsSprite=null, lsSpriteKey="", lsColStr="rgb(244,214,138)", lsColKey=-1;
+function lsBuildSprite(W,H){
+  const c=document.createElement("canvas"); c.width=W; c.height=H;
+  const s=c.getContext("2d"), cx=W/2, cy=H/2, R=W*0.46;
+  const g=s.createRadialGradient(cx,cy,0,cx,cy,R);
+  g.addColorStop(0,"rgba(255,255,255,1)");
+  g.addColorStop(0.45,"rgba(255,255,255,0.55)");
+  g.addColorStop(1,"rgba(255,255,255,0)");
+  s.fillStyle=g; s.beginPath(); s.arc(cx,cy,R,0,7); s.fill();
+  lsSprite=c; lsSpriteKey=W+"x"+H;
+}
 function lsDraw(){
   const t=Date.now();
   const W=lsGlow.width,H=lsGlow.height,cx=W/2,cy=H/2;
@@ -478,19 +488,26 @@ function lsDraw(){
     case "off":    bright=0; break;
     default:       bright=0.55+slow*0.4+fast*0.05;   // pulse
   }
+  const key=W+"x"+H; if(lsSpriteKey!==key||!lsSprite) lsBuildSprite(W,H);
   lgx.clearRect(0,0,W,H);
   if(bright>0.01){
-    const R=W*0.46*(0.92+slow*0.08);
-    const grad=lgx.createRadialGradient(cx,cy,0,cx,cy,R);
-    grad.addColorStop(0,`rgba(${r|0},${g|0},${b|0},${bright})`);
-    grad.addColorStop(0.45,`rgba(${r|0},${g|0},${b|0},${bright*0.55})`);
-    grad.addColorStop(1,`rgba(${r|0},${g|0},${b|0},0)`);
-    lgx.fillStyle=grad;lgx.beginPath();lgx.arc(cx,cy,R,0,7);lgx.fill();
-    lgx.fillStyle=`rgba(255,255,255,${Math.min(0.9,bright*0.6+slow*0.3)})`;
-    lgx.beginPath();lgx.arc(cx,cy,W*0.05,0,7);lgx.fill();
+    const ck=((r|0)<<16)|((g|0)<<8)|(b|0);
+    if(ck!==lsColKey){ lsColKey=ck; lsColStr="rgb("+(r|0)+","+(g|0)+","+(b|0)+")"; }
+    const sc=0.92+slow*0.08;
+    lgx.globalAlpha=bright;
+    lgx.setTransform(sc,0,0,sc,cx*(1-sc),cy*(1-sc));
+    lgx.drawImage(lsSprite,0,0);
+    lgx.setTransform(1,0,0,1,0,0);
+    lgx.globalCompositeOperation="source-atop";
+    lgx.globalAlpha=1; lgx.fillStyle=lsColStr; lgx.fillRect(0,0,W,H);
+    lgx.globalCompositeOperation="source-over";
+    lgx.globalAlpha=Math.min(0.9,bright*0.6+slow*0.3);
+    lgx.fillStyle="#fff"; lgx.beginPath(); lgx.arc(cx,cy,W*0.05,0,7); lgx.fill();
+    lgx.globalAlpha=1;
   }
   lsRAF=requestAnimationFrame(lsDraw);
 }
+
 async function lsOpen(){
   lsOverlay.classList.add("on");lsOverlay.setAttribute("aria-hidden","false");
   if(!lsRAF)lsDraw();
@@ -969,6 +986,8 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
         wisps.push({v,a,reach:0.25+Math.random()*1.2,off:Math.random(),curl:(Math.random()-0.5)*2.6,teal:Math.random()<0.15,sz:0.35+Math.random()*1.2});}
     };
     let rot=0;
+    const COL_TEAL="rgb(160,240,222)", COL_WISP="rgb(220,230,228)", COL_RING="rgb(232,238,236)";
+    let cg=null,_cgx=0,_cgy=0,_cgr=0;
     step=t=>{
       ctx.fillStyle="#0f1113";ctx.fillRect(0,0,W,H);
       const cx=W*(isMobile?0.5:0.72), cy=H*0.5, hgt=Math.min(H*0.46,W*0.66), rmax=Math.min(W,H)*0.32;
@@ -986,7 +1005,8 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
         const px=cx+Math.cos(a)*rr+Math.sin(w.v*20+t/2000)*8*DPR*flow;
         const py=yv+Math.sin(a)*rr*0.13 - w.reach*flow*26*DPR*(w.v<0.5?1:-1);
         const al=(1-flow)*0.5, r=w.sz*DPR;
-        ctx.fillStyle=w.teal?"rgba(160,240,222,"+Math.min(1,al*1.1)+")":"rgba(220,230,228,"+(al*0.8)+")";
+        if(w.teal){ctx.fillStyle=COL_TEAL;ctx.globalAlpha=Math.min(1,al*1.1);}
+        else{ctx.fillStyle=COL_WISP;ctx.globalAlpha=al*0.8;}
         ctx.beginPath();ctx.arc(px,py,r,0,7);ctx.fill();
       }
       for(const ring of rings){
@@ -1001,12 +1021,16 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
           const z=Math.sin(a), depth=0.26+0.74*(z*0.5+0.5);
           const al=depth*(0.5+0.35*Math.sin(t/900+ring.v*8)), r=(0.45+0.55*depth)*DPR;
           const teal=ring.rowTeal&&(j%3===0);
-          if(teal){ctx.fillStyle="rgba(160,240,222,"+Math.min(1,al*1.15)+")";ctx.beginPath();ctx.arc(px,py,r*1.3,0,7);ctx.fill();}
-          else{ctx.fillStyle="rgba(232,238,236,"+Math.min(1,al*1.05)+")";ctx.beginPath();ctx.arc(px,py,r,0,7);ctx.fill();}
+          if(teal){ctx.fillStyle=COL_TEAL;ctx.globalAlpha=Math.min(1,al*1.15);ctx.beginPath();ctx.arc(px,py,r*1.3,0,7);ctx.fill();}
+          else{ctx.fillStyle=COL_RING;ctx.globalAlpha=Math.min(1,al*1.05);ctx.beginPath();ctx.arc(px,py,r,0,7);ctx.fill();}
         }
       }
-      const cg=ctx.createRadialGradient(cx,cy,0,cx,cy,rmax*0.5);
-      cg.addColorStop(0,"rgba(150,232,218,.1)");cg.addColorStop(1,"rgba(150,232,218,0)");
+      ctx.globalAlpha=1;
+      if(cg===null||_cgx!==cx||_cgy!==cy||_cgr!==rmax){
+        _cgx=cx;_cgy=cy;_cgr=rmax;
+        cg=ctx.createRadialGradient(cx,cy,0,cx,cy,rmax*0.5);
+        cg.addColorStop(0,"rgba(150,232,218,.1)");cg.addColorStop(1,"rgba(150,232,218,0)");
+      }
       ctx.fillStyle=cg;ctx.beginPath();ctx.arc(cx,cy,rmax*0.5,0,7);ctx.fill();
       ctx.globalCompositeOperation="source-over";
       ctx.strokeStyle="rgba(180,235,225,.4)";ctx.lineWidth=1*DPR;const d=7*DPR;
