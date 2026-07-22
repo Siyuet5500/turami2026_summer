@@ -907,7 +907,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
     let rot=0;
     step=t=>{
       ctx.fillStyle="#0f1113";ctx.fillRect(0,0,W,H);
-      const cx=W*(isMobile?0.5:0.64), cy=H*0.5, hgt=Math.min(H*0.46,W*0.66), rmax=Math.min(W,H)*0.32;
+      const cx=W*(isMobile?0.5:0.72), cy=H*0.5, hgt=Math.min(H*0.46,W*0.66), rmax=Math.min(W,H)*0.32;
       rot+=0.0012;
       ctx.strokeStyle="rgba(120,150,145,.045)";ctx.lineWidth=1*DPR;
       ctx.beginPath();ctx.moveTo(cx,cy-hgt*1.2);ctx.lineTo(cx,cy+hgt*1.2);ctx.stroke();
@@ -922,7 +922,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
         const px=cx+Math.cos(a)*rr+Math.sin(w.v*20+t/2000)*8*DPR*flow;
         const py=yv+Math.sin(a)*rr*0.13 - w.reach*flow*26*DPR*(w.v<0.5?1:-1);
         const al=(1-flow)*0.5, r=w.sz*DPR;
-        ctx.fillStyle=w.teal?"rgba(150,235,215,"+(al*0.9)+")":"rgba(210,222,220,"+(al*0.6)+")";
+        ctx.fillStyle=w.teal?"rgba(160,240,222,"+Math.min(1,al*1.1)+")":"rgba(220,230,228,"+(al*0.8)+")";
         ctx.beginPath();ctx.arc(px,py,r,0,7);ctx.fill();
       }
       for(const ring of rings){
@@ -937,8 +937,8 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
           const z=Math.sin(a), depth=0.26+0.74*(z*0.5+0.5);
           const al=depth*(0.5+0.35*Math.sin(t/900+ring.v*8)), r=(0.45+0.55*depth)*DPR;
           const teal=ring.rowTeal&&(j%3===0);
-          if(teal){ctx.fillStyle="rgba(150,235,215,"+(al*0.95)+")";ctx.beginPath();ctx.arc(px,py,r*1.25,0,7);ctx.fill();}
-          else{ctx.fillStyle="rgba(226,233,231,"+(al*0.8)+")";ctx.beginPath();ctx.arc(px,py,r,0,7);ctx.fill();}
+          if(teal){ctx.fillStyle="rgba(160,240,222,"+Math.min(1,al*1.15)+")";ctx.beginPath();ctx.arc(px,py,r*1.3,0,7);ctx.fill();}
+          else{ctx.fillStyle="rgba(232,238,236,"+Math.min(1,al*1.05)+")";ctx.beginPath();ctx.arc(px,py,r,0,7);ctx.fill();}
         }
       }
       const cg=ctx.createRadialGradient(cx,cy,0,cx,cy,rmax*0.5);
