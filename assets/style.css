@@ -240,6 +240,11 @@ footer{border-top:1px solid var(--line);padding:70px 0 50px;position:relative;z-
 .ls-colors{position:absolute;bottom:108px;display:flex;gap:16px}
 .ls-colors button{width:38px;height:38px;border-radius:50%;border:2px solid rgba(255,255,255,.25);cursor:pointer;transition:.2s;padding:0}
 .ls-colors button.sel{border-color:#fff;transform:scale(1.18)}
+@media(max-width:520px){
+  .ls-colors{display:grid;grid-template-columns:repeat(4,1fr);gap:16px 20px;justify-items:center;
+    left:50%;transform:translateX(-50%);width:min(88vw,300px);bottom:104px}
+}
+
 .ls-close{position:absolute;bottom:38px;background:none;border:1px solid rgba(255,255,255,.35);color:rgba(255,255,255,.8);font-family:var(--mono);font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;padding:11px 26px;border-radius:2px;cursor:pointer;transition:.2s}
 .ls-close:hover{border-color:#fff;color:#fff}
 
@@ -494,18 +499,24 @@ body:not([data-page="home"]):not([data-page="hidden"])::before{content:"";positi
 /* 히든 입구 — 상단 로고 옆 */
 .brand-wrap{display:flex;align-items:flex-start;gap:5px}
 .brand-star{color:var(--gold-bright);text-decoration:none;font-size:.72rem;line-height:1;margin-top:3px;
-  opacity:.7;animation:starPulse 3.4s ease-in-out infinite;transition:opacity .3s,text-shadow .3s,transform .3s}
+  opacity:.7;animation:starPulse 3.4s ease-in-out infinite, goldTwinkle 10s ease-in-out 2s infinite;transition:opacity .3s,text-shadow .3s,transform .3s}
 .brand-star:hover,.brand-star:focus-visible{opacity:1;transform:scale(1.25);text-shadow:0 0 14px rgba(126,214,198,.95);outline:none}
 
 /* 히든 입구 — 푸터 */
 .hidden-star{color:var(--gold-bright);text-decoration:none;margin-left:8px;
-  opacity:.7;animation:starPulse 3.4s ease-in-out infinite;transition:opacity .3s,text-shadow .3s,transform .3s}
+  opacity:.7;animation:starPulse 3.4s ease-in-out infinite, goldTwinkle 10s ease-in-out 7s infinite;transition:opacity .3s,text-shadow .3s,transform .3s}
 .hidden-star:hover,.hidden-star:focus-visible{opacity:1;transform:scale(1.25);text-shadow:0 0 14px rgba(126,214,198,.95);outline:none}
 
 @keyframes starPulse{
   0%,100%{opacity:.55;text-shadow:0 0 4px rgba(126,214,198,.4)}
   50%{opacity:.95;text-shadow:0 0 12px rgba(126,214,198,.85),0 0 20px rgba(126,214,198,.4)}
 }
+@keyframes goldTwinkle{
+  0%,6%,100%{filter:drop-shadow(0 0 2px rgba(245,198,90,0)) drop-shadow(0 0 4px rgba(245,198,90,0)) brightness(1)}
+  1.5%{filter:drop-shadow(0 0 10px rgba(245,198,90,.95)) drop-shadow(0 0 22px rgba(245,198,90,.5)) brightness(1.6)}
+  4%{filter:drop-shadow(0 0 5px rgba(245,198,90,.5)) drop-shadow(0 0 10px rgba(245,198,90,.25)) brightness(1.2)}
+}
+
 @media(prefers-reduced-motion:reduce){.brand-star,.hidden-star{animation:none;opacity:.7}}
 
 /* 모바일에서 meta-line 두 줄로 */
