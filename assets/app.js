@@ -987,7 +987,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
     };
     let rot=0;
     const COL_TEAL="rgb(160,240,222)", COL_WISP="rgb(220,230,228)", COL_RING="rgb(232,238,236)";
-    const NEB=isMobile?1.9:1;
+    const NEB=isMobile?4:1;
     let cg=null,_cgx=0,_cgy=0,_cgr=0;
     step=t=>{
       ctx.fillStyle="#101011";ctx.fillRect(0,0,W,H);
