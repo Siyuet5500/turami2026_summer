@@ -440,10 +440,14 @@ LS_COLORS.forEach((c,i)=>{
   const b=document.createElement("button");
   b.style.background=`rgb(${c.rgb.join(",")})`;
   b.setAttribute("aria-label",c.name);
-  if(i===0)b.classList.add("sel");
-  b.addEventListener("click",()=>{lsColor=c.rgb;[...lsColorsBox.children].forEach(x=>x.classList.remove("sel"));b.classList.add("sel");});
+  b.addEventListener("click",()=>{lsColor=c.rgb;lsSyncSel();});
   lsColorsBox.appendChild(b);
 });
+function lsSyncSel(){
+  const cur=lsColor.join(",");
+  [...lsColorsBox.children].forEach((el,idx)=>el.classList.toggle("sel", LS_COLORS[idx]&&LS_COLORS[idx].rgb.join(",")===cur));
+}
+lsSyncSel();
 
 function lsDraw(){
   const t=Date.now();
@@ -1191,7 +1195,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
   onSnapshot(doc(db,"live","state"), snap=>{
     const d=snap.data(); if(!d) return;
     if(d.pattern) lsPattern=d.pattern;
-    if(d.color && LS_PRESET[d.color]) lsColor=LS_PRESET[d.color];
+    if(d.color && LS_PRESET[d.color]){ lsColor=LS_PRESET[d.color]; if(typeof lsSyncSel==="function") lsSyncSel(); }
     if(sync) sync.textContent="운영자와 실시간 동기화 중 ✦";
   }, ()=>{});
 })();
