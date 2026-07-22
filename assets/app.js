@@ -941,7 +941,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
     const radiusAt=v=>{const wave=Math.pow(Math.abs(Math.cos(v*Math.PI*LOBES)),1.1);const ends=Math.pow(Math.abs(v-0.5)*2,1.5);return 0.14+0.58*wave+0.26*ends;};
     let rings,wisps,RINGS,PER;
     build=()=>{
-      RINGS=isMobile?90:200; PER=isMobile?34:56; const NWISP=isMobile?600:2000;
+      RINGS=isMobile?130:200; PER=isMobile?44:56; const NWISP=isMobile?1100:2000;
       rings=[];
       for(let i=0;i<RINGS;i++){const v=i/(RINGS-1);
         rings.push({v,phase:Math.random()*6.28,ox:(Math.sin(v*7.1)*0.5+Math.sin(v*3.3+1)*0.5)*0.16,oy:Math.sin(v*4.2+2)*0.04,tilt:Math.sin(v*5.0)*0.9,warp:0.7+Math.random()*1.1,rowTeal:Math.random()<0.14});}
@@ -1035,7 +1035,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
   document.addEventListener("visibilitychange",()=>{docHidden=document.hidden;});
 
   // 30fps 상한 — 부하를 절반으로. 스크롤 중에도 멈추지 않고 계속 그린다.
-  const FRAME=1000/(isMobile?30:60); let lastDraw=0;
+  const FRAME=1000/30; let lastDraw=0;
   function loop(t){
     requestAnimationFrame(loop);
     if(docHidden) return;
