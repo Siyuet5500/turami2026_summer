@@ -1,13 +1,16 @@
+@font-face{font-family:'BookkGothic';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/BookkGothic-Lt.woff2') format('woff2');font-weight:300;font-display:swap}
+@font-face{font-family:'BookkGothic';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/BookkGothic-Bd.woff2') format('woff2');font-weight:700;font-display:swap}
+
 /* ========= DESIGN TOKENS ========= */
 :root{
   --ink:#141619; --navy:#1b1e22; --navy-2:#24272c; --line:rgba(150,225,215,.10);
   --gold:#56b6a6; --gold-bright:#7ed6c6; --gold-soft:#4a9187;
   --starlight:#e8ede9; --muted:#8a9490; --muted-2:#565f5b;
   --serif:"Fraunces", Georgia, serif;
-  --kr-serif:"Nanum Myeongjo", serif;
-  --sans:"Nanum Myeongjo", system-ui, sans-serif;
-  --mono:"Space Mono", "Nanum Myeongjo", monospace;
-  --title:"Song Myung", serif;
+  --kr-serif:"BookkGothic", "Noto Sans KR", serif;
+  --sans:"BookkGothic", "Noto Sans KR", system-ui, sans-serif;
+  --mono:"Space Mono", "BookkGothic", monospace;
+  --title:"Noto Serif KR", serif;
   --latin:"Noto Sans", system-ui, sans-serif;
   --maxw:1140px; --ease:cubic-bezier(.22,.61,.36,1);
 }
@@ -538,7 +541,7 @@ body:not([data-page="home"]):not([data-page="hidden"])::before{content:"";positi
 }
 
 /* ===== 폰트 지정 ===== */
-.hero h1{font-family:var(--title)!important}
-.sec-head h2,.sec-head h2 em{font-family:var(--title)!important;font-weight:400}
+.hero h1{font-family:var(--title)!important;font-weight:300}
+.sec-head h2,.sec-head h2 em{font-family:var(--title)!important;font-weight:300}
 .hero .latin{font-family:var(--latin)!important}
 .about-card .concept-en{font-family:var(--latin)!important;font-style:normal;letter-spacing:.2em}
