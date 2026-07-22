@@ -472,7 +472,7 @@ function lsDraw(){
   const fast=(Math.sin(t/450*Math.PI)+1)/2;
   switch(lsPattern){
     case "solid":  bright=0.92; break;
-    case "blink":  bright=(Math.floor(t/380)%2)?0.95:0.12; break;
+    case "blink":  { const b2=(Math.sin(t/300*Math.PI)+1)/2; bright=0.12+Math.pow(b2,1.6)*0.83; break; }
     case "wave":   { const h=rgb2hsl(r,g,b); [r,g,b]=hsl2rgb((h[0]+(t/40))%360,h[1],h[2]); bright=0.6+slow*0.35; break; }
     case "rainbow":{ [r,g,b]=hsl2rgb((t/25)%360,0.75,0.62); bright=0.7+fast*0.2; break; }
     case "off":    bright=0; break;
@@ -1064,8 +1064,9 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
       const tf=`translate(${(-pxX*16).toFixed(2)}px,${(-pxY*12).toFixed(2)}px)`;
       if(heroConst)heroConst.style.transform=tf;if(heroNav)heroNav.style.transform=tf;
     }
-    if(t-lastDraw<FRAME) return;   // 프레임 상한
-    lastDraw=t; step(t);
+    if(t-lastDraw<FRAME) return;
+    lastDraw+=FRAME; if(t-lastDraw>FRAME) lastDraw=t;   // 균등 간격(비트 제거) + 밀리면 재동기화
+    step(t);
   }
   if(prefersReduced){ step(0); }
   else requestAnimationFrame(loop);
