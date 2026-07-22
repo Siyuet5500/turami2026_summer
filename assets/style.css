@@ -490,10 +490,17 @@ body:not([data-page="home"]):not([data-page="hidden"])::before{content:"";positi
 .scroll-hint{left:auto;right:40px;transform:none}
 @media(max-width:760px){
   .hero{text-align:center}
-  .hero::before{background:radial-gradient(92% 82% at 50% 45%,rgba(20,22,25,.85),rgba(20,22,25,.35) 60%,transparent)}
+  .hero::before{background:rgba(16,16,17,.68)}
   .hero .wrap{align-items:center}
+  .hero .superscript,.cd-lab{color:var(--muted)}
   .countdown,.hero-cta{justify-content:center}
   .scroll-hint{right:50%;transform:translateX(50%)}
+}
+
+/* 히어로 소형 텍스트 국소 대비 (별무리 제외 — 이미 잘 보임) */
+@media(max-width:760px){
+  .hero .wrap{text-shadow:0 1px 10px rgba(16,16,17,.97),0 0 3px rgba(16,16,17,.95),0 0 20px rgba(16,16,17,.6)}
+  .hero h1{text-shadow:0 1px 18px rgba(16,16,17,.5)}
 }
 
 /* 히든 입구 — 상단 로고 옆 */
