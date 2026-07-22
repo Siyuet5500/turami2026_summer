@@ -767,7 +767,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
   const DPR = Math.min(devicePixelRatio||1, isMobile?1.5:2);
   let W, H;
   const gauss = ()=>{let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(6.283*v);};
-  const TEAL=[120,222,205], TEALW=[210,250,242], BLUE=[150,225,255], INK="#141619";
+  const TEAL=[120,222,205], TEALW=[210,250,242], BLUE=[150,225,255], INK="#101011";
 
   const page = (document.body.dataset.page || (location.pathname.split("/").pop().replace(".html","")||"home")).toLowerCase();
 
@@ -863,7 +863,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
       cx=W*0.5; cy=H*0.5; rmax=Math.min(W,H)*0.42; tt=0;
       N=isMobile?1500:3400; PS=[];
       for(let i=0;i<N;i++)spawn(i);
-      ctx.fillStyle="#0a0c0d"; ctx.fillRect(0,0,W,H);          // 어두운 베이스 1회
+      ctx.fillStyle="#101011"; ctx.fillRect(0,0,W,H);          // 어두운 베이스 1회
     };
     step=t=>{
       tt+=0.015;
@@ -989,7 +989,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
     const COL_TEAL="rgb(160,240,222)", COL_WISP="rgb(220,230,228)", COL_RING="rgb(232,238,236)";
     let cg=null,_cgx=0,_cgy=0,_cgr=0;
     step=t=>{
-      ctx.fillStyle="#0f1113";ctx.fillRect(0,0,W,H);
+      ctx.fillStyle="#101011";ctx.fillRect(0,0,W,H);
       const cx=W*(isMobile?0.5:0.72), cy=H*0.5, hgt=Math.min(H*0.46,W*0.66), rmax=Math.min(W,H)*0.32;
       rot+=0.0012;
       ctx.strokeStyle="rgba(120,150,145,.045)";ctx.lineWidth=1*DPR;
@@ -1047,7 +1047,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
       bg=[];const nb=Math.min(140,scale(100));for(let i=0;i<nb;i++)bg.push({x:Math.random(),y:Math.random(),s:.3+Math.random()*.7,tw:Math.random()*6.28});
       blobs=[];for(let i=0;i<4;i++)blobs.push({x:Math.random(),y:Math.random(),r:.35+Math.random()*.3,ph:Math.random()*6.28,sp:.2+Math.random()*.3});};
     let rot=0;
-    step=t=>{ctx.fillStyle="#0f1113";ctx.fillRect(0,0,W,H);const cx=W*(isMobile?.5:.73),cy=H*.5,R=Math.min(W,H)*.36;rot+=.0009;
+    step=t=>{ctx.fillStyle="#101011";ctx.fillRect(0,0,W,H);const cx=W*(isMobile?.5:.73),cy=H*.5,R=Math.min(W,H)*.36;rot+=.0009;
       ctx.globalCompositeOperation="lighter";
       for(const b of blobs){const pr=b.r*Math.min(W,H)*(.9+.1*Math.sin(t/3200*b.sp+b.ph));const px=(b.x+.015*Math.sin(t/6000+b.ph))*W,py=(b.y+.015*Math.cos(t/7000+b.ph))*H;const g=ctx.createRadialGradient(px,py,0,px,py,pr);g.addColorStop(0,"rgba(50,140,130,.08)");g.addColorStop(.5,"rgba(45,110,120,.03)");g.addColorStop(1,"rgba(45,110,120,0)");ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,pr,0,7);ctx.fill();}
       for(const s of bg){const tw=.2+.4*Math.sin(t/800+s.tw);if(tw<0)continue;ctx.fillStyle="rgba(150,215,205,"+tw+")";ctx.beginPath();ctx.arc(s.x*W,s.y*H,s.s*DPR,0,7);ctx.fill();}
