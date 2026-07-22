@@ -49,9 +49,15 @@
   .preview canvas{position:absolute;inset:0;width:100%;height:100%}
   .now{font-size:.82rem;color:var(--muted);text-align:center;margin:0 0 20px}.now b{color:#fff;font-weight:500}
   .sec{font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
-  .colors{display:grid;grid-template-columns:repeat(8,1fr);gap:9px;margin-bottom:22px}
-  .sw{aspect-ratio:1;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:.12s;box-shadow:0 0 0 1px rgba(255,255,255,.08) inset}
-  .sw{cursor:grab}.sw:hover{transform:scale(1.08)}.sw.sel{border-color:#fff;transform:scale(1.12)}.sw.dragging{opacity:.4;transform:scale(.9)}
+  .colors{display:grid;grid-template-columns:repeat(4,1fr);gap:14px 10px;margin-bottom:22px}
+  .swcell{display:flex;flex-direction:column;align-items:center;gap:6px}
+  .sw{width:100%;max-width:54px;aspect-ratio:1;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:.12s;box-shadow:0 0 0 1px rgba(255,255,255,.08) inset}
+  .sw:hover{transform:scale(1.08)}.sw.sel{border-color:#fff;transform:scale(1.12)}
+  .swname{font-size:.6rem;color:#8a93b8;font-family:'Space Mono',monospace;letter-spacing:.04em}
+  .sword{display:flex;gap:5px}
+  .sword button{width:28px;height:22px;border:1px solid #2a3450;background:#1a2036;color:#cfd5e6;border-radius:5px;cursor:pointer;font-size:.72rem;line-height:1;padding:0}
+  .sword button:disabled{opacity:.28;cursor:default}
+  .sword button:not(:disabled):hover{border-color:var(--gold)}
   .pats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
   .pat{padding:14px 6px;border-radius:11px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--star);font-size:.92rem;cursor:pointer;transition:.15s}
   .pat:hover{border-color:var(--goldd)}.pat.sel{background:var(--gold);color:#0a0d14;border-color:var(--gold);font-weight:700}.pat.off.sel{background:#39435e;color:#fff;border-color:#39435e}
@@ -221,40 +227,37 @@ const PATS=[{k:"pulse",n:"맥동"},{k:"solid",n:"은은"},{k:"blink",n:"깜빡"}
 
 // 저장된 색 순서 불러오기
 try{const _ord=JSON.parse(localStorage.getItem("lsColorOrder")||"null");if(Array.isArray(_ord))COLORS.sort((a,b)=>{const ia=_ord.indexOf(a.k),ib=_ord.indexOf(b.k);return (ia<0?99:ia)-(ib<0?99:ib);});}catch(e){}
+
+/* admin.html — 기존 saveColorOrder + (드래그)renderColors 두 함수를 이걸로 교체 */
 function saveColorOrder(){try{localStorage.setItem("lsColorOrder",JSON.stringify(COLORS.map(c=>c.k)));}catch(e){}}
+function moveColor(i,d){const j=i+d;if(j<0||j>=COLORS.length)return;const [m]=COLORS.splice(i,1);COLORS.splice(j,0,m);cur.order=COLORS.map(c=>c.k);saveColorOrder();renderColors();sendL();}
 function renderColors(){
   const cb=$("colors"); cb.innerHTML="";
-  COLORS.forEach(c=>{
+  COLORS.forEach((c,i)=>{
+    const cell=document.createElement("div"); cell.className="swcell";
     const b=document.createElement("button");
     b.className="sw"+(c.k===cur.color?" sel":"");
     b.style.background="rgb("+c.rgb.join(",")+")";
-    b.title=c.n+" · 드래그해 순서 변경";
-    b.dataset.k=c.k; b.draggable=true;
+    b.title=c.n; b.dataset.k=c.k;
     b.onclick=()=>{cur.color=c.k;markL();sendL();};
-    b.addEventListener("dragstart",e=>{e.dataTransfer.setData("text/plain",c.k);e.dataTransfer.effectAllowed="move";b.classList.add("dragging");});
-    b.addEventListener("dragend",()=>b.classList.remove("dragging"));
-    b.addEventListener("dragover",e=>{e.preventDefault();e.dataTransfer.dropEffect="move";});
-    b.addEventListener("drop",e=>{
-      e.preventDefault();
-      const from=e.dataTransfer.getData("text/plain"), to=c.k;
-      if(!from||from===to)return;
-      const fi=COLORS.findIndex(x=>x.k===from), ti=COLORS.findIndex(x=>x.k===to);
-      if(fi<0||ti<0)return;
-      const [m]=COLORS.splice(fi,1); COLORS.splice(ti,0,m);
-      saveColorOrder(); renderColors();
-    });
-    cb.appendChild(b);
+    const nm=document.createElement("div"); nm.className="swname"; nm.textContent=c.n;
+    const ord=document.createElement("div"); ord.className="sword";
+    const lb=document.createElement("button"); lb.textContent="◀"; lb.title="앞으로 이동"; lb.disabled=i===0; lb.onclick=()=>moveColor(i,-1);
+    const rb=document.createElement("button"); rb.textContent="▶"; rb.title="뒤로 이동"; rb.disabled=i===COLORS.length-1; rb.onclick=()=>moveColor(i,1);
+    ord.appendChild(lb); ord.appendChild(rb);
+    cell.appendChild(b); cell.appendChild(nm); cell.appendChild(ord);
+    cb.appendChild(cell);
   });
 }
 
-let cur={color:"gold",pattern:"pulse"},lightInit=false;
+let cur={color:"gold",pattern:"pulse",order:COLORS.map(c=>c.k)},lightInit=false;
 function initLight(){ if(lightInit)return; lightInit=true;
   renderColors();
   const pb=$("pats"); PATS.forEach(p=>{const b=document.createElement("button");b.className="pat"+(p.k==="off"?" off":"")+(p.k===cur.pattern?" sel":"");b.textContent=p.n;b.dataset.k=p.k;b.onclick=()=>{cur.pattern=p.k;markL();sendL();};pb.appendChild(b);});
-  onSnapshot(doc(db,"live","state"),s=>{const d=s.data();if(!d)return;if(d.color)cur.color=d.color;if(d.pattern)cur.pattern=d.pattern;markL();});
+  onSnapshot(doc(db,"live","state"),s=>{const d=s.data();if(!d)return;if(d.color)cur.color=d.color;if(d.pattern)cur.pattern=d.pattern;if(Array.isArray(d.order)){COLORS.sort((a,b)=>{const ia=d.order.indexOf(a.k),ib=d.order.indexOf(b.k);return (ia<0?99:ia)-(ib<0?99:ib);});cur.order=COLORS.map(c=>c.k);renderColors();}markL();});
   markL(); drawPv(); }
 function markL(){[...document.querySelectorAll(".sw")].forEach(b=>b.classList.toggle("sel",b.dataset.k===cur.color));[...document.querySelectorAll(".pat")].forEach(b=>b.classList.toggle("sel",b.dataset.k===cur.pattern));$("nowC").textContent=(COLORS.find(c=>c.k===cur.color)||{}).n;$("nowP").textContent=(PATS.find(p=>p.k===cur.pattern)||{}).n;}
-async function sendL(){try{await setDoc(doc(db,"live","state"),{color:cur.color,pattern:cur.pattern,ts:Date.now()});}catch(e){}}
+async function sendL(){try{await setDoc(doc(db,"live","state"),{color:cur.color,pattern:cur.pattern,order:cur.order||COLORS.map(c=>c.k),ts:Date.now()});}catch(e){}}
 const pv=$("pv"),px=pv.getContext("2d");
 function rgbOf(k){const c=COLORS.find(x=>x.k===k);return c?c.rgb:[244,214,138];}
 function hsl2rgb(h,s,l){h/=360;const a=s*Math.min(l,1-l);const f=n=>{const k=(n+h*12)%12;return l-a*Math.max(-1,Math.min(k-3,9-k,1));};return[f(0)*255,f(8)*255,f(4)*255];}
