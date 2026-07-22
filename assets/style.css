@@ -83,15 +83,15 @@ header.nav.scrolled{background:rgba(8,9,14,.85);backdrop-filter:blur(14px);paddi
 .cd-unit{display:flex;flex-direction:column;align-items:center;gap:8px}
 .cd-num{font-family:var(--mono);font-weight:400;font-size:clamp(1.7rem,5vw,2.6rem);color:var(--starlight);font-variant-numeric:tabular-nums;line-height:1}
 .cd-lab{font-family:var(--mono);font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted-2)}
+.hero .superscript,.hero .cd-lab{color:var(--muted)}
 .cd-sep{font-family:var(--mono);font-size:clamp(1.4rem,4vw,2.2rem);color:var(--line);align-self:flex-start;margin-top:2px}
 
 .hero-cta{display:flex;gap:16px;margin-top:46px;flex-wrap:wrap;justify-content:center}
 .btn{font-family:var(--mono);font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;padding:15px 32px;border-radius:2px;transition:.35s var(--ease);display:inline-flex;align-items:center;gap:10px}
-.btn-primary{background:var(--gold);color:var(--ink);font-weight:700}
+.btn-primary{background:var(--gold);color:var(--ink);font-weight:700;-webkit-text-stroke:.4px var(--ink)}
 .btn-primary:hover{background:var(--gold-bright);transform:translateY(-1px)}
-.btn-ghost{border:1px solid rgba(142,207,197,.6);color:var(--gold-bright)}
+.btn-ghost{border:1.5px solid var(--gold-soft);color:var(--starlight);font-weight:700}
 .btn-ghost:hover{border-color:var(--gold);color:var(--gold-bright)}
-.btn-primary{box-shadow:none!important}
 
 .scroll-hint{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:.62rem;letter-spacing:.3em;color:var(--muted-2);display:flex;flex-direction:column;align-items:center;gap:10px;z-index:3}
 .scroll-hint .bar{width:1px;height:38px;background:linear-gradient(var(--gold),transparent);animation:drop 2.4s var(--ease) infinite}
@@ -491,17 +491,10 @@ body:not([data-page="home"]):not([data-page="hidden"])::before{content:"";positi
 .scroll-hint{left:auto;right:40px;transform:none}
 @media(max-width:760px){
   .hero{text-align:center}
-  .hero::before{background:rgba(16,16,17,.66)}
+  .hero::before{background:radial-gradient(92% 82% at 50% 45%,rgba(20,22,25,.85),rgba(20,22,25,.35) 60%,transparent)}
   .hero .wrap{align-items:center}
-  .hero .superscript,.cd-lab{color:var(--muted)}
   .countdown,.hero-cta{justify-content:center}
   .scroll-hint{right:50%;transform:translateX(50%)}
-}
-
-/* 히어로 소형 텍스트 국소 대비 (별무리 제외 — 이미 잘 보임) */
-@media(max-width:760px){
-  .hero .wrap{text-shadow:0 1px 10px rgba(16,16,17,.97),0 0 3px rgba(16,16,17,.95),0 0 20px rgba(16,16,17,.6)}
-  .hero h1{text-shadow:0 1px 18px rgba(16,16,17,.5)}
 }
 
 /* 히든 입구 — 상단 로고 옆 */
