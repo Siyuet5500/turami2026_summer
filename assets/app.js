@@ -368,7 +368,7 @@ async function genTicket(){
   // 이름
   ctx.fillStyle="#8a9490";ctx.font='700 14px "Space Mono"';
   ctx.fillText("A D M I T   O N E", W/2, 580);
-  ctx.fillStyle="#e8ede9";ctx.font='700 52px "Gowun Batang"';
+  ctx.fillStyle="#CCCCCC";ctx.font='700 52px "Gowun Batang"';
   ctx.fillText(name, W/2, 642);
 
   // 당신의 별

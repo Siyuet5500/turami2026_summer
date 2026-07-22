@@ -5,7 +5,7 @@
 :root{
   --ink:#101011; --navy:#1b1e22; --navy-2:#24272c; --line:rgba(150,225,215,.10);
   --gold:#56b6a6; --gold-bright:#7ed6c6; --gold-soft:#4a9187;
-  --starlight:#e8ede9; --muted:#8a9490; --muted-2:#565f5b;
+  --starlight:#CCCCCC; --muted:#8a9490; --muted-2:#565f5b;
   --serif:"Fraunces", Georgia, serif;
   --kr-serif:"BookkGothic", "Noto Sans KR", serif;
   --sans:"BookkGothic", "Noto Sans KR", system-ui, sans-serif;
