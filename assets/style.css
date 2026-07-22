@@ -490,8 +490,9 @@ body:not([data-page="home"]):not([data-page="hidden"])::before{content:"";positi
 .scroll-hint{left:auto;right:40px;transform:none}
 @media(max-width:760px){
   .hero{text-align:center}
-  .hero::before{background:radial-gradient(92% 82% at 50% 45%,rgba(20,22,25,.85),rgba(20,22,25,.35) 60%,transparent)}
+  .hero::before{background:radial-gradient(96% 88% at 50% 44%,rgba(16,16,17,.92),rgba(16,16,17,.5) 62%,transparent)}
   .hero .wrap{align-items:center}
+  .hero .superscript,.cd-lab{color:var(--muted)}
   .countdown,.hero-cta{justify-content:center}
   .scroll-hint{right:50%;transform:translateX(50%)}
 }
