@@ -330,7 +330,7 @@ async function genTicket(){
   ctx.fillStyle="#8ECFC5";ctx.font='700 17px "Space Mono"';
   ctx.fillText("H O N G I K   U N I V E R S I T Y", W/2, 70);
   ctx.fillStyle="#8a9490";ctx.font='400 15px "Space Mono"';
-  ctx.fillText("창작곡 밴드 동아리 뚜라미", W/2, 96);
+  ctx.fillText("창작곡 밴드 중앙동아리 뚜라미", W/2, 96);
   ctx.fillStyle="#565f5b";ctx.font='400 14px "Space Mono"';
   ctx.fillText("2026  SUMMER  CONCERT", W/2, 150);
 
