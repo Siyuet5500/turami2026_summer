@@ -22,7 +22,7 @@ const CONFIG = {
 
   encore : {
     title : "AGAINST ALL",
-    note  : "P.E."   // 앵콜 예고 문구
+    note  : "나는 꿈도 있고 crew도 있네"   // 앵콜 예고 문구
   },
 
   // 방명록 공유 백엔드 (선택). 비워두면 이 기기에만 저장(localStorage).
