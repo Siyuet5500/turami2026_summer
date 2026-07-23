@@ -1,7 +1,7 @@
 const CONFIG = {
   // 공연 일시 (카운트다운 기준) — "YYYY-MM-DDTHH:MM:SS+09:00"
-  concertDate : "2026-08-01T18:00:00+09:00",
-  concertEndDate : "2026-08-01T22:00:00+09:00",   // 공연 종료(이후 마무리 문구)
+  concertDate : "2026-08-01T18:00:00+09:00",	// 공연 시작
+  concertEndDate : "2026-08-01T22:00:00+09:00",   // 공연 종료
   dateText    : "2026. 08. 01 (토) 오후 6시",
   venue       : "아트홀 베짱이 · 서울 마포구 독막로15길 3-12 B1",
 
@@ -9,8 +9,7 @@ const CONFIG = {
   venueGeo    : { lat: 37.5484185, lng: 126.9215116 },
   naverMapKey : "w775fm1uhs",
 
-  // 실제 링크로 교체 (예: "https://...") — 비워두면 '#'
-  ticketLink  : "https://",   // 선예매 폼/페이지
+  ticketLink  : "https://link.talket.io/short?type=STORE_PRODUCT_DETAIL&id=32fc4343-ddc3-491a-b6d2-47f4207356c3",   // 선예매 폼/페이지
   mapLink     : "https://map.naver.com/p/search/아트홀%20베짱이",   // 오시는 길 (네이버 지도)
 
   // 계좌 정보
@@ -23,7 +22,7 @@ const CONFIG = {
 
   encore : {
     title : "AGAINST ALL",
-    note  : "P.E."   // 앵콜 예고 문구 (나중에 채우세요). 줄바꿈은 \n 로.
+    note  : "P.E."   // 앵콜 예고 문구
   },
 
   // 방명록 공유 백엔드 (선택). 비워두면 이 기기에만 저장(localStorage).
@@ -37,7 +36,7 @@ const CONFIG = {
     appId: "1:931198123638:web:3d59430b2acea3fc976957",
     measurementId: "G-JL2371PFSM"
   },
-  // 처음 보일 예시 응원(시드)
+  // 처음 보일 응원 예시
   seedWishes : []
 };
 
