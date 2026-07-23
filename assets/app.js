@@ -393,7 +393,7 @@ async function genTicket(){
   ctx.fillStyle="#565f5b";ctx.font='400 15px "Space Mono"';
   ctx.fillText(serial, W/2, 952);
   ctx.fillStyle="#8a9490";ctx.font='400 16px "Gowun Batang"';
-  ctx.fillText("우리가 만든 노래로, 우리만의 밤을 켭니다.", W/2, 1000);
+  ctx.fillText("흩어져 빛나던 우리가, 하나의 밤으로 모이는 순간.", W/2, 1000);
 
   lastTicketURL=tCanvas.toDataURL("image/png");
   mkImg.src=lastTicketURL;
