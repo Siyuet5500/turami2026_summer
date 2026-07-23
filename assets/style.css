@@ -51,7 +51,7 @@ header.nav.scrolled{background:rgba(8,9,14,.85);backdrop-filter:blur(14px);paddi
 .burger{display:none;flex-direction:column;gap:5px;background:none;border:0;cursor:pointer;padding:6px}
 .burger span{width:24px;height:2px;background:var(--starlight);transition:.3s}
 
-/* ===== 홈 히어로 최종 정리 (파일 맨 아래에 두어 덮어쓰기) ===== */
+/* ===== 홈 히어로 최종 ===== */
 .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-start;
   padding:clamp(130px,18vh,190px) 0 90px;text-align:left}
 .hero .wrap{display:flex;flex-direction:column;align-items:flex-start;
@@ -203,7 +203,7 @@ footer{border-top:1px solid var(--line);padding:70px 0 50px;position:relative;z-
 .socials a .si{width:15px;height:15px;flex:none;color:var(--gold-bright)}
 .copyright{margin-top:50px;padding-top:26px;border-top:1px solid var(--line);font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;color:var(--muted-2);text-align:center}
 
-/* ========= MEMENTO (keepsake ticket) ========= */
+/* ========= MEMENTO ========= */
 .memento-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:54px;align-items:center}
 .mk-panel .lead{font-family:var(--kr-serif);font-size:1.15rem;color:var(--starlight);line-height:1.9;margin-bottom:26px}
 .mk-panel p.sub{color:var(--muted);font-size:.92rem;line-height:1.9;margin-bottom:26px}
@@ -260,7 +260,7 @@ footer{border-top:1px solid var(--line);padding:70px 0 50px;position:relative;z-
   .ls-launch{flex-direction:column;align-items:flex-start}
 }
 
-/* ========= GUESTBOOK (은하수) ========= */
+/* ========= GUESTBOOK ========= */
 .gb-sky-wrap{position:relative;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:#0a0b12;height:clamp(300px,46vh,440px)}
 #gbSky{display:block;width:100%;height:100%;cursor:crosshair}
 .gb-count{position:absolute;top:14px;right:16px;font-family:var(--mono);font-size:.64rem;letter-spacing:.16em;color:var(--gold-soft);text-transform:uppercase;pointer-events:none}
@@ -275,7 +275,7 @@ footer{border-top:1px solid var(--line);padding:70px 0 50px;position:relative;z-
 .gb-form #gbMsg{flex:1;min-width:200px}
 .gb-note{margin-top:14px;font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;color:var(--muted-2);line-height:1.7}
 
-/* ========= HIDDEN (별자리 잇기) ========= */
+/* ========= HIDDEN ========= */
 .connect-stage{position:relative;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:radial-gradient(circle at 50% 38%,rgba(16,18,32,.35),rgba(8,9,14,.5));height:clamp(340px,52vh,500px)}
 #connectCanvas{display:block;width:100%;height:100%;touch-action:none;cursor:pointer}
 .connect-status{position:absolute;bottom:16px;left:0;right:0;text-align:center;font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;color:var(--muted);padding:0 16px}
@@ -464,11 +464,11 @@ html::-webkit-scrollbar,body::-webkit-scrollbar{width:0;height:0;display:none}
 .tk-foot{margin-top:auto}
 .tk-divider{height:1px;background:linear-gradient(90deg,rgba(191,164,107,.5),transparent);margin:0 0 22px}
 
-/* 포스터 톤 - 거친 차콜 그레인 (진하게) */
+/* 포스터 톤 - 거친 차콜 그레인 */
 body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:60;opacity:.13;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size:140px 140px}
-/* 홈 히어로의 옛 북두칠성(장식)은 은하로 대체되므로 숨김 (내비 별은 유지) */
+/* 홈 히어로의 이전 북두칠성은 은하로 대체되므로 숨김 (내비 별은 유지) */
 .hero-constellation{display:none}
 
 /* ===== CLUSTAR 테마 ===== */
@@ -528,7 +528,7 @@ body:not([data-page="home"]):not([data-page="hidden"])::before{content:"";positi
   .hero .meta-line::before{display:none}
 }
 
-/* ===== 모바일 히어로 가운데 정렬 (파일 맨 끝에 둘 것) ===== */
+/* ===== 모바일 히어로 가운데 정렬 ===== */
 @media(max-width:760px){
   .hero .wrap{
     align-items:center;

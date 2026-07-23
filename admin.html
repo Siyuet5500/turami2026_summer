@@ -225,10 +225,10 @@ document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{
 const COLORS=[{k:"gold",n:"골드",rgb:[244,214,138]},{k:"white",n:"화이트",rgb:[255,255,255]},{k:"blue",n:"블루",rgb:[120,170,255]},{k:"violet",n:"바이올렛",rgb:[185,150,255]},{k:"rose",n:"로즈",rgb:[255,150,180]},{k:"green",n:"그린",rgb:[150,240,170]},{k:"red",n:"레드",rgb:[255,110,110]},{k:"teal",n:"청록",rgb:[126,214,198]}];
 const PATS=[{k:"pulse",n:"맥동"},{k:"solid",n:"은은"},{k:"blink",n:"깜빡"},{k:"wave",n:"물결"},{k:"rainbow",n:"무지개"},{k:"off",n:"끄기"}];
 
-// 저장된 색 순서 불러오기
+/* 저장된 색 순서 불러오기 */
 try{const _ord=JSON.parse(localStorage.getItem("lsColorOrder")||"null");if(Array.isArray(_ord))COLORS.sort((a,b)=>{const ia=_ord.indexOf(a.k),ib=_ord.indexOf(b.k);return (ia<0?99:ia)-(ib<0?99:ib);});}catch(e){}
 
-/* admin.html — 기존 saveColorOrder + (드래그)renderColors 두 함수를 이걸로 교체 */
+/* 기존 saveColorOrder + 드래그 renderColors 두 함수를 버튼 이동으로 교체 */
 function saveColorOrder(){try{localStorage.setItem("lsColorOrder",JSON.stringify(COLORS.map(c=>c.k)));}catch(e){}}
 function moveColor(i,d){const j=i+d;if(j<0||j>=COLORS.length)return;const [m]=COLORS.splice(i,1);COLORS.splice(j,0,m);cur.order=COLORS.map(c=>c.k);saveColorOrder();renderColors();sendL();}
 function renderColors(){
@@ -280,7 +280,7 @@ $("gbDel").onclick=async()=>{const ids=[...document.querySelectorAll("#gbList .r
 $("gbExport").onclick=()=>{const blob=new Blob([JSON.stringify(wishes,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="turami-guestbook-"+new Date().toISOString().slice(0,10)+".json";a.click();};
 [["gbfAll","all"],["gbfNormal","normal"],["gbfHidden","hidden"]].forEach(([id,v])=>{const b=$(id);if(b)b.onclick=()=>{gbFilter=v;renderGuest();};});
 
-/* 팀 (별자리 없음) */
+/* 팀 */
 let teams=[];
 async function loadTeams(){try{const snap=await getDocs(query(collection(db,"teams"),orderBy("order")));teams=snap.docs.map(d=>({id:d.id,...d.data()}));renderTeams();loadMembers();loadSongs();}catch(e){$("tCount").textContent="불러오기 실패";}}
 function renderTeams(){$("tCount").textContent="팀 "+teams.length+"개";const list=$("tList");if(!teams.length){list.innerHTML='<div class="empty">아직 팀이 없어요. 위에서 추가하세요.</div>';return;}list.innerHTML="";teams.forEach((t,i)=>{const row=document.createElement("div");row.className="row";row.innerHTML=`<div class="ord"><button ${i===0?"disabled":""} data-d="-1">▲</button><button ${i===teams.length-1?"disabled":""} data-d="1">▼</button></div><div class="body"><div class="nm">${esc(t.name)}</div><div class="sub gold">TEAM ${String(i+1).padStart(2,"0")}</div></div><div class="acts"><button class="mini edit-btn">수정</button><button class="mini del-btn">삭제</button></div>`;row.querySelectorAll(".ord button").forEach(b=>b.onclick=()=>moveTeam(i,+b.dataset.d));row.querySelector(".del-btn").onclick=()=>delTeam(t);row.querySelector(".edit-btn").onclick=()=>editTeam(row,t);list.appendChild(row);});}

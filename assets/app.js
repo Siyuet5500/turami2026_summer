@@ -40,7 +40,7 @@ const CONFIG = {
   seedWishes : []
 };
 
-/* 셋리스트 — 북두칠성 일곱 별에 한 곡씩.
+/* 셋리스트 — 예시
    star: 별 이름 / title: 곡명 / team: 팀·아티스트 / crew: 참여진 / lyric: 대표 가사 */
 const SETLIST = [
   { star:"DUBHE",   kr:"두베",     title:"곡 제목", team:"아티스트 / 팀명", crew:"Vocal ○○○ · Guitar ○○○ · Bass ○○○ · Drum ○○○ · Key ○○○", lyric:"여기에 대표 가사 한 소절을 적어 주세요." },
@@ -276,7 +276,7 @@ const DIPPER_STARS = [
   {en:"TAYGETA", kr:"타이게타"}, {en:"CELAENO", kr:"켈라이노"},
   {en:"STEROPE", kr:"스테로페"}
 ];
-// 별무리(플레이아데스) 좌표 — 티켓 캔버스 박스 비율 0~1
+// 별무리 좌표 — 티켓 캔버스 박스 비율 0~1
 const DIPPER_PTS = [[.34,.28],[.50,.19],[.63,.33],[.44,.45],[.58,.52],[.73,.42],[.29,.57]];
 
 function hashStr(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
@@ -306,7 +306,7 @@ async function genTicket(){
   const W=tCanvas.width, H=tCanvas.height, ctx=tctx;
   ctx.clearRect(0,0,W,H);
 
-  // 배경 (차콜 + 청록 기운)
+  // 배경 (차콜 + 청록)
   const bg=ctx.createLinearGradient(0,0,0,H);
   bg.addColorStop(0,"#16201f"); bg.addColorStop(.55,"#111a1b"); bg.addColorStop(1,"#0c1113");
   ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
@@ -343,7 +343,7 @@ async function genTicket(){
   drawSpaced(ctx,"C L U S T A R", W/2, 266, 2);
   ctx.restore();
 
-  // 별무리(성단) — 흩어진 별 + 당신의 별 강조 (선 없이)
+  // 별무리(성단) — 흩어진 별 + 당신의 별 강조
   const cx0=70,cy0=298,cw=W-140,ch=178;
   // 성단 먼지(주변 잔별)
   for(let i=0;i<34;i++){
@@ -416,7 +416,7 @@ document.getElementById("mkDownload").addEventListener("click",()=>{
 }
 
 /* ============================================================
-   ★ STARLIGHT 응원봉 — 전체 관객 시계 동기화 + 화면 꺼짐 방지
+   응원봉 — 전체 관객 시계 동기화 + 화면 꺼짐 방지
    ============================================================ */
 const LS_COLORS=[
   {k:"gold",  name:"골드",   rgb:[244,214,138]},
@@ -437,7 +437,7 @@ const lsOverlay=document.getElementById("lsOverlay"),
       lsGlow=document.getElementById("lsGlow"), lgx=lsGlow.getContext("2d"),
       lsColorsBox=document.getElementById("lsColors");
 
-/* app.js — 기존 스와치 빌드 블록(LS_COLORS.forEach ~ lsSyncSel();)을 이걸로 교체 */
+/* app.js — 기존 스와치 빌드 블록(LS_COLORS.forEach ~ lsSyncSel();)을 교체 */
 function renderLsColors(order){
   lsColorsBox.innerHTML="";
   let list=LS_COLORS.slice();
@@ -530,7 +530,7 @@ document.addEventListener("visibilitychange",async()=>{
 });
 
 /* ============================================================
-   ★ GUESTBOOK — 은하수 방명록 (별 = 메시지)  · localStorage / Firebase 겸용
+   은하수 방명록 (별 = 메시지)  · localStorage / Firebase 겸용
    ============================================================ */
 const WishStore = (()=>{
   const KEY="turami2026_wishes";
@@ -589,7 +589,7 @@ function layoutWishes(){
 function gbDraw(){
   const W=gbSky.width,H=gbSky.height;
   gbx.clearRect(0,0,W,H);
-  // 은하수 배경 띠 (별 많을수록 밝게)
+  // 은하수 배경 띠
   const density=Math.min(1,wishStars.length/40);
   const band=gbx.createLinearGradient(0,H*0.2,W,H*0.8);
   band.addColorStop(0,"rgba(120,140,220,0)");
@@ -677,9 +677,8 @@ gbResize(); gbDraw(); gbLoad();
 }
 
 /* ============================================================
-   ★ HIDDEN — 흩어진 별을 쓸어 모아 별무리 완성 → 단서 해금
-   app.js 의 646~730줄(기존 '별자리 잇기' if 블록 전체)을 이 블록으로 교체.
-   해금 모달·앵콜 힌트·방명록은 그대로 유지됩니다.
+   HIDDEN — 흩어진 별을 모아 별무리 완성
+   app.js 의 646~730줄(기존 '별자리 잇기' if 블록 전체)을 교체
    ============================================================ */
 if(document.getElementById("connectCanvas")){
 const conC=document.getElementById("connectCanvas"), cox=conC.getContext("2d");
@@ -730,7 +729,7 @@ conC.addEventListener("touchstart",conStart,{passive:false}); conC.addEventListe
 document.getElementById("connectReset").addEventListener("click",()=>{done=false;progress=0;stars=[];conResize();conStatus.innerHTML="화면을 <b>문질러</b> 흩어진 별을 가운데로 모으세요";});
 conResize(); addEventListener("resize",conResize); conDraw();
 
-// 해금 모달 (기존 유지)
+// 해금 모달
 const unlockModal=document.getElementById("unlockModal");
 let unlockedOnce=false;
 function openUnlock(){
@@ -754,8 +753,7 @@ addEventListener("keydown",e=>{if(e.key==="Escape")closeUnlock();});
 
 /* ============================================================
    PER-PAGE SPACE BACKGROUND  (별무리 : CLUSTAR)
-   app.js 의 기존 "AMBIENT STARFIELD ..." 블록(608번째 줄부터 파일 끝까지)을
-   이 블록으로 통째로 교체하세요. #sky 캔버스 하나에 페이지별 효과를 그립니다.
+   app.js 의 기존 "AMBIENT STARFIELD ..." 블록을 교체. #sky 캔버스 하나에 페이지별 효과를 그림.
    페이지 구분은 <body data-page="home|about|setlist|members|ticket|memento|guestbook|hidden">
    ============================================================ */
 const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
@@ -785,14 +783,14 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
 
   let build=()=>{}, step=()=>{};
 
- /* ---------- ① 나선 은하 (home) — 촘촘한 나선팔 + 정교한 코어 ---------- */
+ /* ---------- 나선 은하 — 촘촘한 나선팔 + 정교한 코어 ---------- */
   function galaxy(){
     let disk,dust,bg; const ARMS=2,WIND=3.0,TILT=.42;
     build=()=>{disk=[];dust=[];bg=[];
       const nd=Math.min(9000,scale(6500));
       for(let i=0;i<nd;i++){const t=Math.pow(Math.random(),.55);const arm=i%ARMS;
         const base=arm*Math.PI+t*WIND*6.283;
-        const spread=(.16*(1-t)+.028)*gauss();          // 팔을 또렷하게 (퍼짐 축소)
+        const spread=(.16*(1-t)+.028)*gauss();
         const ang=base+spread;
         const young=Math.random()<(1-t)*.65;
         disk.push({r:t,ang,
@@ -816,7 +814,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
       ctx.globalCompositeOperation="source-over";};
   }
 
-/* ---------- 2. 흐르는 별 먼지 (about — 차분하되 살아있게) ---------- */
+/* ---------- 흐르는 별 먼지 ---------- */
   function cluster(){
     let dust;
     build=()=>{dust=[];const n=scale(220);for(let i=0;i<n;i++)dust.push(mkd(Math.random(),Math.random()));};
@@ -834,7 +832,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
       ctx.globalCompositeOperation="source-over";};
   }
 
-  /* ---------- ② 초신성 방사 (setlist) — 촘촘한 방사선 ---------- */
+  /* ---------- 초신성 방사 — 촘촘한 방사선 ---------- */
   function supernova(){
     let ps,bg;
     build=()=>{ps=[];const n=Math.min(900,scale(560));
@@ -849,10 +847,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
   }
 
 /* ============================================================
-   소용돌이 flow field (vortexField) — HIDDEN 배경
-   ① app.js 배경 엔진 안, 다른 효과 함수 근처(예: function supernova 아래)에 붙여넣기
-   ② MAP 줄에서  hidden:supernova  →  hidden:vortexField  로 변경
-   ※ 트레일(잔상) 방식이라 매 프레임 전체를 지우지 않고 살짝만 덮습니다(엔진 호환 처리 완료).
+   소용돌이- 트레일 방식이라 매 프레임 전체를 지우지 않고 살짝만 덮음(엔진 호환 처리 완료)
    ============================================================ */
   function vortexField(){
     let PS, N, cx, cy, rmax, tt;
@@ -893,7 +888,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
   }
 
 
-  /* ---------- 4. 성좌 그리드 (members) ---------- */
+  /* ---------- 성좌 그리드 ---------- */
   function openCluster(){
     let nodes,rings; const CN=[[.28,.5],[.5,.5],[.72,.5]];
     build=()=>{
@@ -913,7 +908,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
       ctx.globalCompositeOperation="source-over";};
   }
 
-  /* ---------- 5. 성운 (ticket) ---------- */
+  /* ---------- 성운 ---------- */
   function nebula(){
     let blobs,stars;
     build=()=>{blobs=[];for(let i=0;i<6;i++)blobs.push({x:Math.random(),y:Math.random(),r:.3+Math.random()*.3,ph:Math.random()*6.28,sp:.3+Math.random()*.4,h:Math.random()});
@@ -924,7 +919,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
       ctx.globalCompositeOperation="source-over";};
   }
 
-  /* ---------- 6. 별밭 + 유성 (memento) ---------- */
+  /* ---------- 별밭 + 유성 ---------- */
   function meteorField(){
     let stars,shoot=[],last=0;
     build=()=>{stars=[];const n=scale(200);for(let i=0;i<n;i++)stars.push({x:Math.random(),y:Math.random(),sz:.3+Math.random()*1.3,tw:Math.random()*6.28,sp:.4+Math.random()});shoot=[];};
@@ -940,7 +935,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
         ctx.fillStyle="rgba(215,255,248,"+Math.max(0,1-s.life*.6)+")";ctx.beginPath();ctx.arc(ex,ey,1.8*DPR,0,7);ctx.fill();}};
   }
 
-  /* ---------- 7. 떠오르는 빛 입자 (guestbook — 방명록 은하수는 #gbSky) ---------- */
+  /* ---------- 떠오르는 빛 입자 ---------- */
   function quietField(){
     let motes;
     build=()=>{motes=[];const n=scale(90);for(let i=0;i<n;i++)motes.push(mk(Math.random()));};
@@ -961,15 +956,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
   }
 
 /* ============================================================
-   물결 성운 (waveNebula) — 배경 엔진에 추가할 함수
-   app.js 배경 엔진 안, 다른 효과 함수들 근처(예: function ringCluster 바로 위/아래)에
-   이 함수를 붙여넣으세요. 그리고 MAP 줄을 아래처럼 바꾸세요:
-
-   기존:
-     const MAP={home:ringCluster,about:cluster,setlist:meteorField,members:openCluster,ticket:nebula,memento:galaxy,guestbook:quietField,hidden:supernova};
-   변경:
-     const MAP={home:waveNebula,about:cluster,setlist:meteorField,members:ringCluster,ticket:nebula,memento:galaxy,guestbook:quietField,hidden:supernova};
-   (home → waveNebula, members → ringCluster 두 곳만 바뀜)
+   물결 성운 (waveNebula)
    ============================================================ */
   function waveNebula(){
     const LOBES=2;
@@ -1037,7 +1024,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
     };
   }
 
-  /* ---------- ③ 고리 성단 (hidden) — 촘촘한 링 ---------- */
+  /* ---------- 고리 성단 — 촘촘한 링 ---------- */
   function ringCluster(){
     let pts,bg,blobs;
     build=()=>{pts=[];const n=Math.min(4200,scale(3000));
@@ -1064,7 +1051,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
   function resize(force){
     // 모바일에서 스크롤 중 주소창이 접히고/펼쳐지며 innerHeight만 바뀌어도 resize 이벤트가 발생함.
     // 그때마다 파티클 전체를 재생성(build)하면 스크롤할 때마다 버벅임이 생기므로,
-    // 너비가 실제로 바뀌었을 때만(=진짜 리사이즈/회전일 때만) 재빌드한다.
+    // 너비가 실제로 바뀌었을 때만(=진짜 리사이즈/회전일 때만) 재빌드 처리.
     const wChanged = innerWidth !== lastW;
     if(!force && !wChanged) { lastH = innerHeight; return; }
     lastW=innerWidth; lastH=innerHeight;
@@ -1076,7 +1063,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
   let docHidden=false;
   document.addEventListener("visibilitychange",()=>{docHidden=document.hidden;});
 
-  // 30fps 상한 — 부하를 절반으로. 스크롤 중에도 멈추지 않고 계속 그린다.
+  // 30fps 상한 — 부하를 절반으로. 스크롤 중에도 멈추지 않고 계속 그림.
   const FRAME=1000/30; let lastDraw=0;
   function loop(t){
     requestAnimationFrame(loop);
@@ -1097,7 +1084,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
 
 
 /* ============================================================
-   ★ NAVER MAP — 오시는 길 (키 있으면 지도 임베드, 없으면 버튼만)
+   NAVER MAP — 오시는 길
    ============================================================ */
 (function(){
   const openBtn = document.getElementById("mapOpen");
@@ -1121,7 +1108,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
     if(fb){ fb.style.display="flex"; fb.innerHTML = "지도 인증 실패 — 도메인 등록/키를 확인해 주세요.<br/>‘네이버 지도에서 열기’는 정상 동작합니다."; }
   };
 
-  // 마커·정보창 커스텀 스타일 (1회 주입)
+  // 마커·정보창 커스텀 스타일
   if(!document.getElementById("tm-map-style")){
     const st=document.createElement("style"); st.id="tm-map-style";
     st.textContent=`
@@ -1173,7 +1160,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
 })();
 
 /* ============================================================
-   ★ HERO 별자리 반응형 — 모바일에선 '제목 ~ 타이머' 사이에 배치 + 전체 표시
+   별자리 반응형 — 모바일에선 '제목 ~ 타이머' 사이에 배치 + 전체 표시
    ============================================================ */
 (function(){
   const hero  = document.querySelector(".hero");
@@ -1218,7 +1205,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
 })();
 
 /* ============================================================
-   ★ 응원봉 중앙제어 구독 — control.html 신호를 실시간 적용
+   응원봉 중앙제어 구독 — 신호를 실시간 적용
    ============================================================ */
 (async function lsLiveSubscribe(){
   if(!CONFIG.firebase) return;
@@ -1240,7 +1227,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
   }, ()=>{});
 })();
 
-/* ★ 히든 발견자 방명록 — 남기면 은하수에 특별한 별(source:hidden 자동) */
+/* 히든 발견자 방명록 — 남기면 은하수에 특별한 별 */
 {const hgAdd=document.getElementById("hgAdd");
  if(hgAdd){
    const hgMsg=document.getElementById("hgMsg"), hgName=document.getElementById("hgName"), hgDone=document.getElementById("hgDone");
