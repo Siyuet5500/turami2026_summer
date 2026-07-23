@@ -329,7 +329,7 @@ async function genTicket(){
   ctx.fillStyle="#8ECFC5";ctx.font='700 17px "Space Mono"';
   ctx.fillText("H O N G I K   U N I V E R S I T Y", W/2, 70);
   ctx.fillStyle="#8a9490";ctx.font='400 15px "Space Mono"';
-  ctx.fillText("창작곡 밴드 중앙동아리 뚜라미", W/2, 96);
+  ctx.fillText("중앙 창작곡 동아리 뚜라미", W/2, 96);
   ctx.fillStyle="#565f5b";ctx.font='400 14px "Space Mono"';
   ctx.fillText("2026  SUMMER  CONCERT", W/2, 150);
 
@@ -1159,7 +1159,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
       }
     });
     const info = new naver.maps.InfoWindow({
-      content: '<div class="tm-info"><div class="v">아트홀 베짱이</div><div class="t">2026 뚜라미 여름공연</div><div class="a">6호선 상수역 1번 출구 · 도보 5분</div></div>',
+      content: '<div class="tm-info"><div class="v">아트홀 베짱이</div><div class="t">2026 뚜라미 여름 공연</div><div class="a">6호선 상수역 1번 출구 · 도보 5분</div></div>',
       borderWidth: 0,
       backgroundColor: "transparent",
       disableAnchor: true,
