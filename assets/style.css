@@ -563,3 +563,25 @@ body:not([data-page="home"]):not([data-page="hidden"])::before{content:"";positi
 .sec-head h2,.sec-head h2 em{font-family:var(--title)!important;font-weight:300}
 .hero .latin{font-family:var(--latin)!important}
 .about-card .concept-en{font-family:var(--latin)!important;font-style:normal;letter-spacing:.2em}
+
+/* ===== 풀스크린 LIVE 테이크오버 ===== */
+#liveTakeover{position:fixed;inset:0;z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:radial-gradient(60% 50% at 50% 50%,rgba(40,70,66,.55),rgba(20,32,32,.28) 45%,rgba(16,16,17,.85) 100%);
+  -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
+  opacity:0;pointer-events:none;transition:opacity 1.1s ease}
+#liveTakeover.on{opacity:1;pointer-events:auto}
+#liveTakeover .cd-live-eyebrow{font-size:1rem;margin-bottom:20px}
+#liveTakeover .tk-now{font-family:var(--kr-serif);font-weight:300;font-size:clamp(2.6rem,9vw,4rem);color:#fff;letter-spacing:.06em;text-shadow:0 0 40px rgba(142,207,197,.55)}
+/* 테이크오버 중 히어로 숨김 */
+#home.live-hide .wrap{opacity:0;pointer-events:none;transition:opacity .8s ease}
+
+/* ===== 테스트: home·about 페이지만 명조체 ===== */
+body[data-page="home"],
+body[data-page="about"]{
+  --kr-serif:"Noto Serif KR", serif;
+  --mono:"Noto Serif KR", serif;
+  --title:"Noto Serif KR", serif;
+  --latin:"Noto Serif KR", serif;
+  --sans:"Noto Serif KR", serif;
+  --serif:"Noto Serif KR", serif;
+}
