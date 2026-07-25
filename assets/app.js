@@ -211,27 +211,53 @@ const CONCERT = new Date(CONFIG.concertDate);
 const pad=n=>String(n).padStart(2,"0");
 const CONCERT_END = new Date(CONFIG.concertEndDate || CONFIG.concertDate);
 let cdState="";
+
 function tick(){
   const now=new Date();
   const diff=CONCERT-now;
+  const sec=diff/1000;
   const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
   const cd=document.getElementById("countdown");
-  if(now>=CONCERT_END){                       // 공연 후
+  const hero=document.getElementById("home");
+  const tk=document.getElementById("liveTakeover");
+  const LIVE="<div class='cd-unit'><div class='cd-live-eyebrow'><span class='cd-live-dot'></span>LIVE NOW</div><span class='cd-live-now'>지금, 무대에서</span></div>";
+
+  if(now>=CONCERT_END){                              // 공연 후
+    if(tk) tk.classList.remove("on");
+    if(hero) hero.classList.remove("live-hide");
     if(cd && cdState!=="after"){cdState="after";
       cd.innerHTML="<div class='cd-unit'><span class='cd-num cd-msg'>공연이 막을 내렸습니다</span><span class='cd-sub'>함께해 주셔서 감사합니다 ✦</span></div>";}
     return;
   }
-  if(diff<=0){                                // 공연 중
-    if(cd && cdState!=="live"){cdState="live";
-      cd.innerHTML="<div class='cd-unit'><div class='cd-live-eyebrow'><span class='cd-live-dot'></span>LIVE NOW</div><span class='cd-live-now'>지금, 무대에서</span></div>";}
+  if(sec<=-10){                                      // 홈 복귀 후 · 공연 중 (카운트다운 자리 LIVE)
+    if(tk) tk.classList.remove("on");
+    if(hero) hero.classList.remove("live-hide");
+    if(cd && cdState!=="live"){cdState="live"; cd.innerHTML=LIVE;}
     return;
   }
-  cdState="before";                            // 공연 전
+  if(sec<=-2){                                       // 풀스크린 LIVE 테이크오버 (개화 후 ~ +10초)
+    if(hero) hero.classList.add("live-hide");
+    if(tk) tk.classList.add("on");
+    cdState="takeover";
+    return;
+  }
+  if(sec<=0){                                        // 개화 구간 (0 ~ -2): 히어로 보임
+    if(tk) tk.classList.remove("on");
+    if(hero) hero.classList.remove("live-hide");
+    cdState="boom";
+    set("cd-d","00");set("cd-h","00");set("cd-m","00");set("cd-s","00");
+    return;
+  }
+  // 공연 전 (카운트다운)
+  if(tk) tk.classList.remove("on");
+  if(hero) hero.classList.remove("live-hide");
+  cdState="before";
   set("cd-d",pad(Math.floor(diff/864e5)));
   set("cd-h",pad(Math.floor(diff%864e5/36e5)));
   set("cd-m",pad(Math.floor(diff%36e5/6e4)));
   set("cd-s",pad(Math.floor(diff%6e4/1e3)));
 }tick();setInterval(tick,1000);
+
 
 // nav (멀티페이지)
 const nav=document.getElementById("nav");
@@ -965,7 +991,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
 /* ============================================================
    물결 성운 (waveNebula)
    ============================================================ */
-  function waveNebula(){
+    function waveNebula(){
     const LOBES=2;
     const radiusAt=v=>{const wave=Math.pow(Math.abs(Math.cos(v*Math.PI*LOBES)),1.1);const ends=Math.pow(Math.abs(v-0.5)*2,1.5);return 0.14+0.58*wave+0.26*ends;};
     let rings,wisps,RINGS,PER;
@@ -973,34 +999,92 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
       RINGS=isMobile?130:200; PER=isMobile?44:56; const NWISP=isMobile?1100:2000;
       rings=[];
       for(let i=0;i<RINGS;i++){const v=i/(RINGS-1);
-        rings.push({v,phase:Math.random()*6.28,ox:(Math.sin(v*7.1)*0.5+Math.sin(v*3.3+1)*0.5)*0.16,oy:Math.sin(v*4.2+2)*0.04,tilt:Math.sin(v*5.0)*0.9,warp:0.7+Math.random()*1.1,rowTeal:Math.random()<0.14});}
+        rings.push({v,phase:Math.random()*6.28,ox:(Math.sin(v*7.1)*0.5+Math.sin(v*3.3+1)*0.5)*0.16,oy:Math.sin(v*4.2+2)*0.04,tilt:Math.sin(v*5.0)*0.9,warp:0.7+Math.random()*1.1,rowTeal:Math.random()<0.14,jr:Math.random()*6.28,sx:(Math.random()*2-1),sy:(Math.random()*2-1),ringA:Math.random()*6.28,ringRad:1+gauss()*0.15});}
       wisps=[];
       for(let i=0;i<NWISP;i++){const v=Math.random(),a=Math.random()*6.28;
-        wisps.push({v,a,reach:0.25+Math.random()*1.2,off:Math.random(),curl:(Math.random()-0.5)*2.6,teal:Math.random()<0.15,sz:0.35+Math.random()*1.2});}
+        wisps.push({v,a,reach:0.25+Math.random()*1.2,off:Math.random(),curl:(Math.random()-0.5)*2.6,teal:Math.random()<0.15,sz:0.35+Math.random()*1.2,ea:Math.random()*6.28,esp:0.55+Math.random()*0.9,jr:Math.random()*6.28,jsp:0.5+Math.random()*1.3,spiral:0.6+Math.random()*0.8,sx:(Math.random()*2-1),sy:(Math.random()*2-1),ringA:Math.random()*6.28,ringRad:1+gauss()*0.15,big:Math.random()<0.08});}
     };
     let rot=0;
-    const COL_TEAL="rgb(160,240,222)", COL_WISP="rgb(220,230,228)", COL_RING="rgb(232,238,236)";
+    const COL_TEAL="rgb(160,240,222)", COL_WISP="rgb(220,230,228)", COL_RING="rgb(232,238,236)", COL_BLUE="rgb(150,225,255)";
     let cg=null,_cgx=0,_cgy=0,_cgr=0;
+    // ---- 전환 연출: 공연 시각 기준 마지막 10초에만 작동 ----
+    const CONCERT_MS = CONCERT.getTime();
+    const eIn=x=>x*x*x, eOut=x=>1-Math.pow(1-x,3), eInOut=x=>x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2;
+    let boomAt=0;
+    function fx(){
+      const secLeft=(CONCERT_MS-Date.now())/1000;
+      let live=false,expand=0,converge=0,charge=0,tremor=0,swirl=0,scatter=0,ringMix=0,vortexMix=0,boom=0;
+      if(secLeft<=10 && secLeft>-10){
+        live=true; const s=secLeft;
+        if(s>5){const q=(10-s)/5;expand=eInOut(q);swirl=q*0.4;}
+        else if(s>3){const q=(5-s)/2;converge=eIn(q);expand=1-q*0.5;swirl=0.4+q*0.5;charge=q;scatter=Math.sin(q*Math.PI);ringMix=eInOut(q);}
+        else if(s>0){const q=(3-s)/3;converge=1;charge=1;tremor=q*0.6;swirl=0.9+q*0.6;ringMix=1;vortexMix=eIn(q);}
+        else{converge=1;charge=1;swirl=1.5;ringMix=1;vortexMix=1;}
+        if(s<=0 && !boomAt) boomAt=performance.now();
+      }
+      if(secLeft<=-10) boomAt=0;   // 홈 복귀 시 폭발상태 해제 → 성운 정상 복귀
+      if(boomAt){boom=(performance.now()-boomAt)/1900;if(boom>=1)boom=1;}
+      return {live,expand,converge,charge,tremor,swirl,scatter,ringMix,vortexMix,boom};
+    }
     step=t=>{
-      ctx.fillStyle="#101011";ctx.fillRect(0,0,W,H);
-      const cx=W*(isMobile?0.5:0.72), cy=H*0.5, hgt=Math.min(H*0.46,W*0.66), rmax=Math.min(W,H)*0.32;
-      rot+=0.0012;
-      ctx.strokeStyle="rgba(120,150,145,.045)";ctx.lineWidth=1*DPR;
-      ctx.beginPath();ctx.moveTo(cx,cy-hgt*1.2);ctx.lineTo(cx,cy+hgt*1.2);ctx.stroke();
-      for(let k=1;k<=3;k++){ctx.beginPath();ctx.arc(cx,cy,rmax*0.5*k,0,7);ctx.stroke();}
+      const F=fx();
+      // 클리어: 소용돌이 구간엔 트레일, 그 외 완전 클리어
+      if(F.vortexMix>0 && F.boom===0){ ctx.fillStyle="rgba(16,16,17,0.34)"; ctx.fillRect(0,0,W,H); }
+      else { ctx.fillStyle="#101011"; ctx.fillRect(0,0,W,H); }
+      const cx=W*(isMobile?0.5:0.72)*(1-F.converge)+(W*0.5)*F.converge, cy=H*0.5, hgt=Math.min(H*0.46,W*0.66), rmax=Math.min(W,H)*0.32;
+      const MAXD=Math.max(W,H), RR=Math.min(W,H)*0.36;
+      const SCAT=F.scatter*MAXD*0.42, lerp=(a,b,m)=>a+(b-a)*m;
+      rot+=0.0012 + F.swirl*0.0072;
+      const vSpin=rot*0.6 + F.vortexMix*rot*3.2, vRad=1 - F.vortexMix*0.38;
+
+      // 평상시에만 가이드선/원 (전환 중엔 숨김)
+      if(!F.live){
+        ctx.strokeStyle="rgba(120,150,145,.045)";ctx.lineWidth=1*DPR;
+        ctx.beginPath();ctx.moveTo(cx,cy-hgt*1.2);ctx.lineTo(cx,cy+hgt*1.2);ctx.stroke();
+        for(let k=1;k<=3;k++){ctx.beginPath();ctx.arc(cx,cy,rmax*0.5*k,0,7);ctx.stroke();}
+      }
+
       ctx.globalCompositeOperation="lighter";
+      const tm=t/110;
+      // 링 단계 배경 성운 구름
+      const cloudA=F.ringMix*(1-F.vortexMix);
+      if(cloudA>0.02){
+        for(let b=0;b<3;b++){const ph=b*2.1;const pr=RR*(1.05+0.15*Math.sin(t/3200+ph));
+          const px=cx+Math.cos(ph+t/6000)*RR*0.5, py=cy+Math.sin(ph+t/7000)*RR*0.4;
+          const g=ctx.createRadialGradient(px,py,0,px,py,pr);
+          g.addColorStop(0,"rgba(50,140,130,"+(0.06*cloudA)+")");g.addColorStop(0.5,"rgba(45,110,120,"+(0.02*cloudA)+")");g.addColorStop(1,"rgba(45,110,120,0)");
+          ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,pr,0,7);ctx.fill();}
+      }
+
+      const scale=(1+F.expand*0.32);
+      const boomR=F.boom>0?eOut(F.boom)*MAXD*0.9:0, boomFade=F.boom>0?(1-eIn(F.boom)):1;
+
       for(const w of wisps){
         const baseR=radiusAt(w.v)*rmax, yv=cy+(w.v-0.5)*2*hgt;
         const spin=rot*(0.5+radiusAt(w.v))+w.curl*0.3;
         const flow=(t/3000*(0.5+w.off)+w.off)%1;
         const rr=baseR*(1+w.reach*flow);
         const a=w.a+spin+flow*w.curl*0.9;
-        const px=cx+Math.cos(a)*rr+Math.sin(w.v*20+t/2000)*8*DPR*flow;
-        const py=yv+Math.sin(a)*rr*0.13 - w.reach*flow*26*DPR*(w.v<0.5?1:-1);
-        const al=(1-flow)*0.5, r=w.sz*DPR;
-        if(w.teal){ctx.fillStyle=COL_TEAL;ctx.globalAlpha=Math.min(1,al*1.1);}
-        else{ctx.fillStyle=COL_WISP;ctx.globalAlpha=al*0.8;}
-        ctx.beginPath();ctx.arc(px,py,r,0,7);ctx.fill();
+        let hx=cx+Math.cos(a)*rr+Math.sin(w.v*20+t/2000)*8*DPR*flow;
+        let hy=yv+Math.sin(a)*rr*0.13 - w.reach*flow*26*DPR*(w.v<0.5?1:-1);
+        hx=cx+(hx-cx)*scale; hy=cy+(hy-cy)*scale;
+        const ra=w.ringA+vSpin, rad=RR*w.ringRad*vRad;
+        const rx=cx+Math.cos(ra)*rad, ry=cy+Math.sin(ra)*rad*0.82;
+        let bx=lerp(hx,rx,F.ringMix), by=lerp(hy,ry,F.ringMix);
+        if(SCAT>0){bx+=w.sx*SCAT*w.esp;by+=w.sy*SCAT*w.esp;}
+        if(F.tremor>0){bx+=Math.sin(tm*w.jsp+w.jr)*F.tremor*6*DPR;by+=Math.cos(tm*w.jsp*1.1+w.jr)*F.tremor*6*DPR;}
+        if(boomR>0){bx+=Math.cos(w.ea)*boomR*w.esp;by+=Math.sin(w.ea)*boomR*w.esp;}
+        const al=(1-flow)*0.5*boomFade, r=w.sz*DPR*(1+F.boom*0.4);
+        if(w.big && F.ringMix>0.5){
+          const gr=r*4*F.ringMix;
+          const gg=ctx.createRadialGradient(bx,by,0,bx,by,gr);
+          gg.addColorStop(0,"rgba(150,225,255,"+Math.min(0.6,al*0.55*F.ringMix)+")");
+          gg.addColorStop(1,"rgba(150,225,255,0)");
+          ctx.globalAlpha=1;ctx.fillStyle=gg;ctx.beginPath();ctx.arc(bx,by,gr,0,7);ctx.fill();
+          ctx.fillStyle=COL_BLUE;ctx.globalAlpha=Math.min(1,al*1.2);ctx.beginPath();ctx.arc(bx,by,r*1.3,0,7);ctx.fill();
+        }
+        else if(w.teal){ctx.fillStyle=COL_TEAL;ctx.globalAlpha=Math.min(1,al*1.1);ctx.beginPath();ctx.arc(bx,by,r,0,7);ctx.fill();}
+        else{ctx.fillStyle=COL_WISP;ctx.globalAlpha=al*0.8;ctx.beginPath();ctx.arc(bx,by,r,0,7);ctx.fill();}
       }
       for(const ring of rings){
         const baseR=radiusAt(ring.v)*rmax, yv=cy+(ring.v-0.5)*2*hgt;
@@ -1010,24 +1094,48 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
           const a=(j/PER)*6.283+spin+ring.tilt*Math.sin((j/PER)*6.28);
           const warp=1+0.20*Math.sin(a*3+ring.v*10+t/2600)*ring.warp+0.11*Math.sin(a*7-t/1800)+0.05*Math.sin(a*13+ring.v*20);
           const R=baseR*warp;
-          const px=ccx+Math.cos(a)*R, py=ccy+Math.sin(a)*R*0.13;
+          let hx=ccx+Math.cos(a)*R, hy=ccy+Math.sin(a)*R*0.13;
+          hx=cx+(hx-cx)*scale; hy=cy+(hy-cy)*scale;
+          const ra=ring.ringA+(j/PER)*0.3+vSpin, rad=RR*ring.ringRad*vRad;
+          const rx=cx+Math.cos(ra)*rad, ry=cy+Math.sin(ra)*rad*0.82;
+          let bx=lerp(hx,rx,F.ringMix), by=lerp(hy,ry,F.ringMix);
+          if(SCAT>0){bx+=ring.sx*SCAT;by+=ring.sy*SCAT;}
+          if(F.tremor>0){bx+=Math.sin(tm*1.3+ring.jr)*F.tremor*5*DPR;by+=Math.cos(tm*1.4+ring.jr)*F.tremor*5*DPR;}
+          if(boomR>0){bx+=Math.cos(a+ring.jr)*boomR*0.9;by+=Math.sin(a+ring.jr)*boomR*0.9;}
           const z=Math.sin(a), depth=0.26+0.74*(z*0.5+0.5);
-          const al=depth*(0.5+0.35*Math.sin(t/900+ring.v*8)), r=(0.45+0.55*depth)*DPR;
+          const al=depth*(0.5+0.35*Math.sin(t/900+ring.v*8))*boomFade, r=(0.45+0.55*depth)*DPR*(1+F.boom*0.3);
           const teal=ring.rowTeal&&(j%3===0);
-          if(teal){ctx.fillStyle=COL_TEAL;ctx.globalAlpha=Math.min(1,al*1.15);ctx.beginPath();ctx.arc(px,py,r*1.3,0,7);ctx.fill();}
-          else{ctx.fillStyle=COL_RING;ctx.globalAlpha=Math.min(1,al*1.05);ctx.beginPath();ctx.arc(px,py,r,0,7);ctx.fill();}
+          if(teal){ctx.fillStyle=COL_TEAL;ctx.globalAlpha=Math.min(1,al*1.15);ctx.beginPath();ctx.arc(bx,by,r*1.3,0,7);ctx.fill();}
+          else{ctx.fillStyle=COL_RING;ctx.globalAlpha=Math.min(1,al*1.05);ctx.beginPath();ctx.arc(bx,by,r,0,7);ctx.fill();}
         }
       }
       ctx.globalAlpha=1;
-      if(cg===null||_cgx!==cx||_cgy!==cy||_cgr!==rmax){
-        _cgx=cx;_cgy=cy;_cgr=rmax;
-        cg=ctx.createRadialGradient(cx,cy,0,cx,cy,rmax*0.5);
-        cg.addColorStop(0,"rgba(150,232,218,.1)");cg.addColorStop(1,"rgba(150,232,218,0)");
+      // 평상시에만 중심 발광 (원본 그대로) — 전환 중엔 끔
+      if(!F.live){
+        if(cg===null||_cgx!==cx||_cgy!==cy||_cgr!==rmax){
+          _cgx=cx;_cgy=cy;_cgr=rmax;
+          cg=ctx.createRadialGradient(cx,cy,0,cx,cy,rmax*0.5);
+          cg.addColorStop(0,"rgba(150,232,218,.1)");cg.addColorStop(1,"rgba(150,232,218,0)");
+        }
+        ctx.fillStyle=cg;ctx.beginPath();ctx.arc(cx,cy,rmax*0.5,0,7);ctx.fill();
       }
-      ctx.fillStyle=cg;ctx.beginPath();ctx.arc(cx,cy,rmax*0.5,0,7);ctx.fill();
+      // 링 단계 중앙 깊이감
+      const depthA=F.ringMix*(1-F.vortexMix);
+      if(depthA>0.02){
+        ctx.globalCompositeOperation="source-over";ctx.globalAlpha=1;
+        const rd=RR*0.78;
+        const inner=ctx.createRadialGradient(cx,cy,0,cx,cy,rd);
+        inner.addColorStop(0,"rgba(16,17,19,"+(0.58*depthA)+")");
+        inner.addColorStop(0.7,"rgba(16,17,19,"+(0.12*depthA)+")");
+        inner.addColorStop(1,"rgba(16,17,19,0)");
+        ctx.fillStyle=inner;ctx.beginPath();ctx.arc(cx,cy,rd,0,7);ctx.fill();
+      }
       ctx.globalCompositeOperation="source-over";
-      ctx.strokeStyle="rgba(180,235,225,.4)";ctx.lineWidth=1*DPR;const d=7*DPR;
-      ctx.beginPath();ctx.moveTo(cx,cy-d);ctx.lineTo(cx+d,cy);ctx.lineTo(cx,cy+d);ctx.lineTo(cx-d,cy);ctx.closePath();ctx.stroke();
+      // 평상시에만 중앙 다이아몬드 (원본 그대로)
+      if(!F.live){
+        ctx.strokeStyle="rgba(180,235,225,.4)";ctx.lineWidth=1*DPR;const d=7*DPR;
+        ctx.beginPath();ctx.moveTo(cx,cy-d);ctx.lineTo(cx+d,cy);ctx.lineTo(cx,cy+d);ctx.lineTo(cx-d,cy);ctx.closePath();ctx.stroke();
+      }
     };
   }
 
