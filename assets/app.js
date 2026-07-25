@@ -465,7 +465,7 @@ renderLsColors();
 let lsSprite=null, lsSpriteKey="", lsColStr="rgb(244,214,138)", lsColKey=-1;
 function lsBuildSprite(W,H){
   const c=document.createElement("canvas"); c.width=W; c.height=H;
-  const s=c.getContext("2d"), cx=W/2, cy=H/2, R=W*0.46;
+  const s=c.getContext("2d"), cx=W/2, cy=H/2, R=W*0.5;
   const g=s.createRadialGradient(cx,cy,0,cx,cy,R);
   g.addColorStop(0,"rgba(255,255,255,1)");
   g.addColorStop(0.45,"rgba(255,255,255,0.55)");
@@ -522,6 +522,13 @@ async function lsClose(){
 {const lo=document.getElementById("lsOpen"); if(lo) lo.addEventListener("click",lsOpen);}
 document.getElementById("lsFab").addEventListener("click",lsOpen);
 document.getElementById("lsClose").addEventListener("click",lsClose);
+
+document.getElementById("lsToggle").addEventListener("click",()=>{
+  const box=lsColorsBox, btn=document.getElementById("lsToggle");
+  box.classList.toggle("hide");
+  btn.textContent = box.classList.contains("hide") ? "색상 보이기" : "색상 숨기기";
+});
+
 // 탭 복귀 시 wakeLock 재요청
 document.addEventListener("visibilitychange",async()=>{
   if(document.visibilityState==="visible" && lsOverlay.classList.contains("on") && "wakeLock" in navigator){

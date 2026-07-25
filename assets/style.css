@@ -235,7 +235,7 @@ footer{border-top:1px solid var(--line);padding:70px 0 50px;position:relative;z-
 
 .ls-overlay{position:fixed;inset:0;z-index:200;background:#000;display:none;flex-direction:column;align-items:center;justify-content:center;touch-action:none}
 .ls-overlay.on{display:flex}
-.ls-glow{width:min(82vw,520px);height:min(82vw,520px);border-radius:50%;will-change:transform,opacity}
+.ls-glow{width:min(96vw,96vh);height:min(96vw,96vh);border-radius:50%;will-change:transform,opacity}
 .ls-starlabel{position:absolute;top:calc(50% + min(45vw,290px));font-family:var(--kr-serif);font-size:1.05rem;color:#fff;opacity:.85;letter-spacing:.1em;text-align:center;width:100%}
 .ls-sync{position:absolute;top:26px;left:0;right:0;text-align:center;font-family:var(--mono);font-size:.6rem;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.45)}
 .ls-colors{position:absolute;bottom:108px;display:flex;gap:16px}
@@ -246,8 +246,15 @@ footer{border-top:1px solid var(--line);padding:70px 0 50px;position:relative;z-
     left:50%;transform:translateX(-50%);width:min(88vw,300px);bottom:104px}
 }
 
-.ls-close{position:absolute;bottom:38px;background:none;border:1px solid rgba(255,255,255,.35);color:rgba(255,255,255,.8);font-family:var(--mono);font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;padding:11px 26px;border-radius:2px;cursor:pointer;transition:.2s}
+.ls-btnrow{position:absolute;bottom:34px;display:flex;gap:12px;align-items:center;z-index:210}
+.ls-toggle,.ls-close{background:transparent;border:1px solid rgba(255,255,255,.3);
+  color:rgba(255,255,255,.82);font-family:var(--mono);font-size:.76rem;letter-spacing:.1em;
+  padding:11px 0;cursor:pointer;width:130px;text-align:center;box-sizing:border-box}
+.ls-colors.hide{display:none}
 .ls-close:hover{border-color:#fff;color:#fff}
+
+.ls-toggle{position:absolute;bottom:170px;background:transparent;border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.75);font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;padding:8px 16px;border-radius:20px;cursor:pointer}
+.ls-colors.hide{display:none}
 
 .ls-fab{position:fixed;right:20px;bottom:20px;z-index:90;display:flex;align-items:center;gap:9px;background:rgba(14,16,24,.85);backdrop-filter:blur(10px);border:1px solid var(--line);color:var(--gold-bright);font-family:var(--mono);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;padding:12px 18px;border-radius:40px;cursor:pointer;transition:.3s var(--ease)}
 .ls-fab:hover{background:var(--gold);color:var(--ink);border-color:var(--gold)}
