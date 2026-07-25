@@ -3,14 +3,14 @@ const CONFIG = {
   concertDate : "2026-08-01T18:00:00+09:00",	// 공연 시작
   concertEndDate : "2026-08-01T22:00:00+09:00",   // 공연 종료
   dateText    : "2026. 08. 01 (토) 오후 6시",
-  venue       : "아트홀 베짱이 · 서울 마포구 독막로15길 3-12 B1",
+  venue       : "베짱이홀 · 서울 마포구 독막로15길 3-12 B1",
 
   venueAddr   : "서울 마포구 상수동 313-3 지하1층",
   venueGeo    : { lat: 37.5484185, lng: 126.9215116 },
   naverMapKey : "w775fm1uhs",
 
   ticketLink  : "https://link.talket.io/short?type=STORE_PRODUCT_DETAIL&id=32fc4343-ddc3-491a-b6d2-47f4207356c3",   // 선예매 폼/페이지
-  mapLink     : "https://map.naver.com/p/search/아트홀%20베짱이",   // 오시는 길 (네이버 지도)
+  mapLink     : "https://map.naver.com/p/search/베짱이홀",   // 오시는 길 (네이버 지도)
 
   // 계좌 정보
   account : {
@@ -1261,7 +1261,7 @@ const prefersReduced = matchMedia("(prefers-reduced-motion:reduce)").matches;
       }
     });
     const info = new naver.maps.InfoWindow({
-      content: '<div class="tm-info"><div class="v">아트홀 베짱이</div><div class="t">2026 뚜라미 여름 공연</div><div class="a">6호선 상수역 1번 출구 · 도보 5분</div></div>',
+      content: '<div class="tm-info"><div class="v">베짱이홀</div><div class="t">2026 뚜라미 여름 공연</div><div class="a">6호선 상수역 1번 출구 · 도보 5분</div></div>',
       borderWidth: 0,
       backgroundColor: "transparent",
       disableAnchor: true,
