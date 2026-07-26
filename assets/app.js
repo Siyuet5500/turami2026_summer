@@ -323,10 +323,10 @@ async function genTicket(){
 
   // 폰트 로드 보장
   try{ await Promise.all([
-    document.fonts.load('700 64px "Gowun Batang"'),
-    document.fonts.load('400 30px "Gowun Batang"'),
-    document.fonts.load('700 22px "Space Mono"'),
-    document.fonts.load('400 18px "Space Mono"'),
+    document.fonts.load('700 64px "Noto Serif KR"'),
+    document.fonts.load('400 30px "Noto Serif KR"'),
+    document.fonts.load('700 22px "Noto Serif KR"'),
+    document.fonts.load('400 18px "Noto Serif KR"'),
   ]); await document.fonts.ready; }catch(e){}
 
   const W=tCanvas.width, H=tCanvas.height, ctx=tctx;
@@ -352,20 +352,20 @@ async function genTicket(){
 
   // 상단 라벨
   ctx.textAlign="center";
-  ctx.fillStyle="#8ECFC5";ctx.font='700 17px "Space Mono"';
+  ctx.fillStyle="#8ECFC5";ctx.font='700 17px "Noto Serif KR"';
   ctx.fillText("H O N G I K   U N I V E R S I T Y", W/2, 70);
-  ctx.fillStyle="#8a9490";ctx.font='400 15px "Space Mono"';
+  ctx.fillStyle="#8a9490";ctx.font='400 15px "Noto Serif KR"';
   ctx.fillText("중앙 창작곡 동아리 뚜라미", W/2, 96);
-  ctx.fillStyle="#565f5b";ctx.font='400 14px "Space Mono"';
+  ctx.fillStyle="#565f5b";ctx.font='400 14px "Noto Serif KR"';
   ctx.fillText("2026  SUMMER  CONCERT", W/2, 150);
 
   // 타이틀
   const tg=ctx.createLinearGradient(0,170,0,250);
   tg.addColorStop(0,"#ffffff");tg.addColorStop(.55,"#8ECFC5");tg.addColorStop(1,"#64ABA1");
-  ctx.fillStyle=tg;ctx.font='700 70px "Gowun Batang"';
+  ctx.fillStyle=tg;ctx.font='700 70px "Noto Serif KR"';
   ctx.fillText("별무리", W/2, 230);
-  ctx.fillStyle="#64ABA1";ctx.font='700 22px "Space Mono"';
-  ctx.save();ctx.font='700 20px "Space Mono"';
+  ctx.fillStyle="#64ABA1";ctx.font='700 22px "Noto Serif KR"';
+  ctx.save();ctx.font='700 20px "Noto Serif KR"';
   drawSpaced(ctx,"C L U S T A R", W/2, 266, 2);
   ctx.restore();
 
@@ -391,21 +391,21 @@ async function genTicket(){
   ctx.beginPath();ctx.moveTo(60,540);ctx.lineTo(W-60,540);ctx.stroke();
 
   // 이름
-  ctx.fillStyle="#8a9490";ctx.font='700 14px "Space Mono"';
+  ctx.fillStyle="#8a9490";ctx.font='700 14px "Noto Serif KR"';
   ctx.fillText("A D M I T   O N E", W/2, 580);
-  ctx.fillStyle="#CCCCCC";ctx.font='700 52px "Gowun Batang"';
+  ctx.fillStyle="#CCCCCC";ctx.font='700 52px "Noto Serif KR"';
   ctx.fillText(name, W/2, 642);
 
   // 당신의 별
-  ctx.fillStyle="#8ECFC5";ctx.font='700 15px "Space Mono"';
+  ctx.fillStyle="#8ECFC5";ctx.font='700 15px "Noto Serif KR"';
   ctx.fillText("✦  YOUR STAR", W/2, 706);
-  ctx.fillStyle="#8ECFC5";ctx.font='700 30px "Gowun Batang"';
+  ctx.fillStyle="#8ECFC5";ctx.font='700 30px "Noto Serif KR"';
   ctx.fillText(star.kr+"  ·  "+star.en, W/2, 744);
 
   // 일시 / 장소
-  ctx.fillStyle="#8a9490";ctx.font='400 19px "Gowun Batang"';
+  ctx.fillStyle="#8a9490";ctx.font='400 19px "Noto Serif KR"';
   ctx.fillText(CONFIG.dateText, W/2, 810);
-  ctx.font='400 16px "Gowun Batang"';
+  ctx.font='400 16px "Noto Serif KR"';
   ctx.fillText(stripVenue(CONFIG.venue), W/2, 838);
 
   // 천공 점선
@@ -416,9 +416,9 @@ async function genTicket(){
   ctx.beginPath();ctx.arc(W-18,892,14,0,7);ctx.fill();
 
   // 스텁: 일련번호
-  ctx.fillStyle="#565f5b";ctx.font='400 15px "Space Mono"';
+  ctx.fillStyle="#565f5b";ctx.font='400 15px "Noto Serif KR"';
   ctx.fillText(serial, W/2, 952);
-  ctx.fillStyle="#8a9490";ctx.font='400 16px "Gowun Batang"';
+  ctx.fillStyle="#8a9490";ctx.font='400 16px "Noto Serif KR"';
   ctx.fillText("흩어져 빛나던 우리가, 하나의 밤으로 모이는 순간.", W/2, 1000);
 
   lastTicketURL=tCanvas.toDataURL("image/png");
@@ -666,7 +666,7 @@ gbSky.addEventListener("mouseleave",()=>{gbHover=-1;hideTip();});
 gbSky.addEventListener("click",e=>{const i=gbPick(e.clientX,e.clientY);if(i>=0)showTip(wishStars[i],e.clientX,e.clientY,true);});
 function showTip(w,cx,cy,sticky){
   const wrap=gbSky.parentElement.getBoundingClientRect();
-  const mark=w.hidden?`<div class="t-hidden" style="color:hsl(${w.hue},85%,72%);font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.1em;margin-bottom:5px">✦ 히든에서 온 별</div>`:"";
+  const mark=w.hidden?`<div class="t-hidden" style="color:hsl(${w.hue},85%,72%);font-family:'Noto Serif KR',serif;font-size:.62rem;letter-spacing:.1em;margin-bottom:5px">✦ 히든에서 온 별</div>`:"";
   gbTip.innerHTML=mark+`<div class="t-msg">${escapeHtml(w.msg)}</div><div class="t-name">— ${escapeHtml(w.name||"익명")}</div>`;
   gbTip.classList.add("show");                 // 먼저 보이게 해서 크기를 잰다
   const tw=gbTip.offsetWidth, th=gbTip.offsetHeight, pad=14;
