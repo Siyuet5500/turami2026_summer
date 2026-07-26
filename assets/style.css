@@ -395,7 +395,7 @@ footer{border-top:1px solid var(--line);padding:70px 0 50px;position:relative;z-
 .set-session{font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;color:var(--gold-soft);text-transform:uppercase;margin-bottom:14px;line-height:1.7}
 .set-lyric{font-family:var(--kr-serif);color:var(--starlight);font-size:1.02rem;line-height:2.15;white-space:pre-line;border-left:2px solid var(--line);padding-left:20px}
 .set-empty{color:var(--muted);font-size:.9rem}
-@media(max-width:820px){.track-head.song{grid-template-columns:34px 1fr auto;gap:12px}.track-body .inner.song{padding-left:34px}.set-session{padding-left:20px}}
+@media(max-width:820px){.track-head.song{grid-template-columns:34px 1fr auto;gap:12px}.track-body .inner.song{padding-left:8px}.set-session{text-align:center;padding-left:0}.set-lyric{text-align:center;border-left:0;padding-left:0}}
 
 /* 히든 해금 모달 - 앵콜 예고 + 발견자 방명록 */
 .unlock-modal .um-card{max-height:90vh;overflow-y:auto}
