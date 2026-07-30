@@ -207,10 +207,60 @@ wire("mapBtn2", CONFIG.mapLink);
    INTERACTION
    ============================================================ */
 // countdown — Days / Hrs / Min / Sec
-const CONCERT = new Date(CONFIG.concertDate);
+const _testSec = new URLSearchParams(location.search).get("test");
+const CONCERT = _testSec
+  ? new Date(Date.now() + (parseInt(_testSec,10)||0)*1000)   // ?test=N → 지금부터 N초 뒤를 가짜 공연시각으로
+  : new Date(CONFIG.concertDate);
 const pad=n=>String(n).padStart(2,"0");
 const CONCERT_END = new Date(CONFIG.concertEndDate || CONFIG.concertDate);
 let cdState="";
+
+/* ── 카운트다운 3분 전 음원 (호스트 전용) ──────────────────
+   PA 물린 기기만 주소 뒤에 ?host=1 붙여서 연다 → 그 기기에서만 소리.
+   관객은 파라미터 없이 접속 → 무음. */
+const IS_HOST = new URLSearchParams(location.search).get("host")==="1";
+const CD_AUDIO_LEAD = 180;           // 음원 길이(초) = 몇 초 전 재생 (3분)
+let cdAudio=null, cdPrimed=false, cdFired=false;
+
+function playCountdownAudio(){
+  if(!IS_HOST || cdFired || !cdPrimed || !cdAudio) return;
+  cdFired=true;
+  const secLeft = (CONCERT.getTime() - Date.now())/1000;        // 지금 남은 초
+  cdAudio.currentTime = Math.max(0, CD_AUDIO_LEAD - secLeft);   // 늦게 켜면 앞부분 건너뜀 → 항상 18:00에 끝남
+  cdAudio.play().catch(()=>{ cdFired=false; });                 // 실패 시 다음 tick에서 재시도
+}
+
+if(IS_HOST){
+  cdAudio = new Audio("assets/countdown.mp3");
+  cdAudio.preload = "auto";
+
+  const btn=document.createElement("button");
+  btn.id="hostAudioBtn";
+  btn.textContent="🔊 음원 준비";
+  btn.style.cssText="position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:9999;"
+    +"padding:12px 20px;border-radius:999px;border:1px solid var(--gold,#64ABA1);"
+    +"background:#101011;color:var(--gold,#64ABA1);font:600 15px/1 'Space Mono',monospace;"
+    +"letter-spacing:.02em;cursor:pointer;box-shadow:0 4px 24px rgba(0,0,0,.5)";
+  if(document.body) document.body.appendChild(btn);
+
+  btn.addEventListener("click", async ()=>{
+    try{
+      cdAudio.muted=true;
+      await cdAudio.play();          // 무음으로 살짝 재생 → 자동재생 잠금 해제(prime)
+      cdAudio.pause();
+      cdAudio.currentTime=0;
+      cdAudio.muted=false;
+      cdPrimed=true;
+      btn.textContent="✅ 음원 준비됨";
+      btn.style.color="#8ECFC5";
+      setTimeout(()=>{ btn.style.display="none"; }, 3000);   // 3초 뒤 버튼 숨김 (관객 화면에 안 남김)
+      const late=(CONCERT.getTime()-Date.now())/1000;        // 이미 3분 이내에 눌렀으면 즉시 재생
+      if(late<=CD_AUDIO_LEAD && late>0) playCountdownAudio();
+    }catch(e){
+      btn.textContent="⚠ 다시 눌러주세요";
+    }
+  });
+}
 
 function tick(){
   const now=new Date();
@@ -252,12 +302,12 @@ function tick(){
   if(tk) tk.classList.remove("on");
   if(hero) hero.classList.remove("live-hide");
   cdState="before";
+  if(sec<=CD_AUDIO_LEAD) playCountdownAudio();   // 3분 남으면 호스트 기기에서 재생
   set("cd-d",pad(Math.floor(diff/864e5)));
   set("cd-h",pad(Math.floor(diff%864e5/36e5)));
   set("cd-m",pad(Math.floor(diff%36e5/6e4)));
   set("cd-s",pad(Math.floor(diff%6e4/1e3)));
 }tick();setInterval(tick,1000);
-
 
 // nav (멀티페이지)
 const nav=document.getElementById("nav");
