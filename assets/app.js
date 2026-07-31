@@ -272,6 +272,9 @@ function tick(){
   const tk=document.getElementById("liveTakeover");
   const LIVE="<div class='cd-unit'><div class='cd-live-eyebrow'><span class='cd-live-dot'></span>LIVE NOW</div><span class='cd-live-now'>지금, 무대에서</span></div>";
 
+  // 공연 11초 전: 다른 페이지 보는 관객을 메인으로 이동
+  if(!cd && sec<=11 && sec>-10){ location.replace("/" + location.search); return; }
+
   if(now>=CONCERT_END){                              // 공연 후
     if(tk) tk.classList.remove("on");
     if(hero) hero.classList.remove("live-hide");
