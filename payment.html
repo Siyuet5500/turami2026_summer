@@ -12,6 +12,12 @@
 html,body{margin:0}
 body{background:#131109}
 
+html{scrollbar-width:thin;scrollbar-color:rgba(203,171,108,.35) #151109}
+::-webkit-scrollbar{width:11px;height:11px}
+::-webkit-scrollbar-track{background:#151109}
+::-webkit-scrollbar-thumb{background:rgba(203,171,108,.28);border-radius:20px;border:3px solid #151109}
+::-webkit-scrollbar-thumb:hover{background:rgba(203,171,108,.5)}
+
 *{box-sizing:border-box}
 .wrap{
   --ink:#131109; --panel:#1b1810; --panel2:#231f16; --raise:#2a2519;
@@ -75,8 +81,8 @@ body{background:#131109}
 .paid-card .card-head h2{color:var(--gold)}
 
 .ta{width:100%;background:#100e07;border:1px solid var(--hair);border-radius:10px;
-  color:var(--tx);font-family:inherit;font-size:15px;padding:12px 13px;resize:vertical;
-  line-height:1.8;outline:none;transition:border-color .15s}
+  color:var(--tx);font-family:inherit;font-size:15px;padding:12px 13px;resize:none;overflow:hidden;
+  min-height:152px;line-height:1.8;outline:none;transition:border-color .15s;display:block}
 .ta:focus{border-color:var(--gold-dim)}
 .ta::placeholder{color:var(--mut2)}
 
@@ -87,7 +93,7 @@ body{background:#131109}
 .badge-fee{font-family:var(--sans);font-size:9.5px;font-weight:700;letter-spacing:.06em;
   color:var(--gold);background:rgba(203,171,108,.12);border:1px solid var(--hair-2);
   border-radius:20px;padding:2px 8px}
-.ta-round{font-size:14px}
+.ta-round{font-size:14px;min-height:104px}
 
 .toolbar{display:flex;gap:9px}
 .ghost{flex:1;background:transparent;border:1px solid var(--hair);color:var(--mut);
@@ -394,6 +400,8 @@ function resultHTML(R) {
 
 function $(id) { return document.getElementById(id); }
 
+function autoGrow(el) { el.style.height = "auto"; el.style.height = (el.scrollHeight + 2) + "px"; }
+
 function render() {
   var R = compute();
   $("st-target").textContent = R.target.length;
@@ -438,13 +446,13 @@ function fallbackCopy(text) {
 // ── 이벤트 연결 ──
 var taPaid = $("ta-paid");
 taPaid.placeholder = "한 줄에 한 명 (또는 쉼표로 구분)\n김민서\n최우진";
-taPaid.addEventListener("input", function (e) { state.paidText = e.target.value; render(); });
+taPaid.addEventListener("input", function (e) { state.paidText = e.target.value; autoGrow(e.target); render(); });
 
 for (var i = 0; i < 4; i++) {
   (function (idx) {
     var ta = $("ta-r" + idx);
     ta.placeholder = idx === 0 ? "1차에 온 사람" : "온 사람";
-    ta.addEventListener("input", function (e) { state.rounds[idx] = e.target.value; render(); });
+    ta.addEventListener("input", function (e) { state.rounds[idx] = e.target.value; autoGrow(e.target); render(); });
   })(i);
 }
 
@@ -453,8 +461,8 @@ $("tab-result").addEventListener("click", function () { setPane("result"); });
 
 $("btn-clear").addEventListener("click", function () {
   state.paidText = ""; state.rounds = ["", "", "", ""];
-  taPaid.value = "";
-  for (var j = 0; j < 4; j++) $("ta-r" + j).value = "";
+  taPaid.value = ""; autoGrow(taPaid);
+  for (var j = 0; j < 4; j++) { var t = $("ta-r" + j); t.value = ""; autoGrow(t); }
   render();
 });
 
@@ -465,6 +473,8 @@ $("result").addEventListener("click", function (e) {
   else if (el.getAttribute("data-action") === "sort") { state.sortMode = el.getAttribute("data-sort"); render(); }
 });
 
+autoGrow(taPaid);
+for (var g = 0; g < 4; g++) autoGrow($("ta-r" + g));
 render();
 </script>
 </body>
