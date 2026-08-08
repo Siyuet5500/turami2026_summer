@@ -199,9 +199,9 @@ html{scrollbar-width:thin;scrollbar-color:rgba(203,171,108,.35) #151109}
   <div class="frame">
     <header class="top">
       <div class="brand">
-        <span class="eyebrow">뚜라미 뒤풀이</span>
-        <h1>회식 정산</h1>
-        <p class="sub">참가비 15,000원은 <b class="hl">1차 참석자</b>에게만. 2차부터 온 사람은 면제. 참석했는데 안 낸 사람을 가나다순으로 정리해 드려요.</p>
+        <span class="eyebrow">뚜라미·TURAMI</span>
+        <h1>뒤풀이 정산</h1>
+        <p class="sub">참가비 15,000원은 <b class="hl">1차 참석자</b>에게만. 2차 이후로 온 사람은 면제.</p>
       </div>
       <div class="stats">
         <div class="stat plain"><span class="num" id="st-target">0</span><span class="lab">1차 참석</span></div>
@@ -219,7 +219,7 @@ html{scrollbar-width:thin;scrollbar-color:rgba(203,171,108,.35) #151109}
       <section class="col col-input">
         <div class="card paid-card">
           <div class="card-head"><h2><i class="tick gold"></i>15,000원 낸 사람</h2><span class="count" id="cnt-paid">0</span></div>
-          <p class="hint">카카오뱅크 모임통장 입금내역을 보고 최종 입금자 이름을 붙여넣으세요.</p>
+          <p class="hint">카카오뱅크 모임통장 입금내역에서 뒤풀이 회비 납부자 이름을 붙여넣으세요.</p>
           <textarea class="ta" id="ta-paid" rows="6" spellcheck="false"></textarea>
         </div>
 
@@ -250,7 +250,7 @@ html{scrollbar-width:thin;scrollbar-color:rgba(203,171,108,.35) #151109}
       <section class="col col-result" id="result"></section>
     </main>
 
-    <footer class="foot">입력한 이름은 이 브라우저 안에서만 처리되고 어디에도 저장·전송되지 않습니다. 새로고침하면 내용이 지워집니다.</footer>
+    <footer class="foot">입력한 이름은 해당 브라우저 안에서만 처리되며 저장·전송되지 않습니다.<br>새로고침하면 내용이 지워집니다.</footer>
   </div>
 </div>
 
@@ -332,7 +332,7 @@ function rowHTML(a) {
 function resultHTML(R) {
   var bill;
   if (!R.target.length) {
-    bill = '<div class="b-empty">1차 참석자를 입력하면<br>여기에 미납 명단이 나옵니다.</div>';
+    bill = '<div class="b-empty">1차 참석자를 입력하면<br>미납자 명단이 나옵니다.</div>';
   } else if (!R.unpaid.length) {
     bill = '<div class="b-empty done">1차 참석자 전원 납부 완료</div>';
   } else {
@@ -445,13 +445,13 @@ function fallbackCopy(text) {
 
 // ── 이벤트 연결 ──
 var taPaid = $("ta-paid");
-taPaid.placeholder = "한 줄에 한 명 (또는 쉼표로 구분)\n김민서\n최우진";
+taPaid.placeholder = "한 줄에 한 명 (또는 쉼표로 구분)";
 taPaid.addEventListener("input", function (e) { state.paidText = e.target.value; autoGrow(e.target); render(); });
 
 for (var i = 0; i < 4; i++) {
   (function (idx) {
     var ta = $("ta-r" + idx);
-    ta.placeholder = idx === 0 ? "1차에 온 사람" : "온 사람";
+    ta.placeholder = "참석자";
     ta.addEventListener("input", function (e) { state.rounds[idx] = e.target.value; autoGrow(e.target); render(); });
   })(i);
 }
