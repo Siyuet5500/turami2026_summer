@@ -11,7 +11,6 @@
 
 html,body{margin:0}
 body{background:#131109}
-#boot{color:#a89a80;font-family:system-ui,sans-serif;padding:60px 20px;text-align:center;font-size:14px}
 
 *{box-sizing:border-box}
 .wrap{
@@ -238,7 +237,6 @@ body{background:#131109}
         </div>
 
         <div class="toolbar">
-          <button class="ghost" id="btn-example">예시 채우기</button>
           <button class="ghost" id="btn-clear">전부 비우기</button>
         </div>
       </section>
@@ -457,15 +455,6 @@ $("btn-clear").addEventListener("click", function () {
   state.paidText = ""; state.rounds = ["", "", "", ""];
   taPaid.value = "";
   for (var j = 0; j < 4; j++) $("ta-r" + j).value = "";
-  render();
-});
-
-$("btn-example").addEventListener("click", function () {
-  var ex = ["박지훈\n김민서\n이서연\n최우진\n정하람", "김민서\n최우진\n오세빈\n한도윤", "오세빈\n한도윤", "오세빈"];
-  state.rounds = ex.slice();
-  state.paidText = "박지훈\n김민서\n최우진\n오세빈\n강동원";
-  taPaid.value = state.paidText;
-  for (var j = 0; j < 4; j++) $("ta-r" + j).value = ex[j];
   render();
 });
 
