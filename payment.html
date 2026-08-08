@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="robots" content="noindex, nofollow" />
-<title>회식 정산</title>
+<title>뒤풀이 정산</title>
 <style>
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600;700&display=swap');
@@ -46,6 +46,11 @@ html{scrollbar-width:thin;scrollbar-color:rgba(203,171,108,.35) #151109}
   letter-spacing:.02em;color:#f6f0e2;line-height:1}
 .sub{margin:0;max-width:50ch;color:var(--mut);font-size:14px;line-height:1.65}
 .sub b{color:var(--clay);font-weight:600} .sub b.hl{color:var(--gold)}
+.sync{display:inline-flex;align-items:center;gap:7px;margin-top:14px;font-size:12px;
+  color:var(--mut);border:1px solid var(--hair);border-radius:20px;padding:5px 12px}
+.sdot{width:7px;height:7px;border-radius:50%;background:var(--mut2);transition:.2s}
+.sync.on{color:var(--tx)}
+.sync.on .sdot{background:#6fbf73;box-shadow:0 0 0 3px rgba(111,191,115,.16)}
 
 .stats{display:flex;border:1px solid var(--hair);border-radius:13px;
   overflow:hidden;background:linear-gradient(180deg,var(--panel),#181509)}
@@ -80,11 +85,25 @@ html{scrollbar-width:thin;scrollbar-color:rgba(203,171,108,.35) #151109}
 .paid-card{border-color:var(--hair-2)}
 .paid-card .card-head h2{color:var(--gold)}
 
-.ta{width:100%;background:#100e07;border:1px solid var(--hair);border-radius:10px;
-  color:var(--tx);font-family:inherit;font-size:15px;padding:12px 13px;resize:none;overflow:hidden;
-  min-height:152px;line-height:1.8;outline:none;transition:border-color .15s;display:block}
-.ta:focus{border-color:var(--gold-dim)}
-.ta::placeholder{color:var(--mut2)}
+.add-input{width:100%;background:#100e07;border:1px solid var(--hair);border-radius:10px;
+  color:var(--tx);font-family:inherit;font-size:15px;padding:11px 13px;outline:none;
+  transition:border-color .15s;display:block}
+.add-input:focus{border-color:var(--gold-dim)}
+.add-input::placeholder{color:var(--mut2)}
+
+.nchips{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
+.nchips:empty{display:none}
+.nchip{display:inline-flex;align-items:center;gap:6px;background:var(--panel2);
+  border:1px solid var(--hair);border-radius:20px;padding:5px 6px 5px 12px;font-size:13.5px;color:var(--tx)}
+.nchip .x{border:0;background:transparent;color:var(--mut);cursor:pointer;font-size:13px;
+  width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  line-height:1;padding:0;font-family:inherit;transition:.12s}
+.nchip .x:hover{background:rgba(192,106,82,.22);color:#e8917a}
+.list-actions{flex-basis:100%;display:flex;justify-content:flex-end;margin-top:9px}
+.list-actions button{background:transparent;border:1px solid var(--hair);color:var(--mut);
+  font-size:11.5px;font-weight:600;padding:5px 11px;border-radius:20px;cursor:pointer;
+  font-family:inherit;transition:.12s}
+.list-actions button:hover{color:var(--gold);border-color:var(--hair-2)}
 
 .rounds{display:grid;grid-template-columns:1fr 1fr;gap:13px}
 .round-card{padding:14px}
@@ -93,17 +112,17 @@ html{scrollbar-width:thin;scrollbar-color:rgba(203,171,108,.35) #151109}
 .badge-fee{font-family:var(--sans);font-size:9.5px;font-weight:700;letter-spacing:.06em;
   color:var(--gold);background:rgba(203,171,108,.12);border:1px solid var(--hair-2);
   border-radius:20px;padding:2px 8px}
-.ta-round{font-size:14px;min-height:104px}
+.round-card .add-input{font-size:14px;padding:9px 12px}
+.round-card .nchip{font-size:13px;padding:4px 5px 4px 11px}
 
 .toolbar{display:flex;gap:9px}
 .ghost{flex:1;background:transparent;border:1px solid var(--hair);color:var(--mut);
   padding:11px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;
   font-family:inherit;transition:.15s}
-.ghost:hover{color:var(--gold);border-color:var(--hair-2)}
+.ghost:hover{color:var(--clay);border-color:rgba(192,106,82,.4)}
 
 /* 청구서 */
-.bill{background:
-    linear-gradient(180deg,#f1e9d8,var(--ivory));
+.bill{background:linear-gradient(180deg,#f1e9d8,var(--ivory));
   color:var(--ivory-ink);border-radius:9px;padding:26px 24px 24px;position:relative;
   box-shadow:0 24px 55px -26px rgba(0,0,0,.72),0 2px 0 rgba(255,255,255,.25) inset}
 .b-rule{position:absolute;top:0;left:24px;right:24px;height:2px;
@@ -180,7 +199,7 @@ html{scrollbar-width:thin;scrollbar-color:rgba(203,171,108,.35) #151109}
 .row.exempt .pill{color:var(--sage);background:rgba(147,160,143,.1);border:1px solid rgba(147,160,143,.24)}
 
 .foot{margin:30px auto 0;text-align:center;color:var(--mut2);font-size:11.5px;
-  letter-spacing:.01em;line-height:1.7;max-width:52ch}
+  letter-spacing:.01em;line-height:1.7;max-width:56ch}
 
 @media (max-width:820px){
   .wrap{padding:24px 15px 36px}
@@ -201,7 +220,8 @@ html{scrollbar-width:thin;scrollbar-color:rgba(203,171,108,.35) #151109}
       <div class="brand">
         <span class="eyebrow">뚜라미·TURAMI</span>
         <h1>뒤풀이 정산</h1>
-        <p class="sub">참가비 15,000원은 <b class="hl">1차 참석자</b>에게만. 2차 이후로 온 사람은 면제.</p>
+        <p class="sub">참가비 15,000원은 <b class="hl">1차 참석자</b>에게만. 2차부터 온 사람은 면제.</p>
+        <div class="sync" id="sync"><span class="sdot"></span><span id="sync-text">연결 중…</span></div>
       </div>
       <div class="stats">
         <div class="stat plain"><span class="num" id="st-target">0</span><span class="lab">1차 참석</span></div>
@@ -219,48 +239,68 @@ html{scrollbar-width:thin;scrollbar-color:rgba(203,171,108,.35) #151109}
       <section class="col col-input">
         <div class="card paid-card">
           <div class="card-head"><h2><i class="tick gold"></i>15,000원 낸 사람</h2><span class="count" id="cnt-paid">0</span></div>
-          <p class="hint">카카오뱅크 모임통장 입금내역에서 뒤풀이 회비 납부자 이름을 붙여넣으세요.</p>
-          <textarea class="ta" id="ta-paid" rows="6" spellcheck="false"></textarea>
+          <p class="hint">이름을 입력하고 Enter. 여러 명은 붙여넣기하면 한 번에 추가돼요.</p>
+          <input class="add-input" id="add-paid" placeholder="이름 입력 후 Enter" spellcheck="false" autocomplete="off" />
+          <div class="nchips" id="chips-paid"></div>
         </div>
 
         <div class="rounds">
           <div class="card round-card primary">
-            <div class="card-head"><h2>1차 <span class="badge-fee">납부 대상</span></h2><span class="count" id="cnt-r0">0</span></div>
-            <textarea class="ta ta-round" id="ta-r0" rows="4" spellcheck="false"></textarea>
+            <div class="card-head"><h2>1차 <span class="badge-fee">납부 대상</span></h2><span class="count" id="cnt-r1">0</span></div>
+            <input class="add-input" id="add-r1" placeholder="참석자" spellcheck="false" autocomplete="off" />
+            <div class="nchips" id="chips-r1"></div>
           </div>
           <div class="card round-card">
-            <div class="card-head"><h2>2차</h2><span class="count" id="cnt-r1">0</span></div>
-            <textarea class="ta ta-round" id="ta-r1" rows="4" spellcheck="false"></textarea>
+            <div class="card-head"><h2>2차</h2><span class="count" id="cnt-r2">0</span></div>
+            <input class="add-input" id="add-r2" placeholder="참석자" spellcheck="false" autocomplete="off" />
+            <div class="nchips" id="chips-r2"></div>
           </div>
           <div class="card round-card">
-            <div class="card-head"><h2>3차</h2><span class="count" id="cnt-r2">0</span></div>
-            <textarea class="ta ta-round" id="ta-r2" rows="4" spellcheck="false"></textarea>
+            <div class="card-head"><h2>3차</h2><span class="count" id="cnt-r3">0</span></div>
+            <input class="add-input" id="add-r3" placeholder="참석자" spellcheck="false" autocomplete="off" />
+            <div class="nchips" id="chips-r3"></div>
           </div>
           <div class="card round-card">
-            <div class="card-head"><h2>4차</h2><span class="count" id="cnt-r3">0</span></div>
-            <textarea class="ta ta-round" id="ta-r3" rows="4" spellcheck="false"></textarea>
+            <div class="card-head"><h2>4차</h2><span class="count" id="cnt-r4">0</span></div>
+            <input class="add-input" id="add-r4" placeholder="참석자" spellcheck="false" autocomplete="off" />
+            <div class="nchips" id="chips-r4"></div>
           </div>
         </div>
 
         <div class="toolbar">
-          <button class="ghost" id="btn-clear">전부 비우기</button>
+          <button class="ghost" id="btn-clear">전부 비우기 (공유)</button>
         </div>
       </section>
 
       <section class="col col-result" id="result"></section>
     </main>
 
-    <footer class="foot">입력한 이름은 해당 브라우저 안에서만 처리되며 저장·전송되지 않습니다.<br>새로고침하면 내용이 지워집니다.</footer>
+    <footer class="foot">입력한 이름은 공유 데이터베이스(Firebase)에 저장되어, 같은 주소를 연 사람과 실시간으로 함께 편집됩니다. 이 주소는 관리자끼리만 공유하세요.</footer>
   </div>
 </div>
 
-<script>
-"use strict";
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+import { getDatabase, ref, onValue, push, remove, set } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-database.js";
 
-// ── 회식 정산: 1차 참석자 중 안 낸 사람 찾기 ─────────────────────────
-// 규칙: 15,000원은 '1차 참석자'에게만 부과. 1차 없이 2차 이후만 온 사람은 면제.
+const firebaseConfig = {
+  apiKey: "AIzaSyCEStpLLCJaPQx9pr58X1c-m4eFBtvLMh0",
+  authDomain: "turami2026-payment.firebaseapp.com",
+  databaseURL: "https://turami2026-payment-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "turami2026-payment",
+  storageBucket: "turami2026-payment.firebasestorage.app",
+  messagingSenderId: "883479369002",
+  appId: "1:883479369002:web:c7451ac4c3a57b2115ba53"
+};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// ── 회식 정산: 1차 참석자 중 안 낸 사람 찾기 (실시간 공동편집) ──────────
 var FEE = 15000;
-var state = { paidText: "", rounds: ["", "", "", ""], pane: "input", sortMode: "name" };
+var LIST_KEYS = ["paid", "r1", "r2", "r3", "r4"];
+var ROUND_KEYS = ["r1", "r2", "r3", "r4"];
+var data = { paid: {}, r1: {}, r2: {}, r3: {}, r4: {} };
+var view = { sortMode: "name" };
 var copied = false, copyTimer = null;
 
 function parseNames(t) {
@@ -278,13 +318,20 @@ function esc(s) {
 function roundTag(rs) { return rs.join("·") + "차"; }
 var STATE_LABEL = { paid: "납부", unpaid: "미납", exempt: "면제" };
 
+function itemsOf(key) {
+  var obj = data[key] || {};
+  return Object.keys(obj).map(function (id) { return { id: id, name: obj[id] }; })
+    .sort(function (a, b) { return a.name.localeCompare(b.name, "ko"); });
+}
+function namesOf(key) { return itemsOf(key).map(function (x) { return x.name; }); }
+
 function compute() {
-  var paidNames = parseNames(state.paidText);
+  var paidNames = namesOf("paid");
   var paidSet = new Set(paidNames.map(norm));
 
   var map = new Map();
-  state.rounds.forEach(function (text, idx) {
-    parseNames(text).forEach(function (name) {
+  ROUND_KEYS.forEach(function (rk, idx) {
+    namesOf(rk).forEach(function (name) {
       var k = norm(name);
       if (!k) return;
       if (!map.has(k)) map.set(k, { name: name, rounds: new Set() });
@@ -332,12 +379,12 @@ function rowHTML(a) {
 function resultHTML(R) {
   var bill;
   if (!R.target.length) {
-    bill = '<div class="b-empty">1차 참석자를 입력하면<br>미납자 명단이 나옵니다.</div>';
+    bill = '<div class="b-empty">1차 참석자를 입력하면<br>여기에 미납 명단이 나옵니다.</div>';
   } else if (!R.unpaid.length) {
     bill = '<div class="b-empty done">1차 참석자 전원 납부 완료</div>';
   } else {
     var warn = R.hasPaid ? "" :
-      '<div class="warn">입금 명단이 비어 있어 지금은 1차 참석자 전원이 미납으로 잡힙니다. 최종 입금 명단을 넣으면 걸러져요.</div>';
+      '<div class="warn">입금 명단이 비어 있어 지금은 1차 참석자 전원이 미납으로 잡힙니다. 입금자 이름을 넣으면 걸러져요.</div>';
     var items = R.unpaid.map(function (a) {
       return '<li><span class="nm">' + esc(a.name) + '</span><span class="rt">' + roundTag(a.rounds) + '</span></li>';
     }).join("");
@@ -353,7 +400,7 @@ function resultHTML(R) {
   if (R.paidNoShow.length) {
     var chips1 = R.paidNoShow.map(function (n) { return '<span class="chip">' + esc(n) + '</span>'; }).join("");
     html += '<div class="card noshow-card"><div class="card-head">' +
-      '<h2><i class="tick gold"></i>입금 · 미참석</h2><span class="count">' + R.paidNoShow.length + '</span></div>' +
+      '<h2><i class="tick gold"></i>입금 · 미참석</h2><span class="count">' + R.paidNoShow.length + '명</span></div>' +
       '<p class="hint">입금은 했는데 어느 차수에도 참석 명단에 없어요. 회식에 안 왔거나, 계좌명이 달라서(예: 부모님 계좌) 이름이 안 맞는 경우예요.</p>' +
       '<div class="chips">' + chips1 + '</div></div>';
   }
@@ -362,13 +409,13 @@ function resultHTML(R) {
       return '<span class="chip">' + esc(a.name) + '<em>' + roundTag(a.rounds) + '</em></span>';
     }).join("");
     html += '<div class="card refund-card"><div class="card-head">' +
-      '<h2><i class="tick sage"></i>환불 확인</h2><span class="count">' + R.exemptPaid.length + '</span></div>' +
+      '<h2><i class="tick sage"></i>환불 확인</h2><span class="count">' + R.exemptPaid.length + '명</span></div>' +
       '<p class="hint">1차에 안 와서 면제 대상인데 15,000원을 냈어요. 환불 여부를 확인하세요.</p>' +
       '<div class="chips">' + chips2 + '</div></div>';
   }
   if (R.attendees.length) {
     var body;
-    if (state.sortMode === "name") {
+    if (view.sortMode === "name") {
       body = '<div class="legend">' +
         '<span><i class="d paid"></i>납부</span>' +
         '<span><i class="d unpaid"></i>미납</span>' +
@@ -389,10 +436,10 @@ function resultHTML(R) {
       }).join("") + '</div>';
     }
     html += '<div class="card table-card"><div class="card-head">' +
-      '<h2><i class="tick"></i>참석자 전체 <span class="count">' + R.attendees.length + '</span></h2>' +
+      '<h2><i class="tick"></i>참석자 전체 <span class="count">' + R.attendees.length + '명</span></h2>' +
       '<div class="sort-toggle">' +
-      '<button class="' + (state.sortMode === "name" ? "on" : "") + '" data-action="sort" data-sort="name">가나다순</button>' +
-      '<button class="' + (state.sortMode === "group" ? "on" : "") + '" data-action="sort" data-sort="group">상태별</button>' +
+      '<button class="' + (view.sortMode === "name" ? "on" : "") + '" data-action="sort" data-sort="name">가나다순</button>' +
+      '<button class="' + (view.sortMode === "group" ? "on" : "") + '" data-action="sort" data-sort="group">상태별</button>' +
       '</div></div>' + body + '</div>';
   }
   return html;
@@ -400,24 +447,44 @@ function resultHTML(R) {
 
 function $(id) { return document.getElementById(id); }
 
-function autoGrow(el) { el.style.height = "auto"; el.style.height = (el.scrollHeight + 2) + "px"; }
+function chipHTML(key, it) {
+  return '<span class="nchip">' + esc(it.name) +
+    '<button class="x" data-action="del" data-key="' + key + '" data-id="' + it.id + '" aria-label="삭제">✕</button></span>';
+}
+
+function renderChips() {
+  LIST_KEYS.forEach(function (key) {
+    var items = itemsOf(key);
+    $("cnt-" + key).textContent = items.length + "명";
+    var chips = items.map(function (it) { return chipHTML(key, it); }).join("");
+    var actions = items.length ? '<div class="list-actions"><button data-action="copylist" data-key="' + key + '">목록 복사</button></div>' : "";
+    $("chips-" + key).innerHTML = chips + actions;
+  });
+}
 
 function render() {
   var R = compute();
   $("st-target").textContent = R.target.length;
   $("st-paid").textContent = R.paidOk.length;
   $("st-unpaid").textContent = R.unpaid.length;
-  $("cnt-paid").textContent = parseNames(state.paidText).length;
-  state.rounds.forEach(function (t, i) { $("cnt-r" + i).textContent = parseNames(t).length; });
+  renderChips();
   $("tab-result").textContent = R.unpaid.length ? ("결과 · 미납 " + R.unpaid.length) : "결과";
   $("result").innerHTML = resultHTML(R);
 }
 
 function setPane(p) {
-  state.pane = p;
   $("main").className = "grid pane-" + p;
   $("tab-input").classList.toggle("on", p === "input");
   $("tab-result").classList.toggle("on", p === "result");
+}
+
+function addNames(key, raw) {
+  var existing = new Set(namesOf(key).map(function (s) { return s.trim(); }));
+  parseNames(raw).forEach(function (n) {
+    if (existing.has(n)) return;
+    existing.add(n);
+    push(ref(db, "lists/" + key), n);
+  });
 }
 
 function copyList() {
@@ -432,9 +499,7 @@ function copyList() {
   };
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(text).then(done, function () { fallbackCopy(text); done(); });
-  } else {
-    fallbackCopy(text); done();
-  }
+  } else { fallbackCopy(text); done(); }
 }
 function fallbackCopy(text) {
   var ta = document.createElement("textarea");
@@ -443,38 +508,68 @@ function fallbackCopy(text) {
   document.body.removeChild(ta);
 }
 
-// ── 이벤트 연결 ──
-var taPaid = $("ta-paid");
-taPaid.placeholder = "한 줄에 한 명 (또는 쉼표로 구분)";
-taPaid.addEventListener("input", function (e) { state.paidText = e.target.value; autoGrow(e.target); render(); });
-
-for (var i = 0; i < 4; i++) {
-  (function (idx) {
-    var ta = $("ta-r" + idx);
-    ta.placeholder = "참석자";
-    ta.addEventListener("input", function (e) { state.rounds[idx] = e.target.value; autoGrow(e.target); render(); });
-  })(i);
-}
-
-$("tab-input").addEventListener("click", function () { setPane("input"); });
-$("tab-result").addEventListener("click", function () { setPane("result"); });
-
-$("btn-clear").addEventListener("click", function () {
-  state.paidText = ""; state.rounds = ["", "", "", ""];
-  taPaid.value = ""; autoGrow(taPaid);
-  for (var j = 0; j < 4; j++) { var t = $("ta-r" + j); t.value = ""; autoGrow(t); }
-  render();
+// ── 입력 연결 (이름 추가) ──
+LIST_KEYS.forEach(function (key) {
+  var inp = $("add-" + key);
+  inp.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (inp.value.trim()) { addNames(key, inp.value); inp.value = ""; }
+    }
+  });
+  inp.addEventListener("paste", function (e) {
+    var t = (e.clipboardData || window.clipboardData).getData("text");
+    if (/[\n,]/.test(t)) { e.preventDefault(); addNames(key, t); inp.value = ""; }
+  });
 });
 
+// ── 삭제 (이름표 ✕) ──
+document.addEventListener("click", function (e) {
+  var del = e.target.closest('[data-action="del"]');
+  if (del) { remove(ref(db, "lists/" + del.getAttribute("data-key") + "/" + del.getAttribute("data-id"))); return; }
+  var cl = e.target.closest('[data-action="copylist"]');
+  if (cl) {
+    var key = cl.getAttribute("data-key");
+    var names = itemsOf(key).map(function (x) { return x.name; });
+    if (!names.length) return;
+    var text = names.join("\n");
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).catch(function () { fallbackCopy(text); });
+    } else { fallbackCopy(text); }
+    var old = cl.textContent; cl.textContent = "복사됨";
+    setTimeout(function () { cl.textContent = old; }, 1200);
+  }
+});
+
+// ── 결과 영역 (복사 / 정렬) ──
 $("result").addEventListener("click", function (e) {
   var el = e.target.closest("[data-action]");
   if (!el) return;
   if (el.getAttribute("data-action") === "copy") copyList();
-  else if (el.getAttribute("data-action") === "sort") { state.sortMode = el.getAttribute("data-sort"); render(); }
+  else if (el.getAttribute("data-action") === "sort") { view.sortMode = el.getAttribute("data-sort"); render(); }
 });
 
-autoGrow(taPaid);
-for (var g = 0; g < 4; g++) autoGrow($("ta-r" + g));
+// ── 탭 / 전부 비우기 ──
+$("tab-input").addEventListener("click", function () { setPane("input"); });
+$("tab-result").addEventListener("click", function () { setPane("result"); });
+$("btn-clear").addEventListener("click", function () {
+  if (confirm("공유된 명단 전체를 지웁니다. 함께 쓰는 사람 화면에서도 사라져요. 계속할까요?")) {
+    set(ref(db, "lists"), null);
+  }
+});
+
+// ── 실시간 구독 ──
+onValue(ref(db, "lists"), function (snap) {
+  var v = snap.val() || {};
+  data = { paid: v.paid || {}, r1: v.r1 || {}, r2: v.r2 || {}, r3: v.r3 || {}, r4: v.r4 || {} };
+  render();
+});
+onValue(ref(db, ".info/connected"), function (snap) {
+  var on = snap.val() === true;
+  $("sync").classList.toggle("on", on);
+  $("sync-text").textContent = on ? "실시간 연결됨" : "연결 중…";
+});
+
 render();
 </script>
 </body>
