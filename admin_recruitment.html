@@ -77,6 +77,12 @@
     border-radius:8px;padding:4px 7px;color:#ddd9ff;font-size:.9em
   }
   .foot{margin-top:18px;color:#777583;font-size:.8rem;line-height:1.55}
+  .admin-panel{
+    display:none;margin-top:28px;padding:22px;border:1px solid rgba(159,224,189,.24);
+    background:rgba(159,224,189,.06);border-radius:16px;
+  }
+  .admin-panel.show{display:block}
+  .admin-panel strong{color:var(--ok)}
   @media(max-width:560px){
     dl{grid-template-columns:1fr;gap:4px}
     dd{margin-bottom:12px}
@@ -117,6 +123,14 @@
         모든 관리자용 Cloud Function에서 로그인 상태와 관리자 권한을 함께 검사합니다.
       </p>
     </section>
+
+    <section id="adminPanel" class="admin-panel" aria-live="polite">
+      <strong>서버 관리자 인증 완료</strong>
+      <p style="margin:8px 0 0;color:var(--muted);line-height:1.65">
+        Firebase Authentication과 Firestore의 관리자 권한 검사를 모두 통과했습니다.
+        다음 단계에서 이 영역에 지원서 설정과 지원자 관리 기능을 연결합니다.
+      </p>
+    </section>
   </section>
 </main>
 
@@ -133,6 +147,10 @@
     signOut,
     onAuthStateChanged
   } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
+  import {
+    getFunctions,
+    httpsCallable
+  } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-functions.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyALZiLC4D_7Rx-yg5_tO8m6rsOUrwF6S3s",
@@ -155,6 +173,9 @@
   const auth = getAuth(app);
   auth.languageCode = "ko";
 
+  const functions = getFunctions(app, "asia-northeast3");
+  const getAdminStatus = httpsCallable(functions, "getAdminStatus");
+
   const provider = new GoogleAuthProvider();
   provider.setCustomParameters({ prompt: "select_account" });
 
@@ -165,6 +186,7 @@
   const userNameEl = document.getElementById("userName");
   const userEmailEl = document.getElementById("userEmail");
   const userUidEl = document.getElementById("userUid");
+  const adminPanelEl = document.getElementById("adminPanel");
 
   function setStatus(message, type = "") {
     statusEl.textContent = message;
@@ -199,7 +221,9 @@
     }
   });
 
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, async (user) => {
+    adminPanelEl.classList.remove("show");
+
     if (user) {
       userNameEl.textContent = user.displayName || "(이름 없음)";
       userEmailEl.textContent = user.email || "(이메일 없음)";
@@ -207,9 +231,34 @@
       profileEl.classList.add("show");
       loginBtn.hidden = true;
       logoutBtn.hidden = false;
-      setStatus("로그인되었습니다. 아래 UID를 확인해 주세요.", "ok");
+      setStatus("관리자 권한을 서버에서 확인하는 중...");
+
+      try {
+        const result = await getAdminStatus();
+
+        if (result.data && result.data.isAdmin === true) {
+          adminPanelEl.classList.add("show");
+          setStatus("관리자 인증이 완료되었습니다.", "ok");
+        } else {
+          setStatus("관리자 권한을 확인할 수 없습니다.", "error");
+        }
+      } catch (error) {
+        console.error("Admin authorization failed:", error.code);
+
+        if (error.code === "functions/permission-denied") {
+          setStatus("이 계정에는 관리자 권한이 없습니다.", "error");
+        } else if (error.code === "functions/unauthenticated") {
+          setStatus("로그인 인증이 필요합니다.", "error");
+        } else {
+          setStatus(
+            "관리자 권한 확인에 실패했습니다. 잠시 후 다시 시도해 주세요.",
+            "error"
+          );
+        }
+      }
     } else {
       profileEl.classList.remove("show");
+      adminPanelEl.classList.remove("show");
       loginBtn.hidden = false;
       logoutBtn.hidden = true;
       userNameEl.textContent = "-";
