@@ -23,6 +23,7 @@ body{
     var(--bg);
 }
 button,input,textarea,select{font:inherit}
+a{color:inherit;text-decoration:none}
 button{cursor:pointer}
 button:disabled{opacity:.55;cursor:not-allowed}
 .shell{width:min(1440px,100%);margin:0 auto;padding:28px}
@@ -43,7 +44,8 @@ h3{margin:0;font-size:1rem}
 .actions{display:flex;gap:10px;flex-wrap:wrap}
 .btn{
   appearance:none;border-radius:12px;padding:11px 16px;border:1px solid var(--line);
-  background:var(--surface2);color:var(--text);font-weight:700
+  background:var(--surface2);color:var(--text);font-weight:700;
+  display:inline-flex;align-items:center;justify-content:center
 }
 .btn.primary{background:var(--grad);border:0;color:#fff}
 .btn.danger{border-color:rgba(255,159,159,.35);color:var(--danger);background:rgba(255,159,159,.07)}
@@ -141,6 +143,9 @@ hr{border:0;border-top:1px solid var(--line);margin:20px 0}
     <div class="actions">
       <button id="loginBtn" class="btn primary" type="button">Google 계정으로 로그인</button>
       <button id="logoutBtn" class="btn" type="button" hidden>로그아웃</button>
+      <a class="btn" href="/recruitment.html" target="_blank" rel="noopener">
+        실제 지원 페이지 ↗
+      </a>
     </div>
 
     <div id="status" class="status" aria-live="polite">Firebase 초기화 중...</div>
@@ -678,39 +683,109 @@ function renderQuestions() {
 function renderPreview() {
   previewEl.innerHTML = "";
 
+  const active = questions.filter((question) => question.active !== false);
+  const fixedFields = currentForm && Array.isArray(currentForm.fixedFields)
+    ? currentForm.fixedFields
+    : [];
+
   const title = document.createElement("div");
-  title.innerHTML = `<div style="font-size:1.25rem;font-weight:900;margin-bottom:4px">${escapeHtml($("formTitle").value || "지원서 제목")}</div>
-    <div class="help">활성 질문 ${questions.filter(q => q.active !== false).length}개</div>`;
+  title.innerHTML = `
+    <div style="font-size:1.25rem;font-weight:900;margin-bottom:4px">
+      ${escapeHtml($("formTitle").value || "지원서 제목")}
+    </div>
+    <div class="help">
+      기본 정보 ${fixedFields.length}개 · 활성 질문 ${active.length}개
+    </div>
+  `;
   previewEl.appendChild(title);
 
-  questions.filter(q => q.active !== false).forEach((question) => {
+  if (fixedFields.length) {
+    const section = document.createElement("div");
+    section.innerHTML = `
+      <div class="help" style="margin:8px 0 10px;font-weight:800">
+        지원자 기본 정보
+      </div>
+    `;
+    previewEl.appendChild(section);
+
+    fixedFields.forEach((field) => {
+      const item = document.createElement("div");
+      item.className = "preview-item";
+
+      let control = '<div class="preview-input"></div>';
+      if (field.type === "radio" && Array.isArray(field.options)) {
+        control = `<div class="preview-options">${
+          field.options.map((option) =>
+            `<div>○ ${escapeHtml(option.label)}</div>`
+          ).join("")
+        }</div>`;
+      } else if (field.type === "date") {
+        control =
+          '<div class="preview-input" style="width:180px"></div>';
+      }
+
+      item.innerHTML = `
+        <div class="preview-label">
+          ${escapeHtml(field.label)}
+          ${field.required
+            ? '<span style="color:var(--danger)">*</span>'
+            : ""}
+        </div>
+        ${control}
+      `;
+      previewEl.appendChild(item);
+    });
+  }
+
+  active.forEach((question) => {
     const item = document.createElement("div");
     item.className = "preview-item";
 
     let control = '<div class="preview-input"></div>';
     if (question.type === "textarea") {
       control = '<div class="preview-textarea"></div>';
-    } else if (["radio","select","checkbox"].includes(question.type)) {
-      const opts = Array.isArray(question.options) ? question.options : [];
-      control = `<div class="preview-options">${opts.map(o => `<div>○ ${escapeHtml(o.label)}</div>`).join("") || "<div>선택지 없음</div>"}</div>`;
+    } else if (
+      ["radio", "select", "checkbox"].includes(question.type)
+    ) {
+      const opts = Array.isArray(question.options)
+        ? question.options
+        : [];
+      control = `<div class="preview-options">${
+        opts.map((option) =>
+          `<div>○ ${escapeHtml(option.label)}</div>`
+        ).join("") || "<div>선택지 없음</div>"
+      }</div>`;
     } else if (question.type === "date") {
-      control = '<div class="preview-input" style="width:180px"></div>';
+      control =
+        '<div class="preview-input" style="width:180px"></div>';
     }
 
     item.innerHTML = `
-      <div class="preview-label">${escapeHtml(question.label)} ${question.required ? '<span style="color:var(--danger)">*</span>' : ""}</div>
-      ${question.showWhen ? `<div class="help" style="margin-bottom:7px">조건부 표시: ${escapeHtml(question.showWhen.questionId)}</div>` : ""}
+      <div class="preview-label">
+        ${escapeHtml(question.label)}
+        ${question.required
+          ? '<span style="color:var(--danger)">*</span>'
+          : ""}
+      </div>
+      ${question.showWhen
+        ? `<div class="help" style="margin-bottom:7px">
+            조건부 표시 · ${escapeHtml(question.showWhen.questionId)}
+          </div>`
+        : ""}
       ${control}
     `;
     previewEl.appendChild(item);
   });
 
-  if (!questions.some(q => q.active !== false)) {
-    const empty = document.createElement("div");
-    empty.className = "help";
-    empty.textContent = "활성 질문이 없습니다.";
-    previewEl.appendChild(empty);
-  }
+  const privacy = document.createElement("div");
+  privacy.className = "preview-item";
+  privacy.innerHTML = `
+    <div class="preview-label">개인정보 수집·이용 동의 *</div>
+    <div class="help">
+      실제 지원 페이지에서는 관리자가 작성한 동의 문구 전체가 표시됩니다.
+    </div>
+  `;
+  previewEl.appendChild(privacy);
 }
 
 function populate(data) {
