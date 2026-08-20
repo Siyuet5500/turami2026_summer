@@ -6,88 +6,104 @@
 <title>뚜라미 모집 관리자</title>
 <meta name="robots" content="noindex,nofollow">
 <style>
-  :root{
-    color-scheme:dark;
-    --bg:#08080c;
-    --surface:#14141c;
-    --surface2:#1b1b26;
-    --line:#2b2b38;
-    --text:#f1f0f7;
-    --muted:#aaa8b8;
-    --accent:#9c89e2;
-    --accent2:#6c85e6;
-    --danger:#f2a0a0;
-    --ok:#9fe0bd;
-    --grad:linear-gradient(115deg,#f2906b 0%,#e88bae 26%,#9c89e2 52%,#6c85e6 76%,#84cbea 100%);
-    --font:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Pretendard",sans-serif;
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0; min-height:100vh; font-family:var(--font);
-    background:
-      radial-gradient(900px 600px at 75% 15%,rgba(108,106,224,.18),transparent 62%),
-      radial-gradient(700px 500px at 20% 90%,rgba(132,203,234,.10),transparent 60%),
-      var(--bg);
-    color:var(--text);
-    display:grid; place-items:center;
-    padding:28px;
-  }
-  .shell{width:min(760px,100%)}
-  .brand{font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
-  .card{
-    border:1px solid var(--line);
-    border-radius:24px;
-    padding:clamp(26px,5vw,48px);
-    background:linear-gradient(180deg,rgba(27,27,38,.94),rgba(16,16,23,.96));
-    box-shadow:0 30px 90px -45px rgba(108,106,224,.65);
-  }
-  h1{margin:0;font-size:clamp(2rem,5vw,3.3rem);line-height:1.05;letter-spacing:-.04em}
-  .lead{color:var(--muted);margin:18px 0 30px;line-height:1.75}
-  .notice{
-    border:1px solid rgba(156,137,226,.28);
-    background:rgba(156,137,226,.08);
-    border-radius:14px;
-    padding:14px 16px;
-    color:#d9d5f5;
-    font-size:.92rem;
-    line-height:1.6;
-    margin-bottom:24px;
-  }
-  .actions{display:flex;gap:12px;flex-wrap:wrap}
-  button{
-    appearance:none;border:0;border-radius:999px;padding:14px 22px;
-    font:600 1rem var(--font);cursor:pointer;
-  }
-  .primary{background:var(--grad);color:#fff}
-  .secondary{background:var(--surface2);color:var(--text);border:1px solid var(--line)}
-  button:disabled{opacity:.55;cursor:not-allowed}
-  .status{margin-top:24px;min-height:24px;color:var(--muted)}
-  .status.error{color:var(--danger)}
-  .status.ok{color:var(--ok)}
-  .profile{
-    display:none;margin-top:28px;padding-top:28px;border-top:1px solid var(--line);
-  }
-  .profile.show{display:block}
-  .profile h2{margin:0 0 16px;font-size:1.12rem}
-  dl{display:grid;grid-template-columns:120px 1fr;gap:10px 18px;margin:0}
-  dt{color:var(--muted)}
-  dd{margin:0;word-break:break-all}
-  code{
-    display:inline-block;background:#0e0e14;border:1px solid var(--line);
-    border-radius:8px;padding:4px 7px;color:#ddd9ff;font-size:.9em
-  }
-  .foot{margin-top:18px;color:#777583;font-size:.8rem;line-height:1.55}
-  .admin-panel{
-    display:none;margin-top:28px;padding:22px;border:1px solid rgba(159,224,189,.24);
-    background:rgba(159,224,189,.06);border-radius:16px;
-  }
-  .admin-panel.show{display:block}
-  .admin-panel strong{color:var(--ok)}
-  @media(max-width:560px){
-    dl{grid-template-columns:1fr;gap:4px}
-    dd{margin-bottom:12px}
-    .actions button{width:100%}
-  }
+:root{
+  color-scheme:dark;
+  --bg:#08080c;--surface:#14141c;--surface2:#1b1b26;--surface3:#20202c;
+  --line:#30303e;--text:#f2f1f7;--muted:#aaa8b8;--accent:#9c89e2;
+  --danger:#ff9f9f;--ok:#91dfb8;--warn:#f0cf8a;
+  --grad:linear-gradient(115deg,#f2906b 0%,#e88bae 26%,#9c89e2 52%,#6c85e6 76%,#84cbea 100%);
+  --font:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Pretendard",sans-serif;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;font-family:var(--font);color:var(--text);
+  background:
+    radial-gradient(1000px 700px at 78% 8%,rgba(108,106,224,.17),transparent 62%),
+    radial-gradient(800px 600px at 12% 92%,rgba(132,203,234,.08),transparent 60%),
+    var(--bg);
+}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.55;cursor:not-allowed}
+.shell{width:min(1440px,100%);margin:0 auto;padding:28px}
+.brand{font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+.card{
+  border:1px solid var(--line);border-radius:24px;padding:clamp(24px,4vw,44px);
+  background:linear-gradient(180deg,rgba(27,27,38,.94),rgba(16,16,23,.97));
+  box-shadow:0 30px 90px -45px rgba(108,106,224,.65)
+}
+h1{margin:0;font-size:clamp(2rem,4vw,3.3rem);line-height:1.05;letter-spacing:-.04em}
+h2{margin:0 0 18px;font-size:1.2rem}
+h3{margin:0;font-size:1rem}
+.lead{color:var(--muted);margin:16px 0 24px;line-height:1.7}
+.notice{
+  border:1px solid rgba(156,137,226,.28);background:rgba(156,137,226,.08);
+  border-radius:14px;padding:14px 16px;color:#d9d5f5;font-size:.92rem;line-height:1.6;margin-bottom:20px
+}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn{
+  appearance:none;border-radius:12px;padding:11px 16px;border:1px solid var(--line);
+  background:var(--surface2);color:var(--text);font-weight:700
+}
+.btn.primary{background:var(--grad);border:0;color:#fff}
+.btn.danger{border-color:rgba(255,159,159,.35);color:var(--danger);background:rgba(255,159,159,.07)}
+.btn.ok{border-color:rgba(145,223,184,.32);color:var(--ok);background:rgba(145,223,184,.07)}
+.btn.small{padding:8px 11px;font-size:.86rem;border-radius:10px}
+.status{margin-top:18px;min-height:24px;color:var(--muted)}
+.status.error{color:var(--danger)} .status.ok{color:var(--ok)} .status.warn{color:var(--warn)}
+.profile{display:none;margin-top:24px;padding-top:22px;border-top:1px solid var(--line)}
+.profile.show{display:block}
+.profile-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.meta{padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#0e0e14}
+.meta small{display:block;color:var(--muted);margin-bottom:5px}.meta div{word-break:break-all}
+.workspace{display:none;margin-top:28px;padding-top:28px;border-top:1px solid var(--line)}
+.workspace.show{display:block}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,.7fr);gap:20px;align-items:start}
+.panel{border:1px solid var(--line);background:rgba(20,20,28,.82);border-radius:18px;padding:20px}
+.panel + .panel{margin-top:18px}
+.field{display:grid;gap:7px;margin-bottom:14px}
+.field:last-child{margin-bottom:0}
+label{font-size:.9rem;font-weight:700}
+.help{color:var(--muted);font-size:.78rem;line-height:1.5}
+input,textarea,select{
+  width:100%;border:1px solid var(--line);background:#0e0e14;color:var(--text);
+  border-radius:10px;padding:10px 12px;outline:none
+}
+textarea{min-height:92px;resize:vertical}
+input:focus,textarea:focus,select:focus{border-color:var(--accent)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.inline{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.inline input[type="checkbox"]{width:auto}
+.question-list{display:grid;gap:14px}
+.question{
+  border:1px solid var(--line);border-radius:16px;padding:16px;background:#111118
+}
+.question-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+.question-title{display:flex;align-items:center;gap:9px;min-width:0}
+.order-badge{width:28px;height:28px;display:grid;place-items:center;border-radius:999px;background:var(--surface3);color:var(--muted);font-size:.8rem;flex:0 0 auto}
+.question-fields{display:grid;grid-template-columns:1.5fr .8fr .6fr;gap:10px}
+.question-extra{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.question-condition{display:grid;grid-template-columns:1fr .7fr 1fr;gap:10px;margin-top:10px}
+.options-box{margin-top:10px}
+.preview{display:grid;gap:14px}
+.preview-item{border-bottom:1px solid var(--line);padding-bottom:14px}
+.preview-item:last-child{border-bottom:0;padding-bottom:0}
+.preview-label{font-weight:800;margin-bottom:8px}
+.preview-options{display:grid;gap:7px;color:var(--muted);font-size:.9rem}
+.preview-input{height:38px;border:1px solid var(--line);border-radius:9px;background:#0e0e14}
+.preview-textarea{height:82px;border:1px solid var(--line);border-radius:9px;background:#0e0e14}
+.sticky{position:sticky;top:20px}
+.version-box{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:16px}
+.version{background:#0e0e14;border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.version small{display:block;color:var(--muted);margin-bottom:4px}
+.version code{font-size:.78rem;color:#ddd9ff;word-break:break-all}
+hr{border:0;border-top:1px solid var(--line);margin:20px 0}
+.hidden{display:none!important}
+@media(max-width:1000px){.grid{grid-template-columns:1fr}.sticky{position:static}}
+@media(max-width:720px){
+  .shell{padding:14px}.card{border-radius:18px;padding:20px}
+  .profile-grid,.split,.question-fields,.question-extra,.question-condition,.version-box{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
@@ -95,179 +111,646 @@
   <div class="brand">TURAMI / RECRUITMENT ADMIN</div>
   <section class="card">
     <h1>뚜라미 모집 관리자</h1>
-    <p class="lead">
-      관리자용 Google 계정으로 로그인해 Firebase Authentication 사용자 UID를 확인합니다.
-    </p>
+    <p class="lead">모집 질문, 개인정보 동의 문구, 게시 버전, 모집 기간을 관리합니다.</p>
 
     <div class="notice">
-      현재 버전은 <strong>관리자 계정 등록을 위한 로그인 테스트용</strong>입니다.
-      아직 질문 편집·지원자 조회·엑셀 다운로드 기능은 연결되어 있지 않습니다.
+      관리자 기능은 Firebase Authentication + App Check + 서버 관리자 권한 검사를 모두 통과해야 사용할 수 있습니다.
     </div>
 
     <div class="actions">
-      <button id="loginBtn" class="primary" type="button">Google 계정으로 로그인</button>
-      <button id="logoutBtn" class="secondary" type="button" hidden>로그아웃</button>
+      <button id="loginBtn" class="btn primary" type="button">Google 계정으로 로그인</button>
+      <button id="logoutBtn" class="btn" type="button" hidden>로그아웃</button>
     </div>
 
     <div id="status" class="status" aria-live="polite">Firebase 초기화 중...</div>
 
-    <section id="profile" class="profile" aria-live="polite">
-      <h2>로그인 정보</h2>
-      <dl>
-        <dt>이름</dt><dd id="userName">-</dd>
-        <dt>이메일</dt><dd id="userEmail">-</dd>
-        <dt>UID</dt><dd><code id="userUid">-</code></dd>
-      </dl>
-      <p class="foot">
-        관리자 권한은 서버에서 확인되며, 관리자용 기능은 인증을 통과한 계정에만 제공됩니다.
-      </p>
+    <section id="profile" class="profile">
+      <div class="profile-grid">
+        <div class="meta"><small>이름</small><div id="userName">-</div></div>
+        <div class="meta"><small>이메일</small><div id="userEmail">-</div></div>
+        <div class="meta"><small>UID</small><div id="userUid">-</div></div>
+      </div>
     </section>
 
-    <section id="adminPanel" class="admin-panel" aria-live="polite">
-      <strong>서버 관리자 인증 완료</strong>
-      <p style="margin:8px 0 0;color:var(--muted);line-height:1.65">
-        Firebase Authentication, App Check, Firestore 관리자 권한 검사를 모두 통과했습니다.
-      </p>
+    <section id="workspace" class="workspace">
+      <div class="grid">
+        <div>
+          <section class="panel">
+            <h2>모집 운영 설정</h2>
+            <div class="version-box">
+              <div class="version"><small>게시 버전</small><code id="publishedVersion">없음</code></div>
+              <div class="version"><small>편집 초안</small><code id="draftVersion">-</code></div>
+            </div>
+
+            <div class="split">
+              <div class="field">
+                <label for="recruitStatus">모집 상태</label>
+                <select id="recruitStatus">
+                  <option value="draft">준비 중</option>
+                  <option value="open">접수 중</option>
+                  <option value="closed">마감</option>
+                </select>
+              </div>
+              <div></div>
+              <div class="field">
+                <label for="opensAt">모집 시작</label>
+                <input id="opensAt" type="datetime-local">
+              </div>
+              <div class="field">
+                <label for="closesAt">모집 종료</label>
+                <input id="closesAt" type="datetime-local">
+              </div>
+            </div>
+            <div class="actions">
+              <button id="saveSettingsBtn" class="btn ok" type="button">모집 상태/기간 저장</button>
+            </div>
+          </section>
+
+          <section class="panel">
+            <h2>지원서 기본 설정</h2>
+            <div class="field">
+              <label for="formTitle">지원서 제목</label>
+              <input id="formTitle" maxlength="120">
+            </div>
+          </section>
+
+          <section class="panel">
+            <h2>개인정보 수집·이용 동의</h2>
+            <div class="split">
+              <div class="field">
+                <label for="consentVersion">동의 문구 버전</label>
+                <input id="consentVersion" maxlength="80">
+              </div>
+              <div class="field">
+                <label for="consentTitle">제목</label>
+                <input id="consentTitle" maxlength="120">
+              </div>
+            </div>
+            <div class="field">
+              <label for="privacyPurpose">수집·이용 목적</label>
+              <textarea id="privacyPurpose"></textarea>
+              <div class="help">한 줄에 한 항목씩 입력</div>
+            </div>
+            <div class="field">
+              <label for="privacyItems">수집 항목</label>
+              <textarea id="privacyItems"></textarea>
+              <div class="help">한 줄에 한 항목씩 입력</div>
+            </div>
+            <div class="field">
+              <label for="retentionPeriod">보유·이용 기간</label>
+              <textarea id="retentionPeriod"></textarea>
+            </div>
+            <div class="field">
+              <label for="refusalNotice">동의 거부 안내</label>
+              <textarea id="refusalNotice"></textarea>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="question-head">
+              <div>
+                <h2 style="margin-bottom:5px">모집 질문</h2>
+                <div class="help">질문 순서, 형식, 필수 여부, 선택지, 조건부 표시를 설정합니다.</div>
+              </div>
+              <button id="addQuestionBtn" class="btn small" type="button">+ 질문 추가</button>
+            </div>
+
+            <div id="questionList" class="question-list"></div>
+
+            <hr>
+            <div class="actions">
+              <button id="saveDraftBtn" class="btn primary" type="button">초안 저장</button>
+              <button id="publishBtn" class="btn ok" type="button">현재 초안 게시</button>
+            </div>
+            <div class="help" style="margin-top:10px">
+              게시하면 현재 초안은 수정 불가능한 게시 버전이 되고, 다음 편집용 새 초안이 자동 생성됩니다.
+            </div>
+          </section>
+        </div>
+
+        <aside class="sticky">
+          <section class="panel">
+            <h2>미리보기</h2>
+            <div id="preview" class="preview"></div>
+          </section>
+        </aside>
+      </div>
     </section>
   </section>
 </main>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
-  import {
-    initializeAppCheck,
-    ReCaptchaEnterpriseProvider,
-    getToken
-  } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app-check.js";
-  import {
-    getAuth,
-    GoogleAuthProvider,
-    signInWithPopup,
-    signOut,
-    onAuthStateChanged
-  } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
-  import {
-    getFunctions,
-    httpsCallable
-  } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-functions.js";
+import {initializeApp} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
+import {
+  initializeAppCheck,
+  ReCaptchaEnterpriseProvider,
+  getToken
+} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app-check.js";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
+import {
+  getFunctions,
+  httpsCallable
+} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-functions.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyALZiLC4D_7Rx-yg5_tO8m6rsOUrwF6S3s",
-    authDomain: "turami2026-recruitment.firebaseapp.com",
-    projectId: "turami2026-recruitment",
-    storageBucket: "turami2026-recruitment.firebasestorage.app",
-    messagingSenderId: "414130151801",
-    appId: "1:414130151801:web:03ae9c6bbe10eaaea24fa8"
+const firebaseConfig = {
+  apiKey: "AIzaSyALZiLC4D_7Rx-yg5_tO8m6rsOUrwF6S3s",
+  authDomain: "turami2026-recruitment.firebaseapp.com",
+  projectId: "turami2026-recruitment",
+  storageBucket: "turami2026-recruitment.firebasestorage.app",
+  messagingSenderId: "414130151801",
+  appId: "1:414130151801:web:03ae9c6bbe10eaaea24fa8"
+};
+
+const app = initializeApp(firebaseConfig);
+const appCheck = initializeAppCheck(app, {
+  provider: new ReCaptchaEnterpriseProvider(
+    "6LeEV48tAAAAAAuC-RDcAhZ9B99eol1OCxvagvfl"
+  ),
+  isTokenAutoRefreshEnabled: true
+});
+
+const auth = getAuth(app);
+auth.languageCode = "ko";
+const functions = getFunctions(app, "asia-northeast3");
+
+const getAdminStatus = httpsCallable(functions, "getAdminStatus");
+const getAdminRecruitmentConfig = httpsCallable(functions, "getAdminRecruitmentConfig");
+const saveAdminRecruitmentDraft = httpsCallable(functions, "saveAdminRecruitmentDraft");
+const publishRecruitmentDraft = httpsCallable(functions, "publishRecruitmentDraft");
+const saveAdminRecruitmentSettings = httpsCallable(functions, "saveAdminRecruitmentSettings");
+
+const provider = new GoogleAuthProvider();
+provider.setCustomParameters({prompt:"select_account"});
+
+const $ = (id) => document.getElementById(id);
+const loginBtn = $("loginBtn");
+const logoutBtn = $("logoutBtn");
+const statusEl = $("status");
+const profileEl = $("profile");
+const workspaceEl = $("workspace");
+const questionListEl = $("questionList");
+const previewEl = $("preview");
+
+let currentConfig = null;
+let currentForm = null;
+let questions = [];
+
+function setStatus(message, type="") {
+  statusEl.textContent = message;
+  statusEl.className = "status" + (type ? " " + type : "");
+}
+
+function callError(error) {
+  if (error && error.message) return error.message.replace(/^FirebaseError:\s*/,"");
+  return "알 수 없는 오류가 발생했습니다.";
+}
+
+function lines(value) {
+  return String(value || "")
+    .split(/\r?\n/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function toLocalInput(iso) {
+  if (!iso) return "";
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return "";
+  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0,16);
+}
+
+function fromLocalInput(value) {
+  if (!value) return null;
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date.toISOString();
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function newQuestion() {
+  return {
+    id: "q_" + Date.now() + "_" + Math.random().toString(36).slice(2,7),
+    type: "text",
+    label: "새 질문",
+    required: false,
+    active: true,
+    minLength: 0,
+    maxLength: 300
   };
+}
 
-  const app = initializeApp(firebaseConfig);
+function optionText(question) {
+  if (!Array.isArray(question.options)) return "";
+  return question.options
+    .map((option) => `${option.value} | ${option.label}`)
+    .join("\n");
+}
 
-  const appCheck = initializeAppCheck(app, {
-    provider: new ReCaptchaEnterpriseProvider(
-      "6LeEV48tAAAAAAuC-RDcAhZ9B99eol1OCxvagvfl"
-    ),
-    isTokenAutoRefreshEnabled: true
+function parseOptions(text) {
+  return lines(text).map((line, index) => {
+    const parts = line.split("|");
+    if (parts.length >= 2) {
+      return {
+        value: parts.shift().trim(),
+        label: parts.join("|").trim()
+      };
+    }
+    const label = line.trim();
+    return {
+      value: "opt_" + (index + 1),
+      label
+    };
   });
+}
 
-  const auth = getAuth(app);
-  auth.languageCode = "ko";
+function renderQuestions() {
+  questionListEl.innerHTML = "";
 
-  const functions = getFunctions(app, "asia-northeast3");
-  const getAdminStatus = httpsCallable(functions, "getAdminStatus");
-
-  const provider = new GoogleAuthProvider();
-  provider.setCustomParameters({ prompt: "select_account" });
-
-  const loginBtn = document.getElementById("loginBtn");
-  const logoutBtn = document.getElementById("logoutBtn");
-  const statusEl = document.getElementById("status");
-  const profileEl = document.getElementById("profile");
-  const userNameEl = document.getElementById("userName");
-  const userEmailEl = document.getElementById("userEmail");
-  const userUidEl = document.getElementById("userUid");
-  const adminPanelEl = document.getElementById("adminPanel");
-
-  function setStatus(message, type = "") {
-    statusEl.textContent = message;
-    statusEl.className = "status" + (type ? " " + type : "");
+  if (!questions.length) {
+    questionListEl.innerHTML = '<div class="help">아직 추가 질문이 없습니다.</div>';
+    renderPreview();
+    return;
   }
 
-  loginBtn.addEventListener("click", async () => {
-    loginBtn.disabled = true;
-    setStatus("Google 로그인 창을 여는 중...");
-    try {
-      await signInWithPopup(auth, provider);
-    } catch (error) {
-      console.error("Google sign-in failed:", error.code);
-      if (error.code === "auth/popup-closed-by-user") {
-        setStatus("로그인이 취소되었습니다.");
-      } else if (error.code === "auth/unauthorized-domain") {
-        setStatus("현재 도메인이 Firebase Authentication 승인 도메인에 등록되어 있지 않습니다.", "error");
-      } else {
-        setStatus("Google 로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.", "error");
-      }
-    } finally {
-      loginBtn.disabled = false;
-    }
-  });
+  questions.forEach((question, index) => {
+    const card = document.createElement("article");
+    card.className = "question";
+    const optionTypes = ["radio","select","checkbox"];
+    const isOptions = optionTypes.includes(question.type);
 
-  logoutBtn.addEventListener("click", async () => {
-    logoutBtn.disabled = true;
-    try {
-      await signOut(auth);
-    } finally {
-      logoutBtn.disabled = false;
-    }
-  });
+    card.innerHTML = `
+      <div class="question-head">
+        <div class="question-title">
+          <span class="order-badge">${index + 1}</span>
+          <h3>${escapeHtml(question.label || "제목 없는 질문")}</h3>
+        </div>
+        <div class="actions">
+          <button class="btn small" data-action="up" type="button">↑</button>
+          <button class="btn small" data-action="down" type="button">↓</button>
+          <button class="btn small danger" data-action="delete" type="button">삭제</button>
+        </div>
+      </div>
 
-  onAuthStateChanged(auth, async (user) => {
-    adminPanelEl.classList.remove("show");
+      <div class="question-fields">
+        <div class="field">
+          <label>질문 문구</label>
+          <input data-key="label" value="${escapeHtml(question.label || "")}" maxlength="300">
+        </div>
+        <div class="field">
+          <label>입력 형식</label>
+          <select data-key="type">
+            ${[
+              ["text","한 줄"],
+              ["textarea","긴 글"],
+              ["radio","라디오"],
+              ["select","드롭다운"],
+              ["checkbox","체크박스"],
+              ["date","날짜"]
+            ].map(([value,label]) =>
+              `<option value="${value}" ${question.type === value ? "selected" : ""}>${label}</option>`
+            ).join("")}
+          </select>
+        </div>
+        <div class="field">
+          <label>질문 ID</label>
+          <input data-key="id" value="${escapeHtml(question.id || "")}" maxlength="80">
+        </div>
+      </div>
 
-    if (user) {
-      userNameEl.textContent = user.displayName || "(이름 없음)";
-      userEmailEl.textContent = user.email || "(이메일 없음)";
-      userUidEl.textContent = user.uid;
-      profileEl.classList.add("show");
-      loginBtn.hidden = true;
-      logoutBtn.hidden = false;
-      setStatus("관리자 권한을 서버에서 확인하는 중...");
+      <div class="question-extra">
+        <div class="field">
+          <label>최소 글자 수</label>
+          <input data-key="minLength" type="number" min="0" max="10000" value="${Number(question.minLength ?? 0)}"
+            ${["text","textarea"].includes(question.type) ? "" : "disabled"}>
+        </div>
+        <div class="field">
+          <label>최대 글자 수</label>
+          <input data-key="maxLength" type="number" min="1" max="10000" value="${Number(question.maxLength ?? (question.type === "textarea" ? 1500 : 300))}"
+            ${["text","textarea"].includes(question.type) ? "" : "disabled"}>
+        </div>
+      </div>
 
-      try {
-        await user.getIdToken(true);
-        await getToken(appCheck, false);
+      <div class="inline" style="margin-top:8px">
+        <label><input data-key="required" type="checkbox" ${question.required ? "checked" : ""}> 필수 질문</label>
+        <label><input data-key="active" type="checkbox" ${question.active !== false ? "checked" : ""}> 지원서에 표시</label>
+      </div>
 
-        const result = await getAdminStatus();
+      <div class="field options-box ${isOptions ? "" : "hidden"}">
+        <label>선택지</label>
+        <textarea data-key="options" placeholder="vocal | 보컬&#10;guitar | 기타">${escapeHtml(optionText(question))}</textarea>
+        <div class="help">한 줄에 하나. 권장 형식: <b>값 | 표시문구</b></div>
+      </div>
 
-        if (result.data && result.data.isAdmin === true) {
-          adminPanelEl.classList.add("show");
-          setStatus("관리자 인증이 완료되었습니다.", "ok");
+      <div class="question-condition">
+        <div class="field">
+          <label>조건 기준 질문 ID</label>
+          <input data-cond="questionId" value="${escapeHtml(question.showWhen?.questionId || "")}" placeholder="비워두면 항상 표시">
+        </div>
+        <div class="field">
+          <label>조건</label>
+          <select data-cond="operator">
+            ${[
+              ["equals","같음"],
+              ["notEquals","다름"],
+              ["in","목록에 포함"],
+              ["notIn","목록에 미포함"]
+            ].map(([value,label]) =>
+              `<option value="${value}" ${question.showWhen?.operator === value ? "selected" : ""}>${label}</option>`
+            ).join("")}
+          </select>
+        </div>
+        <div class="field">
+          <label>조건 값</label>
+          <input data-cond="value" value="${escapeHtml(
+            question.showWhen
+              ? (Array.isArray(question.showWhen.values)
+                  ? question.showWhen.values.join(", ")
+                  : (question.showWhen.value || ""))
+              : ""
+          )}" placeholder="예: vocal">
+        </div>
+      </div>
+    `;
+
+    card.addEventListener("input", (event) => {
+      const target = event.target;
+      const key = target.dataset.key;
+      if (key) {
+        if (key === "required" || key === "active") {
+          question[key] = target.checked;
+        } else if (key === "minLength" || key === "maxLength") {
+          question[key] = Number(target.value);
+        } else if (key === "options") {
+          question.options = parseOptions(target.value);
         } else {
-          setStatus("관리자 권한을 확인할 수 없습니다.", "error");
+          question[key] = target.value;
         }
-      } catch (error) {
-        console.error("Admin authorization failed:", error && error.code ? error.code : error);
 
-        if (error && error.code === "appCheck/recaptcha-error") {
-          setStatus("보안 인증(App Check)에 실패했습니다. 페이지를 새로고침한 뒤 다시 시도해 주세요.", "error");
-        } else if (error && error.code === "functions/permission-denied") {
-          setStatus("이 계정에는 관리자 권한이 없습니다.", "error");
-        } else if (error && error.code === "functions/unauthenticated") {
-          setStatus("로그인 인증이 필요합니다.", "error");
-        } else {
-          setStatus("관리자 권한 확인에 실패했습니다. 잠시 후 다시 시도해 주세요.", "error");
+        if (key === "label") {
+          card.querySelector("h3").textContent = target.value || "제목 없는 질문";
         }
+
+        renderPreview();
       }
-    } else {
-      profileEl.classList.remove("show");
-      adminPanelEl.classList.remove("show");
-      loginBtn.hidden = false;
-      logoutBtn.hidden = true;
-      userNameEl.textContent = "-";
-      userEmailEl.textContent = "-";
-      userUidEl.textContent = "-";
-      setStatus("관리자용 Google 계정으로 로그인해 주세요.");
-    }
+
+      if (target.dataset.cond) {
+        const sourceId = card.querySelector('[data-cond="questionId"]').value.trim();
+        const operator = card.querySelector('[data-cond="operator"]').value;
+        const rawValue = card.querySelector('[data-cond="value"]').value.trim();
+
+        if (!sourceId) {
+          delete question.showWhen;
+        } else if (operator === "in" || operator === "notIn") {
+          question.showWhen = {
+            questionId: sourceId,
+            operator,
+            values: rawValue.split(",").map((v) => v.trim()).filter(Boolean)
+          };
+        } else {
+          question.showWhen = {
+            questionId: sourceId,
+            operator,
+            value: rawValue
+          };
+        }
+        renderPreview();
+      }
+    });
+
+    card.addEventListener("change", (event) => {
+      if (event.target.dataset.key === "type") {
+        renderQuestions();
+      }
+    });
+
+    card.addEventListener("click", (event) => {
+      const action = event.target.dataset.action;
+      if (!action) return;
+
+      if (action === "delete") {
+        if (confirm(`"${question.label}" 질문을 삭제할까요?`)) {
+          questions.splice(index,1);
+          renderQuestions();
+        }
+      } else if (action === "up" && index > 0) {
+        [questions[index - 1], questions[index]] = [questions[index], questions[index - 1]];
+        renderQuestions();
+      } else if (action === "down" && index < questions.length - 1) {
+        [questions[index + 1], questions[index]] = [questions[index], questions[index + 1]];
+        renderQuestions();
+      }
+    });
+
+    questionListEl.appendChild(card);
   });
+
+  renderPreview();
+}
+
+function renderPreview() {
+  previewEl.innerHTML = "";
+
+  const title = document.createElement("div");
+  title.innerHTML = `<div style="font-size:1.25rem;font-weight:900;margin-bottom:4px">${escapeHtml($("formTitle").value || "지원서 제목")}</div>
+    <div class="help">활성 질문 ${questions.filter(q => q.active !== false).length}개</div>`;
+  previewEl.appendChild(title);
+
+  questions.filter(q => q.active !== false).forEach((question) => {
+    const item = document.createElement("div");
+    item.className = "preview-item";
+
+    let control = '<div class="preview-input"></div>';
+    if (question.type === "textarea") {
+      control = '<div class="preview-textarea"></div>';
+    } else if (["radio","select","checkbox"].includes(question.type)) {
+      const opts = Array.isArray(question.options) ? question.options : [];
+      control = `<div class="preview-options">${opts.map(o => `<div>○ ${escapeHtml(o.label)}</div>`).join("") || "<div>선택지 없음</div>"}</div>`;
+    } else if (question.type === "date") {
+      control = '<div class="preview-input" style="width:180px"></div>';
+    }
+
+    item.innerHTML = `
+      <div class="preview-label">${escapeHtml(question.label)} ${question.required ? '<span style="color:var(--danger)">*</span>' : ""}</div>
+      ${question.showWhen ? `<div class="help" style="margin-bottom:7px">조건부 표시: ${escapeHtml(question.showWhen.questionId)}</div>` : ""}
+      ${control}
+    `;
+    previewEl.appendChild(item);
+  });
+
+  if (!questions.some(q => q.active !== false)) {
+    const empty = document.createElement("div");
+    empty.className = "help";
+    empty.textContent = "활성 질문이 없습니다.";
+    previewEl.appendChild(empty);
+  }
+}
+
+function populate(data) {
+  currentConfig = data.config;
+  currentForm = data.form;
+  questions = Array.isArray(data.form.questions)
+    ? structuredClone(data.form.questions)
+    : [];
+
+  $("publishedVersion").textContent = data.config.publishedVersion || "없음";
+  $("draftVersion").textContent = data.config.draftVersion || "-";
+  $("recruitStatus").value = data.config.status || "draft";
+  $("opensAt").value = toLocalInput(data.config.opensAt);
+  $("closesAt").value = toLocalInput(data.config.closesAt);
+
+  $("formTitle").value = data.form.title || "";
+  const privacy = data.form.privacy || {};
+  $("consentVersion").value = privacy.consentVersion || "";
+  $("consentTitle").value = privacy.title || "";
+  $("privacyPurpose").value = Array.isArray(privacy.purpose) ? privacy.purpose.join("\n") : "";
+  $("privacyItems").value = Array.isArray(privacy.items) ? privacy.items.join("\n") : "";
+  $("retentionPeriod").value = privacy.retentionPeriod || "";
+  $("refusalNotice").value = privacy.refusalNotice || "";
+
+  renderQuestions();
+}
+
+async function loadAdminData() {
+  setStatus("모집 설정과 질문을 불러오는 중...");
+  const result = await getAdminRecruitmentConfig();
+  populate(result.data);
+  workspaceEl.classList.add("show");
+  setStatus("관리자 설정을 불러왔습니다.", "ok");
+}
+
+function draftPayload() {
+  return {
+    title: $("formTitle").value.trim(),
+    questions: questions.map((question, index) => ({
+      ...question,
+      order:index
+    })),
+    privacy: {
+      consentVersion: $("consentVersion").value.trim(),
+      title: $("consentTitle").value.trim(),
+      purpose: lines($("privacyPurpose").value),
+      items: lines($("privacyItems").value),
+      retentionPeriod: $("retentionPeriod").value.trim(),
+      refusalNotice: $("refusalNotice").value.trim()
+    }
+  };
+}
+
+async function withButton(button, task) {
+  button.disabled = true;
+  try {
+    await task();
+  } catch (error) {
+    console.error(error);
+    setStatus(callError(error), "error");
+  } finally {
+    button.disabled = false;
+  }
+}
+
+loginBtn.addEventListener("click", () => withButton(loginBtn, async () => {
+  setStatus("Google 로그인 창을 여는 중...");
+  await signInWithPopup(auth, provider);
+}));
+
+logoutBtn.addEventListener("click", () => withButton(logoutBtn, async () => {
+  await signOut(auth);
+}));
+
+$("addQuestionBtn").addEventListener("click", () => {
+  questions.push(newQuestion());
+  renderQuestions();
+});
+
+$("formTitle").addEventListener("input", renderPreview);
+
+$("saveDraftBtn").addEventListener("click", () => withButton($("saveDraftBtn"), async () => {
+  setStatus("지원서 초안을 저장하는 중...");
+  const result = await saveAdminRecruitmentDraft(draftPayload());
+  setStatus(`초안 저장 완료 · 질문 ${result.data.questionCount}개`, "ok");
+  await loadAdminData();
+}));
+
+$("publishBtn").addEventListener("click", () => withButton($("publishBtn"), async () => {
+  if (!confirm("현재 초안을 게시할까요? 게시된 버전은 이후 수정되지 않습니다.")) return;
+
+  setStatus("초안을 먼저 저장하는 중...");
+  await saveAdminRecruitmentDraft(draftPayload());
+
+  setStatus("새 게시 버전을 만드는 중...");
+  const result = await publishRecruitmentDraft();
+  setStatus(`게시 완료 · ${result.data.publishedVersion}`, "ok");
+  await loadAdminData();
+}));
+
+$("saveSettingsBtn").addEventListener("click", () => withButton($("saveSettingsBtn"), async () => {
+  const payload = {
+    status: $("recruitStatus").value,
+    opensAt: fromLocalInput($("opensAt").value),
+    closesAt: fromLocalInput($("closesAt").value)
+  };
+
+  if (payload.status === "open" && !currentConfig?.publishedVersion) {
+    throw new Error("접수 시작 전에 지원서 초안을 먼저 게시해 주세요.");
+  }
+
+  setStatus("모집 상태와 기간을 저장하는 중...");
+  await saveAdminRecruitmentSettings(payload);
+  setStatus("모집 상태와 기간을 저장했습니다.", "ok");
+  await loadAdminData();
+}));
+
+onAuthStateChanged(auth, async (user) => {
+  workspaceEl.classList.remove("show");
+
+  if (!user) {
+    profileEl.classList.remove("show");
+    loginBtn.hidden = false;
+    logoutBtn.hidden = true;
+    $("userName").textContent = "-";
+    $("userEmail").textContent = "-";
+    $("userUid").textContent = "-";
+    setStatus("관리자용 Google 계정으로 로그인해 주세요.");
+    return;
+  }
+
+  $("userName").textContent = user.displayName || "(이름 없음)";
+  $("userEmail").textContent = user.email || "(이메일 없음)";
+  $("userUid").textContent = user.uid;
+  profileEl.classList.add("show");
+  loginBtn.hidden = true;
+  logoutBtn.hidden = false;
+  setStatus("관리자 권한을 확인하는 중...");
+
+  try {
+    await user.getIdToken(true);
+    await getToken(appCheck, false);
+    const result = await getAdminStatus();
+
+    if (!result.data || result.data.isAdmin !== true) {
+      throw new Error("관리자 권한을 확인할 수 없습니다.");
+    }
+
+    await loadAdminData();
+  } catch (error) {
+    console.error("Admin initialization failed:", error);
+    setStatus(callError(error), "error");
+  }
+});
 </script>
 </body>
 </html>
