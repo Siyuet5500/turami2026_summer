@@ -111,19 +111,6 @@
 
     <div id="status" class="status" aria-live="polite">Firebase 초기화 중...</div>
 
-    <pre id="diag" style="
-      margin:18px 0 0;
-      padding:14px 16px;
-      border:1px solid var(--line);
-      border-radius:12px;
-      background:#0d0d13;
-      color:#c9c6d8;
-      white-space:pre-wrap;
-      word-break:break-word;
-      font:500 .82rem/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      display:none;
-    "></pre>
-
     <section id="profile" class="profile" aria-live="polite">
       <h2>로그인 정보</h2>
       <dl>
@@ -132,16 +119,14 @@
         <dt>UID</dt><dd><code id="userUid">-</code></dd>
       </dl>
       <p class="foot">
-        다음 단계에서 이 UID를 서버의 관리자 권한 목록에 등록한 뒤,
-        모든 관리자용 Cloud Function에서 로그인 상태와 관리자 권한을 함께 검사합니다.
+        관리자 권한은 서버에서 확인되며, 관리자용 기능은 인증을 통과한 계정에만 제공됩니다.
       </p>
     </section>
 
     <section id="adminPanel" class="admin-panel" aria-live="polite">
       <strong>서버 관리자 인증 완료</strong>
       <p style="margin:8px 0 0;color:var(--muted);line-height:1.65">
-        Firebase Authentication과 Firestore의 관리자 권한 검사를 모두 통과했습니다.
-        다음 단계에서 이 영역에 지원서 설정과 지원자 관리 기능을 연결합니다.
+        Firebase Authentication, App Check, Firestore 관리자 권한 검사를 모두 통과했습니다.
       </p>
     </section>
   </section>
@@ -201,20 +186,6 @@
   const userEmailEl = document.getElementById("userEmail");
   const userUidEl = document.getElementById("userUid");
   const adminPanelEl = document.getElementById("adminPanel");
-  const diagEl = document.getElementById("diag");
-
-  function showDiag(lines) {
-    diagEl.style.display = "block";
-    diagEl.textContent = Array.isArray(lines) ? lines.join("\n") : String(lines);
-  }
-
-  function errInfo(prefix, error) {
-    return [
-      prefix,
-      "code: " + (error && error.code ? error.code : "(없음)"),
-      "message: " + (error && error.message ? error.message : String(error))
-    ].join("\n");
-  }
 
   function setStatus(message, type = "") {
     statusEl.textContent = message;
@@ -261,39 +232,11 @@
       logoutBtn.hidden = false;
       setStatus("관리자 권한을 서버에서 확인하는 중...");
 
-      const diag = [];
-
       try {
         await user.getIdToken(true);
-        diag.push("1) Firebase Auth ID token: OK");
-      } catch (error) {
-        diag.push(errInfo("1) Firebase Auth ID token: FAIL", error));
-        showDiag(diag);
-        setStatus("Firebase 로그인 토큰 확인에 실패했습니다.", "error");
-        return;
-      }
+        await getToken(appCheck, false);
 
-      try {
-        const appCheckResult = await getToken(appCheck, true);
-        diag.push("2) App Check token: OK");
-        diag.push(
-          "   token prefix: " +
-          (appCheckResult && appCheckResult.token
-            ? appCheckResult.token.slice(0, 16) + "..."
-            : "(토큰 없음)")
-        );
-      } catch (error) {
-        diag.push(errInfo("2) App Check token: FAIL", error));
-        showDiag(diag);
-        console.error("App Check token failed:", error);
-        setStatus("App Check 토큰 생성에 실패했습니다.", "error");
-        return;
-      }
-
-      try {
         const result = await getAdminStatus();
-        diag.push("3) getAdminStatus: OK");
-        showDiag(diag);
 
         if (result.data && result.data.isAdmin === true) {
           adminPanelEl.classList.add("show");
@@ -302,16 +245,16 @@
           setStatus("관리자 권한을 확인할 수 없습니다.", "error");
         }
       } catch (error) {
-        diag.push(errInfo("3) getAdminStatus: FAIL", error));
-        showDiag(diag);
-        console.error("Admin authorization failed:", error);
+        console.error("Admin authorization failed:", error && error.code ? error.code : error);
 
-        if (error.code === "functions/permission-denied") {
+        if (error && error.code === "appCheck/recaptcha-error") {
+          setStatus("보안 인증(App Check)에 실패했습니다. 페이지를 새로고침한 뒤 다시 시도해 주세요.", "error");
+        } else if (error && error.code === "functions/permission-denied") {
           setStatus("이 계정에는 관리자 권한이 없습니다.", "error");
-        } else if (error.code === "functions/unauthenticated") {
+        } else if (error && error.code === "functions/unauthenticated") {
           setStatus("로그인 인증이 필요합니다.", "error");
         } else {
-          setStatus("관리자 권한 확인에 실패했습니다.", "error");
+          setStatus("관리자 권한 확인에 실패했습니다. 잠시 후 다시 시도해 주세요.", "error");
         }
       }
     } else {
@@ -322,8 +265,6 @@
       userNameEl.textContent = "-";
       userEmailEl.textContent = "-";
       userUidEl.textContent = "-";
-      diagEl.style.display = "none";
-      diagEl.textContent = "";
       setStatus("관리자용 Google 계정으로 로그인해 주세요.");
     }
   });
