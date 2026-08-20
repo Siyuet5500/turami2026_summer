@@ -99,10 +99,31 @@ input:focus,textarea:focus,select:focus{border-color:var(--accent)}
 .version code{font-size:.78rem;color:#ddd9ff;word-break:break-all}
 hr{border:0;border-top:1px solid var(--line);margin:20px 0}
 .hidden{display:none!important}
+
+.app-toolbar{display:grid;grid-template-columns:1fr 180px auto auto;gap:10px;margin-bottom:14px}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}
+.app-table{width:100%;border-collapse:collapse;min-width:860px;background:#0f0f16}
+.app-table th,.app-table td{padding:11px 12px;border-bottom:1px solid var(--line);text-align:left;font-size:.88rem;vertical-align:middle}
+.app-table th{position:sticky;top:0;background:#181821;color:#d8d6e4;z-index:1}
+.app-table tr:last-child td{border-bottom:0}
+.app-table tbody tr:hover{background:#171721}
+.badge{display:inline-flex;align-items:center;padding:5px 8px;border-radius:999px;border:1px solid var(--line);font-size:.76rem;white-space:nowrap}
+.badge.received{color:#c8c6d4}.badge.screening{color:#b9c9ff}.badge.audition{color:#e1c6ff}
+.badge.hold{color:var(--warn)}.badge.accepted{color:var(--ok)}.badge.rejected{color:var(--danger)}
+.detail{display:none;margin-top:18px;border:1px solid var(--line);border-radius:16px;padding:18px;background:#0f0f16}
+.detail.show{display:block}
+.detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.detail-item{border:1px solid var(--line);border-radius:11px;padding:11px 12px;background:#14141d}
+.detail-item small{display:block;color:var(--muted);margin-bottom:6px}
+.answer-list{display:grid;gap:10px;margin-top:14px}
+.answer-item{border:1px solid var(--line);border-radius:11px;padding:12px;background:#14141d}
+.answer-item .q{font-weight:800;margin-bottom:7px}
+.answer-item .a{white-space:pre-wrap;word-break:break-word;color:#dddbe8;line-height:1.6}
+.app-count{color:var(--muted);font-size:.86rem;margin:4px 0 12px}
 @media(max-width:1000px){.grid{grid-template-columns:1fr}.sticky{position:static}}
 @media(max-width:720px){
   .shell{padding:14px}.card{border-radius:18px;padding:20px}
-  .profile-grid,.split,.question-fields,.question-extra,.question-condition,.version-box{grid-template-columns:1fr}
+  .profile-grid,.split,.question-fields,.question-extra,.question-condition,.version-box,.detail-grid,.app-toolbar{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -226,6 +247,92 @@ hr{border:0;border-top:1px solid var(--line);margin:20px 0}
               게시하면 현재 초안은 수정 불가능한 게시 버전이 되고, 다음 편집용 새 초안이 자동 생성됩니다.
             </div>
           </section>
+
+          <section class="panel">
+            <div class="question-head">
+              <div>
+                <h2 style="margin-bottom:5px">지원자 관리</h2>
+                <div class="help">지원서는 서버에서만 복호화되며 관리자 인증 후 표시됩니다.</div>
+              </div>
+              <button id="refreshApplicationsBtn" class="btn small" type="button">새로고침</button>
+            </div>
+
+            <div class="app-toolbar">
+              <input id="applicationSearch" type="search" maxlength="100"
+                placeholder="이름, 학번, 학과, 전화번호, 답변 검색">
+              <select id="applicationStatusFilter">
+                <option value="all">전체 상태</option>
+                <option value="received">접수</option>
+                <option value="screening">검토 중</option>
+                <option value="audition">오디션</option>
+                <option value="hold">보류</option>
+                <option value="accepted">합격</option>
+                <option value="rejected">불합격</option>
+              </select>
+              <button id="searchApplicationsBtn" class="btn" type="button">검색</button>
+              <button id="exportApplicationsBtn" class="btn ok" type="button">필터 결과 XLSX</button>
+            </div>
+
+            <div id="applicationCount" class="app-count">지원자 목록을 불러오는 중...</div>
+
+            <div class="table-wrap">
+              <table class="app-table">
+                <thead>
+                  <tr>
+                    <th>제출일</th>
+                    <th>이름</th>
+                    <th>학번</th>
+                    <th>학과</th>
+                    <th>전화번호</th>
+                    <th>상태</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="applicationTableBody"></tbody>
+              </table>
+            </div>
+
+            <div id="applicationDetail" class="detail">
+              <div class="question-head">
+                <h3>지원서 상세</h3>
+                <button id="closeApplicationDetailBtn" class="btn small" type="button">닫기</button>
+              </div>
+
+              <div id="applicationFixedFields" class="detail-grid"></div>
+              <div id="applicationAnswers" class="answer-list"></div>
+
+              <hr>
+
+              <div class="split">
+                <div class="field">
+                  <label for="applicationReviewStatus">심사 상태</label>
+                  <select id="applicationReviewStatus">
+                    <option value="received">접수</option>
+                    <option value="screening">검토 중</option>
+                    <option value="audition">오디션</option>
+                    <option value="hold">보류</option>
+                    <option value="accepted">합격</option>
+                    <option value="rejected">불합격</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="applicationIdDisplay">지원서 ID</label>
+                  <input id="applicationIdDisplay" readonly>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="applicationAdminMemo">관리자 메모</label>
+                <textarea id="applicationAdminMemo" maxlength="3000"
+                  placeholder="운영진 내부 메모. 이 내용도 서버에서 암호화되어 저장됩니다."></textarea>
+              </div>
+
+              <div class="actions">
+                <button id="saveApplicationReviewBtn" class="btn primary" type="button">상태/메모 저장</button>
+                <button id="deleteApplicationBtn" class="btn danger" type="button">지원서 영구 삭제</button>
+              </div>
+            </div>
+          </section>
         </div>
 
         <aside class="sticky">
@@ -284,6 +391,11 @@ const getAdminRecruitmentConfig = httpsCallable(functions, "getAdminRecruitmentC
 const saveAdminRecruitmentDraft = httpsCallable(functions, "saveAdminRecruitmentDraft");
 const publishRecruitmentDraft = httpsCallable(functions, "publishRecruitmentDraft");
 const saveAdminRecruitmentSettings = httpsCallable(functions, "saveAdminRecruitmentSettings");
+const listAdminApplications = httpsCallable(functions, "listAdminApplications");
+const getAdminApplication = httpsCallable(functions, "getAdminApplication");
+const updateAdminApplication = httpsCallable(functions, "updateAdminApplication");
+const deleteAdminApplication = httpsCallable(functions, "deleteAdminApplication");
+const exportApplicationsXlsx = httpsCallable(functions, "exportApplicationsXlsx");
 
 const provider = new GoogleAuthProvider();
 provider.setCustomParameters({prompt:"select_account"});
@@ -300,6 +412,8 @@ const previewEl = $("preview");
 let currentConfig = null;
 let currentForm = null;
 let questions = [];
+let applicationSummaries = [];
+let selectedApplicationId = null;
 
 function setStatus(message, type="") {
   statusEl.textContent = message;
@@ -624,12 +738,185 @@ function populate(data) {
   renderQuestions();
 }
 
+
+const reviewLabels = {
+  received: "접수",
+  screening: "검토 중",
+  audition: "오디션",
+  hold: "보류",
+  accepted: "합격",
+  rejected: "불합격"
+};
+
+function formatPhone(value) {
+  const digits = String(value || "").replace(/\D/g, "");
+  if (/^010\d{8}$/.test(digits)) {
+    return `${digits.slice(0,3)}-${digits.slice(3,7)}-${digits.slice(7)}`;
+  }
+  return String(value || "");
+}
+
+function formatDateTime(value) {
+  if (!value) return "-";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return String(value);
+  return new Intl.DateTimeFormat("ko-KR", {
+    year:"numeric",
+    month:"2-digit",
+    day:"2-digit",
+    hour:"2-digit",
+    minute:"2-digit"
+  }).format(date);
+}
+
+function configuredLabel(definition, value) {
+  if (Array.isArray(value)) {
+    return value.map((item) => configuredLabel(definition, item)).join(", ");
+  }
+  if (definition && Array.isArray(definition.options)) {
+    const found = definition.options.find((option) =>
+      option && option.value === value
+    );
+    if (found && found.label) return found.label;
+  }
+  return value === undefined || value === null || value === ""
+    ? "-"
+    : String(value);
+}
+
+function currentApplicationFilter() {
+  return {
+    status: $("applicationStatusFilter").value,
+    query: $("applicationSearch").value.trim(),
+    limit: 300
+  };
+}
+
+async function loadApplications() {
+  $("applicationCount").textContent = "지원자 목록을 불러오는 중...";
+  const result = await listAdminApplications(currentApplicationFilter());
+  applicationSummaries = Array.isArray(result.data.applications)
+    ? result.data.applications
+    : [];
+
+  const total = Number(result.data.totalMatched || applicationSummaries.length);
+  $("applicationCount").textContent =
+    `검색 결과 ${total}명` +
+    (result.data.truncated ? ` · 화면에는 ${applicationSummaries.length}명 표시` : "");
+
+  renderApplicationTable();
+}
+
+function renderApplicationTable() {
+  const body = $("applicationTableBody");
+  body.innerHTML = "";
+
+  if (!applicationSummaries.length) {
+    const row = document.createElement("tr");
+    row.innerHTML = '<td colspan="7" style="text-align:center;color:var(--muted);padding:24px">조건에 맞는 지원자가 없습니다.</td>';
+    body.appendChild(row);
+    return;
+  }
+
+  applicationSummaries.forEach((application) => {
+    const row = document.createElement("tr");
+    const status = application.reviewStatus || "received";
+
+    row.innerHTML = `
+      <td>${escapeHtml(formatDateTime(application.submittedAtIso))}</td>
+      <td><strong>${escapeHtml(application.name || "-")}</strong></td>
+      <td>${escapeHtml(application.studentId || "-")}</td>
+      <td>${escapeHtml(application.department || "-")}</td>
+      <td>${escapeHtml(formatPhone(application.phone))}</td>
+      <td><span class="badge ${escapeHtml(status)}">${escapeHtml(reviewLabels[status] || status)}</span></td>
+      <td><button class="btn small" data-application-id="${escapeHtml(application.applicationId)}" type="button">상세</button></td>
+    `;
+
+    row.querySelector("button").addEventListener("click", async () => {
+      await openApplication(application.applicationId);
+    });
+
+    body.appendChild(row);
+  });
+}
+
+async function openApplication(applicationId) {
+  setStatus("지원서 상세 정보를 복호화하는 중...");
+  const result = await getAdminApplication({applicationId});
+  const data = result.data;
+  const application = data.application || {};
+  const form = data.form || {};
+  selectedApplicationId = data.applicationId;
+
+  $("applicationIdDisplay").value = data.applicationId;
+  $("applicationReviewStatus").value = data.reviewStatus || "received";
+  $("applicationAdminMemo").value = data.adminMemo || "";
+
+  const fixed = $("applicationFixedFields");
+  fixed.innerHTML = "";
+  const fields = application.fields || {};
+
+  (form.fixedFields || []).forEach((definition) => {
+    const box = document.createElement("div");
+    box.className = "detail-item";
+    let value = configuredLabel(definition, fields[definition.id]);
+    if (definition.id === "phone") value = formatPhone(value);
+    box.innerHTML = `
+      <small>${escapeHtml(definition.label || definition.id)}</small>
+      <div>${escapeHtml(value)}</div>
+    `;
+    fixed.appendChild(box);
+  });
+
+  const answersEl = $("applicationAnswers");
+  answersEl.innerHTML = "";
+  const answers = application.answers || {};
+
+  (form.questions || []).forEach((definition) => {
+    if (!Object.prototype.hasOwnProperty.call(answers, definition.id)) return;
+
+    const box = document.createElement("div");
+    box.className = "answer-item";
+    box.innerHTML = `
+      <div class="q">${escapeHtml(definition.label || definition.id)}</div>
+      <div class="a">${escapeHtml(configuredLabel(definition, answers[definition.id]))}</div>
+    `;
+    answersEl.appendChild(box);
+  });
+
+  if (!answersEl.children.length) {
+    answersEl.innerHTML = '<div class="help">저장된 추가 답변이 없습니다.</div>';
+  }
+
+  $("applicationDetail").classList.add("show");
+  $("applicationDetail").scrollIntoView({behavior:"smooth",block:"start"});
+  setStatus("지원서를 불러왔습니다.", "ok");
+}
+
+function base64ToBlob(base64, contentType) {
+  const binary = atob(base64);
+  const chunkSize = 1024 * 1024;
+  const chunks = [];
+
+  for (let offset = 0; offset < binary.length; offset += chunkSize) {
+    const slice = binary.slice(offset, offset + chunkSize);
+    const bytes = new Uint8Array(slice.length);
+    for (let i = 0; i < slice.length; i++) {
+      bytes[i] = slice.charCodeAt(i);
+    }
+    chunks.push(bytes);
+  }
+
+  return new Blob(chunks, {type:contentType});
+}
+
 async function loadAdminData() {
   setStatus("모집 설정과 질문을 불러오는 중...");
   const result = await getAdminRecruitmentConfig();
   populate(result.data);
   workspaceEl.classList.add("show");
-  setStatus("관리자 설정을 불러왔습니다.", "ok");
+  await loadApplications();
+  setStatus("관리자 설정과 지원자 목록을 불러왔습니다.", "ok");
 }
 
 function draftPayload() {
@@ -713,6 +1000,99 @@ $("saveSettingsBtn").addEventListener("click", () => withButton($("saveSettingsB
   setStatus("모집 상태와 기간을 저장했습니다.", "ok");
   await loadAdminData();
 }));
+
+
+$("refreshApplicationsBtn").addEventListener("click", () =>
+  withButton($("refreshApplicationsBtn"), loadApplications)
+);
+
+$("searchApplicationsBtn").addEventListener("click", () =>
+  withButton($("searchApplicationsBtn"), loadApplications)
+);
+
+$("applicationSearch").addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    $("searchApplicationsBtn").click();
+  }
+});
+
+$("applicationStatusFilter").addEventListener("change", () => {
+  $("searchApplicationsBtn").click();
+});
+
+$("closeApplicationDetailBtn").addEventListener("click", () => {
+  $("applicationDetail").classList.remove("show");
+  selectedApplicationId = null;
+});
+
+$("saveApplicationReviewBtn").addEventListener("click", () =>
+  withButton($("saveApplicationReviewBtn"), async () => {
+    if (!selectedApplicationId) {
+      throw new Error("먼저 지원서를 선택해 주세요.");
+    }
+
+    setStatus("심사 상태와 관리자 메모를 저장하는 중...");
+    await updateAdminApplication({
+      applicationId: selectedApplicationId,
+      reviewStatus: $("applicationReviewStatus").value,
+      adminMemo: $("applicationAdminMemo").value
+    });
+
+    await loadApplications();
+    setStatus("심사 상태와 관리자 메모를 저장했습니다.", "ok");
+  })
+);
+
+$("deleteApplicationBtn").addEventListener("click", () =>
+  withButton($("deleteApplicationBtn"), async () => {
+    if (!selectedApplicationId) {
+      throw new Error("먼저 지원서를 선택해 주세요.");
+    }
+
+    const confirmation = prompt(
+      "이 지원서는 복구할 수 없습니다. 계속하려면 '삭제'를 입력하세요."
+    );
+
+    if (confirmation !== "삭제") {
+      setStatus("삭제를 취소했습니다.", "warn");
+      return;
+    }
+
+    await deleteAdminApplication({
+      applicationId: selectedApplicationId,
+      confirmation:"삭제"
+    });
+
+    selectedApplicationId = null;
+    $("applicationDetail").classList.remove("show");
+    await loadApplications();
+    setStatus("지원서를 영구 삭제했습니다.", "ok");
+  })
+);
+
+$("exportApplicationsBtn").addEventListener("click", () =>
+  withButton($("exportApplicationsBtn"), async () => {
+    setStatus("서버에서 XLSX 파일을 생성하는 중...");
+    const filter = currentApplicationFilter();
+    delete filter.limit;
+
+    const result = await exportApplicationsXlsx(filter);
+    const data = result.data;
+    const blob = base64ToBlob(data.base64, data.contentType);
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+
+    anchor.href = url;
+    anchor.download = data.filename || "turami_applications.xlsx";
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    URL.revokeObjectURL(url);
+
+    setStatus(`XLSX 다운로드 완료 · ${data.count}명`, "ok");
+  })
+);
 
 onAuthStateChanged(auth, async (user) => {
   workspaceEl.classList.remove("show");
