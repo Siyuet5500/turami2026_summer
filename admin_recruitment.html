@@ -138,7 +138,8 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
   import {
     initializeAppCheck,
-    ReCaptchaEnterpriseProvider
+    ReCaptchaEnterpriseProvider,
+    getToken
   } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app-check.js";
   import {
     getAuth,
@@ -163,7 +164,7 @@
 
   const app = initializeApp(firebaseConfig);
 
-  initializeAppCheck(app, {
+  const appCheck = initializeAppCheck(app, {
     provider: new ReCaptchaEnterpriseProvider(
       "6LeEV48tAAAAAAuC-RDcAhZ9B99eoI10Cxvagvfl"
     ),
@@ -234,6 +235,11 @@
       setStatus("관리자 권한을 서버에서 확인하는 중...");
 
       try {
+        // Ensure both Firebase Auth and App Check tokens are ready
+        // before calling the protected callable function.
+        await user.getIdToken(true);
+        await getToken(appCheck, false);
+
         const result = await getAdminStatus();
 
         if (result.data && result.data.isAdmin === true) {
