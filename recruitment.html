@@ -2570,6 +2570,11 @@ body{
   pointer-events:none;
 }
 
+
+/* Receipt number is intentionally hidden from the public success UI.
+   The DOM node remains in place so existing submission logic is unchanged. */
+.receipt{display:none !important;}
+
 </style>
 </head>
 <body>
