@@ -1606,6 +1606,44 @@ input:focus,textarea:focus,select:focus{
   }
 }
 
+
+/* Applicant preview readability */
+.app-table{
+  min-width:1080px;
+}
+.app-table .submitted-col{
+  width:138px;
+  min-width:138px;
+  padding-left:8px;
+  padding-right:8px;
+  white-space:nowrap;
+}
+.app-table th:nth-child(2),
+.app-table td:nth-child(2){
+  min-width:90px;
+}
+.app-table th:nth-child(3),
+.app-table td:nth-child(3){
+  width:108px;
+  min-width:108px;
+  white-space:nowrap;
+}
+.app-table th:nth-child(4),
+.app-table td:nth-child(4){
+  width:72px;
+  min-width:72px;
+}
+.app-table th:nth-child(5),
+.app-table td:nth-child(5){
+  min-width:110px;
+}
+.app-table th:nth-child(6),
+.app-table td:nth-child(6),
+.app-table th:nth-child(7),
+.app-table td:nth-child(7){
+  min-width:105px;
+}
+
 </style></head>
 <body>
 <main class="shell">
@@ -1914,8 +1952,6 @@ input:focus,textarea:focus,select:focus{
               <select id="applicationStatusFilter">
                 <option value="all">전체 상태</option>
                 <option value="received">접수</option>
-                <option value="screening">검토 중</option>
-                <option value="audition">오디션</option>
                 <option value="hold">보류</option>
                 <option value="accepted">합격</option>
                 <option value="rejected">불합격</option>
@@ -1936,13 +1972,15 @@ input:focus,textarea:focus,select:focus{
               <table class="app-table">
                 <thead>
                   <tr>
-                    <th>제출일</th>
+                    <th class="submitted-col">제출일</th>
                     <th>이름</th>
-                    <th>학번</th>
+                    <th>생년월일</th>
+                    <th>성별</th>
                     <th>학과</th>
-                    <th>전화번호</th>
+                    <th>1지망</th>
+                    <th>2지망</th>
                     <th>상태</th>
-                    <th></th>
+                    <th>상세</th>
                   </tr>
                 </thead>
                 <tbody id="applicationTableBody"></tbody>
@@ -1971,8 +2009,6 @@ input:focus,textarea:focus,select:focus{
                   <label for="applicationReviewStatus">심사 상태</label>
                   <select id="applicationReviewStatus">
                     <option value="received">접수</option>
-                    <option value="screening">검토 중</option>
-                    <option value="audition">오디션</option>
                     <option value="hold">보류</option>
                     <option value="accepted">합격</option>
                     <option value="rejected">불합격</option>
@@ -2627,7 +2663,7 @@ function renderApplicationTable() {
 
   if (!applicationSummaries.length) {
     const row = document.createElement("tr");
-    row.innerHTML = '<td colspan="7" style="text-align:center;color:var(--muted);padding:24px">조건에 맞는 지원자가 없습니다.</td>';
+    row.innerHTML = '<td colspan="9" style="text-align:center;color:var(--muted);padding:24px">조건에 맞는 지원자가 없습니다.</td>';
     body.appendChild(row);
     return;
   }
@@ -2637,11 +2673,13 @@ function renderApplicationTable() {
     const status = application.reviewStatus || "received";
 
     row.innerHTML = `
-      <td>${escapeHtml(formatDateTime(application.submittedAtIso))}</td>
+      <td class="submitted-col">${escapeHtml(formatDateTime(application.submittedAtIso))}</td>
       <td><strong>${escapeHtml(application.name || "-")}</strong></td>
-      <td>${escapeHtml(application.studentId || "-")}</td>
+      <td>${escapeHtml(application.birthDate || "-")}</td>
+      <td>${escapeHtml(application.gender || "-")}</td>
       <td>${escapeHtml(application.department || "-")}</td>
-      <td>${escapeHtml(formatPhone(application.phone))}</td>
+      <td>${escapeHtml(application.firstSession || "-")}</td>
+      <td>${escapeHtml(application.secondSession || "-")}</td>
       <td><span class="badge ${escapeHtml(status)}">${escapeHtml(reviewLabels[status] || status)}</span></td>
       <td><button class="btn small" data-application-id="${escapeHtml(application.applicationId)}" type="button">상세</button></td>
     `;
