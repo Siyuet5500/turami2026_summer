@@ -1,0 +1,3154 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>뚜라미 모집 관리자</title>
+<meta name="robots" content="noindex,nofollow">
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#08080d;
+  --surface:#111118;
+  --surface-2:#171720;
+  --surface-3:#1d1d28;
+  --line:#2b2b38;
+  --line-soft:#22222d;
+  --text:#f4f3f8;
+  --text-2:#d2d0dc;
+  --muted:#918f9f;
+  --accent:#9c89e2;
+  --accent-2:#6c85e6;
+  --danger:#ffaaa7;
+  --ok:#91dfb8;
+  --warn:#f0cf8a;
+  --grad:linear-gradient(
+    115deg,
+    #f2906b 0%,
+    #e88bae 26%,
+    #9c89e2 52%,
+    #6c85e6 76%,
+    #84cbea 100%
+  );
+  --font:system-ui,-apple-system,BlinkMacSystemFont,
+    "Segoe UI","Pretendard",sans-serif;
+  --shadow:0 28px 80px -48px rgba(108,106,224,.62);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:var(--font);
+  color:var(--text);
+  background:
+    radial-gradient(900px 650px at 86% 0%,rgba(108,106,224,.13),transparent 66%),
+    radial-gradient(700px 520px at -8% 88%,rgba(132,203,234,.06),transparent 65%),
+    var(--bg);
+  -webkit-font-smoothing:antialiased;
+}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.5;cursor:not-allowed}
+a{color:inherit;text-decoration:none}
+[hidden],.hidden{display:none!important}
+:focus-visible{
+  outline:2px solid #9c89e2;
+  outline-offset:3px;
+  border-radius:8px;
+}
+
+.shell{
+  width:min(1540px,100%);
+  margin:0 auto;
+  padding:24px clamp(16px,2.6vw,38px) 56px;
+}
+
+/* ===== top header ===== */
+.admin-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+  padding:8px 0 22px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.brand-block{min-width:0}
+.brand{
+  margin:0 0 8px;
+  font-size:.67rem;
+  letter-spacing:.22em;
+  font-weight:750;
+  color:#afa8e8;
+}
+.admin-header h1{
+  margin:0;
+  font-size:clamp(1.7rem,3vw,2.45rem);
+  line-height:1.08;
+  letter-spacing:-.04em;
+}
+.admin-header p{
+  margin:8px 0 0;
+  color:var(--muted);
+  font-size:.9rem;
+}
+.header-actions{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:9px;
+  flex-wrap:wrap;
+}
+
+/* ===== buttons ===== */
+.btn{
+  appearance:none;
+  min-height:40px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  padding:9px 13px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:var(--surface-2);
+  color:var(--text);
+  font-weight:750;
+  font-size:.86rem;
+  transition:
+    transform .18s ease,
+    border-color .18s ease,
+    background .18s ease;
+}
+.btn:hover:not(:disabled){
+  transform:translateY(-1px);
+  border-color:#46465a;
+  background:#1d1d29;
+}
+.btn.primary{
+  border:0;
+  color:#fff;
+  background:var(--grad);
+}
+.btn.ok{
+  color:var(--ok);
+  border-color:rgba(145,223,184,.28);
+  background:rgba(145,223,184,.07);
+}
+.btn.danger{
+  color:var(--danger);
+  border-color:rgba(255,170,167,.28);
+  background:rgba(255,170,167,.06);
+}
+.btn.small{
+  min-height:33px;
+  padding:6px 9px;
+  border-radius:8px;
+  font-size:.78rem;
+}
+
+/* ===== login/status ===== */
+.auth-area{
+  margin-top:18px;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:16px;
+  align-items:center;
+  padding:14px 16px;
+  border:1px solid var(--line-soft);
+  border-radius:14px;
+  background:rgba(17,17,24,.72);
+}
+.auth-copy{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:0;
+}
+.auth-dot{
+  width:9px;height:9px;border-radius:50%;
+  flex:none;
+  background:var(--accent);
+  box-shadow:0 0 0 5px rgba(156,137,226,.08);
+}
+.status{
+  min-height:20px;
+  color:var(--muted);
+  font-size:.85rem;
+  line-height:1.45;
+}
+.status.error{color:var(--danger)}
+.status.ok{color:var(--ok)}
+.status.warn{color:var(--warn)}
+
+.profile{
+  display:none;
+  margin-top:12px;
+}
+.profile.show{display:block}
+.profile details{
+  border:1px solid var(--line-soft);
+  border-radius:12px;
+  background:rgba(17,17,24,.55);
+}
+.profile summary{
+  cursor:pointer;
+  list-style:none;
+  padding:11px 14px;
+  color:var(--muted);
+  font-size:.78rem;
+  font-weight:700;
+}
+.profile summary::-webkit-details-marker{display:none}
+.profile-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px;
+  padding:0 12px 12px;
+}
+.meta{
+  min-width:0;
+  padding:10px 12px;
+  border:1px solid var(--line-soft);
+  border-radius:9px;
+  background:#0d0d13;
+}
+.meta small{
+  display:block;
+  margin-bottom:4px;
+  color:var(--muted);
+  font-size:.68rem;
+}
+.meta div{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:.8rem;
+}
+
+/* ===== workspace ===== */
+.workspace{
+  display:none;
+  margin-top:22px;
+}
+.workspace.show{display:block}
+
+.workflow{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+  margin-bottom:18px;
+}
+.workflow-step{
+  display:grid;
+  grid-template-columns:32px 1fr;
+  gap:11px;
+  align-items:center;
+  padding:13px 14px;
+  border:1px solid var(--line-soft);
+  border-radius:12px;
+  background:rgba(17,17,24,.7);
+}
+.workflow-no{
+  width:32px;height:32px;
+  display:grid;place-items:center;
+  border-radius:9px;
+  color:#d9d4ff;
+  background:rgba(156,137,226,.08);
+  border:1px solid rgba(156,137,226,.18);
+  font-size:.72rem;
+  font-weight:850;
+}
+.workflow-step strong{
+  display:block;
+  font-size:.84rem;
+}
+.workflow-step span{
+  display:block;
+  margin-top:2px;
+  color:var(--muted);
+  font-size:.7rem;
+  line-height:1.35;
+}
+
+.workspace-layout{
+  display:grid;
+  grid-template-columns:205px minmax(0,1fr);
+  gap:18px;
+  align-items:start;
+}
+
+/* ===== sidebar ===== */
+.admin-nav{
+  position:sticky;
+  top:18px;
+  display:grid;
+  gap:8px;
+  padding:12px;
+  border:1px solid var(--line-soft);
+  border-radius:14px;
+  background:rgba(17,17,24,.78);
+  backdrop-filter:blur(14px);
+}
+.admin-nav__label{
+  padding:5px 7px 7px;
+  color:#777586;
+  font-size:.61rem;
+  letter-spacing:.16em;
+  font-weight:800;
+}
+.admin-nav a{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:10px 11px;
+  border-radius:9px;
+  color:var(--muted);
+  font-size:.79rem;
+  font-weight:700;
+  transition:background .18s,color .18s;
+}
+.admin-nav a:hover{
+  color:var(--text);
+  background:rgba(255,255,255,.045);
+}
+.nav-icon{
+  width:23px;height:23px;
+  display:grid;place-items:center;
+  flex:none;
+  border-radius:7px;
+  background:#0d0d13;
+  color:#aaa1ef;
+  border:1px solid var(--line-soft);
+  font-size:.65rem;
+}
+.admin-nav__divider{
+  height:1px;
+  margin:4px 6px;
+  background:var(--line-soft);
+}
+
+.content-stack{
+  display:grid;
+  gap:18px;
+}
+
+/* ===== sections / panels ===== */
+.admin-section{
+  scroll-margin-top:18px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:
+    linear-gradient(180deg,rgba(23,23,32,.92),rgba(14,14,20,.94));
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.section-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:20px;
+  padding:20px 22px 18px;
+  border-bottom:1px solid var(--line-soft);
+}
+.section-heading{
+  display:flex;
+  gap:12px;
+  min-width:0;
+}
+.section-icon{
+  width:34px;height:34px;
+  display:grid;place-items:center;
+  flex:none;
+  border-radius:10px;
+  color:#d7d1ff;
+  background:rgba(156,137,226,.08);
+  border:1px solid rgba(156,137,226,.18);
+  font-size:.75rem;
+  font-weight:850;
+}
+.section-head h2{
+  margin:0;
+  font-size:1.05rem;
+  letter-spacing:-.02em;
+}
+.section-head p{
+  margin:5px 0 0;
+  color:var(--muted);
+  font-size:.76rem;
+  line-height:1.45;
+}
+.section-body{
+  padding:20px 22px 22px;
+}
+
+.subpanel{
+  padding:16px;
+  border:1px solid var(--line-soft);
+  border-radius:12px;
+  background:rgba(13,13,19,.58);
+}
+.subpanel + .subpanel{margin-top:12px}
+.subpanel-title{
+  margin:0 0 12px;
+  font-size:.88rem;
+}
+.subpanel-title small{
+  margin-left:6px;
+  color:var(--muted);
+  font-size:.68rem;
+  font-weight:500;
+}
+
+.version-box{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+}
+.version{
+  min-width:0;
+  padding:10px 12px;
+  border:1px solid var(--line-soft);
+  border-radius:9px;
+  background:#0d0d13;
+}
+.version small{
+  display:block;
+  margin-bottom:5px;
+  color:var(--muted);
+  font-size:.67rem;
+}
+.version code{
+  display:block;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color:#ddd9ff;
+  font-size:.74rem;
+}
+
+/* ===== forms ===== */
+.field{
+  display:grid;
+  gap:6px;
+  margin-bottom:12px;
+}
+.field:last-child{margin-bottom:0}
+label{
+  font-size:.8rem;
+  font-weight:750;
+  color:#dfdde8;
+}
+.help{
+  color:var(--muted);
+  font-size:.7rem;
+  line-height:1.45;
+}
+input,textarea,select{
+  width:100%;
+  border:1px solid var(--line);
+  border-radius:9px;
+  outline:none;
+  padding:9px 11px;
+  background:#0d0d13;
+  color:var(--text);
+  font-size:.82rem;
+}
+textarea{
+  min-height:78px;
+  resize:vertical;
+  line-height:1.55;
+}
+input:focus,textarea:focus,select:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(156,137,226,.08);
+}
+.split{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.inline{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:10px;
+}
+.inline input[type="checkbox"]{width:auto}
+.actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+hr{
+  border:0;
+  border-top:1px solid var(--line-soft);
+  margin:16px 0;
+}
+
+/* ===== privacy block ===== */
+details.editor-group{
+  border:1px solid var(--line-soft);
+  border-radius:12px;
+  overflow:hidden;
+  background:rgba(13,13,19,.52);
+}
+details.editor-group + details.editor-group{margin-top:10px}
+details.editor-group>summary{
+  cursor:pointer;
+  list-style:none;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:13px 15px;
+}
+details.editor-group>summary::-webkit-details-marker{display:none}
+.editor-summary-copy strong{
+  display:block;
+  font-size:.84rem;
+}
+.editor-summary-copy span{
+  display:block;
+  margin-top:3px;
+  color:var(--muted);
+  font-size:.69rem;
+}
+.editor-chevron{
+  color:var(--muted);
+  transition:transform .18s ease;
+}
+details[open] .editor-chevron{transform:rotate(180deg)}
+.editor-group__body{
+  padding:15px;
+  border-top:1px solid var(--line-soft);
+}
+
+/* ===== questions ===== */
+.question-list{
+  display:grid;
+  gap:10px;
+}
+.question{
+  padding:14px;
+  border:1px solid var(--line-soft);
+  border-radius:12px;
+  background:#101017;
+}
+.question-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:12px;
+}
+.question-title{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  min-width:0;
+}
+.question-title h3{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:.85rem;
+}
+.order-badge{
+  width:26px;height:26px;
+  display:grid;place-items:center;
+  flex:none;
+  border-radius:8px;
+  background:var(--surface-3);
+  color:#bbb7cc;
+  font-size:.68rem;
+}
+.question-fields{
+  display:grid;
+  grid-template-columns:minmax(220px,1.6fr) .8fr .8fr;
+  gap:8px;
+}
+.question-extra{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:8px;
+}
+.question-condition{
+  display:grid;
+  grid-template-columns:1fr .7fr 1fr;
+  gap:8px;
+  margin-top:8px;
+}
+.options-box{margin-top:8px}
+
+/* ===== editor layout ===== */
+.editor-layout{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 320px;
+  gap:14px;
+  align-items:start;
+}
+.editor-main{min-width:0}
+.preview-wrap{
+  position:sticky;
+  top:18px;
+}
+.preview-card{
+  border:1px solid var(--line-soft);
+  border-radius:12px;
+  background:#0d0d13;
+  overflow:hidden;
+}
+.preview-card__head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:12px 13px;
+  border-bottom:1px solid var(--line-soft);
+}
+.preview-card__head strong{font-size:.78rem}
+.preview-card__head span{
+  color:var(--muted);
+  font-size:.63rem;
+}
+.preview{
+  display:grid;
+  gap:12px;
+  max-height:620px;
+  overflow:auto;
+  padding:14px;
+}
+.preview-item{
+  padding-bottom:12px;
+  border-bottom:1px solid var(--line-soft);
+}
+.preview-item:last-child{
+  padding-bottom:0;
+  border-bottom:0;
+}
+.preview-label{
+  margin-bottom:7px;
+  font-size:.77rem;
+  font-weight:800;
+}
+.preview-options{
+  display:grid;
+  gap:6px;
+  color:var(--muted);
+  font-size:.72rem;
+}
+.preview-input{
+  height:32px;
+  border:1px solid var(--line);
+  border-radius:7px;
+  background:#101017;
+}
+.preview-textarea{
+  height:65px;
+  border:1px solid var(--line);
+  border-radius:7px;
+  background:#101017;
+}
+
+/* ===== publish actions ===== */
+.publish-bar{
+  position:sticky;
+  bottom:10px;
+  z-index:9;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin-top:14px;
+  padding:11px 12px;
+  border:1px solid rgba(156,137,226,.2);
+  border-radius:11px;
+  background:rgba(18,18,26,.94);
+  backdrop-filter:blur(14px);
+  box-shadow:0 16px 44px -28px rgba(0,0,0,.9);
+}
+.publish-bar p{
+  margin:0;
+  color:var(--muted);
+  font-size:.69rem;
+  line-height:1.45;
+}
+
+/* ===== applicants ===== */
+.app-toolbar{
+  display:grid;
+  grid-template-columns:minmax(240px,1fr) 155px auto auto;
+  gap:8px;
+  margin-bottom:12px;
+}
+.app-count{
+  margin:2px 0 10px;
+  color:var(--muted);
+  font-size:.75rem;
+}
+.table-wrap{
+  overflow:auto;
+  border:1px solid var(--line-soft);
+  border-radius:11px;
+}
+.app-table{
+  width:100%;
+  min-width:820px;
+  border-collapse:collapse;
+  background:#0d0d13;
+}
+.app-table th,.app-table td{
+  padding:10px 11px;
+  border-bottom:1px solid var(--line-soft);
+  text-align:left;
+  vertical-align:middle;
+  font-size:.77rem;
+}
+.app-table th{
+  position:sticky;
+  top:0;
+  z-index:1;
+  color:#c9c6d5;
+  background:#15151e;
+}
+.app-table tbody tr:hover{background:#14141d}
+.badge{
+  display:inline-flex;
+  align-items:center;
+  padding:4px 7px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  font-size:.67rem;
+  white-space:nowrap;
+}
+.badge.received{color:#c8c6d4}
+.badge.screening{color:#b9c9ff}
+.badge.audition{color:#e1c6ff}
+.badge.hold{color:var(--warn)}
+.badge.accepted{color:var(--ok)}
+.badge.rejected{color:var(--danger)}
+
+.detail{
+  display:none;
+  margin-top:14px;
+  padding:16px;
+  border:1px solid var(--line-soft);
+  border-radius:12px;
+  background:#0d0d13;
+}
+.detail.show{display:block}
+.detail-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+}
+.detail-item,.answer-item{
+  padding:10px 11px;
+  border:1px solid var(--line-soft);
+  border-radius:9px;
+  background:#13131b;
+}
+.detail-item small{
+  display:block;
+  margin-bottom:5px;
+  color:var(--muted);
+  font-size:.67rem;
+}
+.answer-list{
+  display:grid;
+  gap:8px;
+  margin-top:10px;
+}
+.answer-item .q{
+  margin-bottom:6px;
+  font-size:.75rem;
+  font-weight:800;
+}
+.answer-item .a{
+  white-space:pre-wrap;
+  word-break:break-word;
+  color:#dddbe8;
+  font-size:.76rem;
+  line-height:1.55;
+}
+
+/* ===== responsive ===== */
+@media(max-width:1180px){
+  .editor-layout{grid-template-columns:1fr}
+  .preview-wrap{position:static}
+  .preview{max-height:420px}
+}
+@media(max-width:980px){
+  .workspace-layout{grid-template-columns:1fr}
+  .admin-nav{
+    position:static;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+  }
+  .admin-nav__label,.admin-nav__divider{display:none}
+  .admin-nav a{
+    justify-content:center;
+    text-align:center;
+  }
+}
+@media(max-width:760px){
+  .shell{padding:14px 12px 36px}
+  .admin-header{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+  .header-actions{justify-content:flex-start}
+  .auth-area{grid-template-columns:1fr}
+  .profile-grid,.workflow,.split,.question-fields,
+  .question-extra,.question-condition,.detail-grid,
+  .app-toolbar{grid-template-columns:1fr}
+  .admin-nav{grid-template-columns:1fr 1fr}
+  .section-head{
+    padding:17px;
+    flex-direction:column;
+  }
+  .section-body{padding:16px}
+  .editor-layout{gap:10px}
+  .publish-bar{
+    position:static;
+    align-items:flex-start;
+    flex-direction:column;
+  }
+  .publish-bar .actions{width:100%}
+  .publish-bar .btn{flex:1}
+}
+
+/* ===== Final admin clarity pass ===== */
+.admin-tabs{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+  margin:18px 0;
+}
+.admin-tab{
+  appearance:none;
+  display:grid;
+  grid-template-columns:34px minmax(0,1fr);
+  gap:11px;
+  align-items:center;
+  min-height:68px;
+  padding:13px 15px;
+  text-align:left;
+  border:1px solid var(--line-soft);
+  border-radius:12px;
+  background:rgba(17,17,24,.68);
+  color:var(--muted);
+  cursor:pointer;
+}
+.admin-tab:hover{
+  color:var(--text);
+  border-color:#3d3d4d;
+}
+.admin-tab.is-active{
+  color:var(--text);
+  border-color:rgba(156,137,226,.42);
+  background:linear-gradient(
+    135deg,
+    rgba(156,137,226,.11),
+    rgba(17,17,24,.86)
+  );
+}
+.admin-tab__no{
+  width:34px;height:34px;
+  display:grid;place-items:center;
+  border:1px solid var(--line);
+  border-radius:9px;
+  background:#0d0d13;
+  color:#aaa3e7;
+  font-size:.7rem;font-weight:850;
+}
+.admin-tab.is-active .admin-tab__no{
+  border-color:rgba(156,137,226,.32);
+  background:rgba(156,137,226,.1);
+  color:#ddd8ff;
+}
+.admin-tab__copy{min-width:0}
+.admin-tab__copy strong{
+  display:block;font-size:.88rem;
+}
+.admin-tab__copy small{
+  display:block;
+  margin-top:3px;
+  overflow:hidden;
+  color:var(--muted);
+  font-size:.68rem;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+}
+
+.content-stack{display:block}
+.admin-section{display:none}
+.admin-section.is-active{display:block}
+
+.admin-nav,.workflow,.workspace-layout{
+  display:none!important;
+}
+
+.editor-layout{
+  grid-template-columns:minmax(0,1fr) 330px;
+}
+
+/* Question cards */
+.question{
+  padding:0;
+  overflow:hidden;
+  border-color:rgba(255,255,255,.075);
+  background:#0f0f16;
+}
+.question-head{
+  margin:0;
+  padding:12px 14px;
+  border-bottom:1px solid var(--line-soft);
+  background:rgba(255,255,255,.015);
+}
+.question-title h3{
+  max-width:min(66vw,720px);
+  font-size:.84rem;
+}
+.question-actions{
+  display:flex;
+  flex:none;
+  align-items:center;
+  gap:6px;
+  flex-wrap:nowrap;
+}
+.icon-btn{
+  width:34px;
+  padding-left:0!important;
+  padding-right:0!important;
+}
+.question-primary{
+  display:grid;
+  grid-template-columns:minmax(260px,1.8fr) minmax(130px,.62fr) minmax(180px,.8fr);
+  gap:10px;
+  padding:14px 14px 0;
+  align-items:start;
+}
+.question-primary .field,
+.question-length .field,
+.question-condition .field{
+  margin:0;
+}
+.question-flags{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:11px 14px 13px;
+}
+.toggle-option{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  min-height:31px;
+  padding:6px 9px;
+  border:1px solid var(--line-soft);
+  border-radius:8px;
+  background:#121219;
+  color:var(--text-2);
+  font-size:.72rem;
+  cursor:pointer;
+}
+.toggle-option input{
+  width:14px;height:14px;
+  margin:0;
+  accent-color:var(--accent);
+}
+.options-box{
+  margin:0 14px 13px;
+  padding:12px;
+  border:1px solid var(--line-soft);
+  border-radius:9px;
+  background:#0c0c12;
+}
+.options-box textarea{min-height:74px}
+
+.question-advanced{
+  border-top:1px solid var(--line-soft);
+  background:rgba(255,255,255,.01);
+}
+.question-advanced>summary{
+  cursor:pointer;
+  list-style:none;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 14px;
+  color:#b7b4c5;
+  font-size:.73rem;
+  font-weight:750;
+}
+.question-advanced>summary::-webkit-details-marker{display:none}
+.question-advanced>summary small{
+  margin-left:2px;
+  color:#737181;
+  font-size:.66rem;
+  font-weight:500;
+}
+.advanced-chevron{
+  margin-left:auto;
+  color:#777586;
+  transition:transform .18s ease;
+}
+.question-advanced[open] .advanced-chevron{
+  transform:rotate(180deg);
+}
+.question-advanced__body{
+  padding:13px 14px 14px;
+  border-top:1px solid var(--line-soft);
+}
+.question-length{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+  align-items:start;
+}
+.advanced-divider{
+  height:1px;
+  margin:13px 0;
+  background:var(--line-soft);
+}
+.advanced-label{
+  margin-bottom:9px;
+  color:#d5d2df;
+  font-size:.74rem;
+  font-weight:750;
+}
+.advanced-label span{
+  margin-left:6px;
+  color:var(--muted);
+  font-size:.67rem;
+  font-weight:500;
+}
+.question-condition{
+  display:grid;
+  grid-template-columns:minmax(190px,1fr) minmax(130px,.65fr) minmax(190px,1fr);
+  gap:10px;
+  margin:0;
+  align-items:start;
+}
+.empty-state{
+  padding:26px 18px;
+  border:1px dashed var(--line);
+  border-radius:10px;
+  color:var(--muted);
+  text-align:center;
+  font-size:.76rem;
+}
+
+/* Neutralize obsolete old question grids. */
+.question-fields,.question-extra{
+  display:none!important;
+}
+
+@media(max-width:1080px){
+  .editor-layout{grid-template-columns:1fr}
+  .preview-wrap{position:static}
+}
+@media(max-width:820px){
+  .admin-tabs{
+    grid-template-columns:1fr;
+    gap:7px;
+  }
+  .admin-tab{min-height:58px}
+  .question-primary,
+  .question-condition,
+  .question-length{
+    grid-template-columns:1fr;
+  }
+  .question-title h3{max-width:58vw}
+}
+@media(max-width:560px){
+  .question-head{align-items:flex-start}
+  .question-title h3{max-width:44vw}
+  .question-actions{gap:4px}
+  .question-flags{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+}
+
+
+/* =====================================================================
+   LIGHT ADMIN THEME + READABILITY PASS
+   UI-only override. Existing Firebase/Auth/App Check/admin logic unchanged.
+   ===================================================================== */
+:root{
+  color-scheme:light;
+  --bg:#f4f6fb;
+  --surface:#ffffff;
+  --surface-2:#f8f9fc;
+  --surface-3:#eef1f7;
+  --line:#dfe3ec;
+  --line-soft:#eaedf3;
+  --text:#171923;
+  --text-2:#3f4554;
+  --muted:#747b8d;
+  --accent:#7563d7;
+  --accent-2:#5574d9;
+  --danger:#c94d52;
+  --ok:#24835a;
+  --warn:#9b6b17;
+  --grad:linear-gradient(
+    115deg,
+    #ef8d6b 0%,
+    #df7fa6 28%,
+    #8f7ad8 56%,
+    #6681da 78%,
+    #75bfe1 100%
+  );
+  --shadow:
+    0 18px 44px -30px rgba(48,55,79,.24),
+    0 3px 10px rgba(43,48,67,.035);
+}
+
+body{
+  color:var(--text);
+  background:
+    radial-gradient(
+      900px 560px at 86% -4%,
+      rgba(117,99,215,.075),
+      transparent 66%
+    ),
+    radial-gradient(
+      700px 480px at -8% 92%,
+      rgba(117,191,225,.055),
+      transparent 64%
+    ),
+    var(--bg);
+}
+
+/* Header */
+.admin-header{
+  border-bottom-color:#e4e7ee;
+}
+.brand{
+  color:#6d60ba;
+}
+.admin-header p{
+  color:#697084;
+}
+.btn{
+  border-color:#d8dde7;
+  background:#fff;
+  color:#272b37;
+  box-shadow:0 1px 2px rgba(18,24,40,.025);
+}
+.btn:hover:not(:disabled){
+  border-color:#c8ceda;
+  background:#f7f8fb;
+}
+.btn.primary{
+  color:#fff;
+  background:var(--grad);
+  box-shadow:0 8px 20px -14px rgba(117,99,215,.65);
+}
+.btn.ok{
+  color:#1d714c;
+  border-color:#bfe3d1;
+  background:#effaf4;
+}
+.btn.danger{
+  color:#b84247;
+  border-color:#f0c8ca;
+  background:#fff5f5;
+}
+
+/* Auth / account */
+.auth-area,
+.profile details{
+  border-color:#e1e5ed;
+  background:rgba(255,255,255,.82);
+  box-shadow:var(--shadow);
+}
+.auth-dot{
+  background:#7868db;
+  box-shadow:0 0 0 5px rgba(117,99,215,.09);
+}
+.status{color:#687084}
+.status.error{color:#b84247}
+.status.ok{color:#1f7a53}
+.status.warn{color:#926213}
+.meta{
+  border-color:#e4e7ee;
+  background:#f8f9fc;
+}
+.meta small{color:#7d8494}
+
+/* Tabs */
+.admin-tabs{
+  gap:12px;
+}
+.admin-tab{
+  min-height:72px;
+  border-color:#dde2ea;
+  background:#fff;
+  color:#666e80;
+  box-shadow:0 4px 14px rgba(43,48,67,.035);
+}
+.admin-tab:hover{
+  color:#222632;
+  border-color:#cbd1dc;
+  background:#fbfcfe;
+}
+.admin-tab.is-active{
+  color:#171923;
+  border-color:#b9afea;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(117,99,215,.075),
+      rgba(255,255,255,.98)
+    );
+  box-shadow:
+    0 10px 28px -22px rgba(93,75,193,.42),
+    0 2px 6px rgba(43,48,67,.03);
+}
+.admin-tab__no{
+  border-color:#ddd9f4;
+  background:#f7f5ff;
+  color:#6d5bc6;
+}
+.admin-tab.is-active .admin-tab__no{
+  border-color:#c5bceb;
+  background:#ece8ff;
+  color:#5846b4;
+}
+.admin-tab__copy small{
+  color:#7a8191;
+}
+
+/* Main panels */
+.admin-section{
+  border-color:#dfe3eb;
+  background:#fff;
+  box-shadow:var(--shadow);
+}
+.section-head{
+  border-bottom-color:#e8ebf1;
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff,
+      #fcfcfe
+    );
+}
+.section-icon{
+  color:#6252b9;
+  background:#f0edff;
+  border-color:#d8d0f5;
+}
+.section-head h2{
+  color:#1c202b;
+}
+.section-head p{
+  color:#747b8d;
+}
+.subpanel,
+details.editor-group{
+  border-color:#e2e6ed;
+  background:#fbfcfe;
+}
+.subpanel-title,
+.editor-summary-copy strong{
+  color:#232733;
+}
+.editor-summary-copy span,
+details.editor-group>summary{
+  color:#6f7788;
+}
+.editor-group__body{
+  border-top-color:#e8ebf1;
+  background:#fff;
+}
+.editor-chevron{
+  color:#7e8594;
+}
+
+/* Form controls */
+label{
+  color:#343947;
+}
+.help{
+  color:#7a8191;
+}
+input,textarea,select{
+  color:#1c202b;
+  background:#fff;
+  border-color:#d9dee7;
+  box-shadow:inset 0 1px 1px rgba(20,24,36,.015);
+}
+input::placeholder,
+textarea::placeholder{
+  color:#a0a6b2;
+}
+input:focus,textarea:focus,select:focus{
+  border-color:#8c7bdf;
+  box-shadow:0 0 0 3px rgba(117,99,215,.095);
+}
+.version{
+  border-color:#e1e5ec;
+  background:#f8f9fc;
+}
+.version small{color:#7b8292}
+.version code{color:#574a99}
+
+/* Preview */
+.preview-card{
+  border-color:#dde2ea;
+  background:#fff;
+  box-shadow:0 12px 32px -26px rgba(43,48,67,.22);
+}
+.preview-card__head{
+  border-bottom-color:#e7eaf0;
+  background:#fafbfe;
+}
+.preview-card__head strong{color:#242834}
+.preview-card__head span{color:#7c8392}
+.preview{
+  background:#fff;
+}
+.preview-item{
+  border-bottom-color:#eceef3;
+}
+.preview-label{
+  color:#2c303c;
+}
+.preview-options{
+  color:#737a8a;
+}
+.preview-input,
+.preview-textarea{
+  border-color:#dde2ea;
+  background:#f7f8fb;
+}
+
+/* Publish bar */
+.publish-bar{
+  border-color:#d7d0f2;
+  background:rgba(255,255,255,.96);
+  box-shadow:
+    0 14px 34px -24px rgba(51,58,78,.24),
+    0 2px 8px rgba(38,43,59,.035);
+}
+.publish-bar p{
+  color:#737b8b;
+}
+
+/* ===============================================================
+   QUESTION CARDS
+   Each question should read as one self-contained unit.
+   =============================================================== */
+.question-list{
+  gap:16px;
+}
+
+.question{
+  position:relative;
+  overflow:hidden;
+  border:1px solid #dfe3eb;
+  border-radius:14px;
+  background:#fff;
+  box-shadow:
+    0 7px 20px -16px rgba(42,48,67,.18),
+    0 1px 2px rgba(27,31,43,.025);
+}
+
+/* Left accent makes question boundaries obvious while staying restrained. */
+.question::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+  width:4px;
+  background:
+    linear-gradient(
+      180deg,
+      #8b79df,
+      #7194e5
+    );
+  opacity:.72;
+}
+
+.question:nth-child(3n+2)::before{
+  background:linear-gradient(180deg,#dd86aa,#9a80df);
+}
+.question:nth-child(3n+3)::before{
+  background:linear-gradient(180deg,#6ea9df,#7d76d9);
+}
+
+.question-head{
+  padding:14px 16px 14px 18px;
+  border-bottom:1px solid #e8ebf1;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(117,99,215,.045),
+      rgba(255,255,255,.98) 38%
+    );
+}
+.question:nth-child(3n+2) .question-head{
+  background:
+    linear-gradient(
+      90deg,
+      rgba(221,134,170,.04),
+      rgba(255,255,255,.98) 38%
+    );
+}
+.question:nth-child(3n+3) .question-head{
+  background:
+    linear-gradient(
+      90deg,
+      rgba(110,169,223,.045),
+      rgba(255,255,255,.98) 38%
+    );
+}
+
+.question-title{
+  gap:11px;
+}
+.question-title h3{
+  color:#20242f;
+  font-size:.9rem;
+  font-weight:800;
+  line-height:1.45;
+}
+.order-badge{
+  width:29px;
+  height:29px;
+  color:#6153b9;
+  background:#efecff;
+  border:1px solid #d9d2f4;
+  border-radius:9px;
+  font-weight:850;
+}
+
+.question-primary{
+  padding:17px 16px 2px 18px;
+  gap:12px;
+}
+.question-primary label{
+  color:#404655;
+  font-size:.73rem;
+  letter-spacing:.01em;
+}
+.question-primary input,
+.question-primary select{
+  min-height:41px;
+}
+
+.question-flags{
+  padding:12px 16px 15px 18px;
+  border-bottom:1px solid #eef0f4;
+}
+.toggle-option{
+  min-height:33px;
+  border-color:#dfe3ea;
+  background:#f8f9fc;
+  color:#454b5a;
+  font-weight:700;
+}
+.toggle-option:hover{
+  border-color:#cdd3de;
+  background:#f4f5f9;
+}
+.toggle-option input{
+  accent-color:#7664d4;
+}
+
+.options-box{
+  margin:14px 16px 15px 18px;
+  border-color:#e0e4eb;
+  background:#f8f9fc;
+}
+.options-box textarea{
+  background:#fff;
+}
+
+/* Advanced settings visually recede instead of competing with main fields. */
+.question-advanced{
+  border-top:0;
+  background:#fbfcfe;
+}
+.question-advanced>summary{
+  padding:11px 16px 11px 18px;
+  border-top:1px solid #e8ebf1;
+  color:#5e6575;
+  background:#fafbfc;
+}
+.question-advanced>summary:hover{
+  background:#f6f7fa;
+}
+.question-advanced>summary small{
+  color:#9298a5;
+}
+.advanced-chevron{
+  color:#8c929e;
+}
+.question-advanced__body{
+  padding:15px 16px 17px 18px;
+  border-top:1px solid #e7eaf0;
+  background:#f9fafc;
+}
+.advanced-divider{
+  background:#e3e6ec;
+}
+.advanced-label{
+  color:#454b59;
+}
+.advanced-label span{
+  color:#838a99;
+}
+
+/* Action buttons stay visually secondary. */
+.question-actions .btn{
+  background:#fff;
+}
+.question-actions .btn.danger{
+  color:#b6464b;
+  background:#fff7f7;
+}
+
+/* Empty state */
+.empty-state{
+  border-color:#d8dde6;
+  color:#7e8594;
+  background:#fafbfc;
+}
+
+/* Applicant list */
+.table-wrap{
+  border-color:#dfe3ea;
+  background:#fff;
+}
+.app-table{
+  background:#fff;
+}
+.app-table th,.app-table td{
+  border-bottom-color:#e9ecf1;
+  color:#323743;
+}
+.app-table th{
+  color:#5e6574;
+  background:#f6f7fa;
+}
+.app-table tbody tr:hover{
+  background:#fafbfc;
+}
+.badge{
+  border-color:#dce1e8;
+  background:#fff;
+}
+.badge.received{color:#646b7a}
+.badge.screening{color:#4b63b3}
+.badge.audition{color:#8058a9}
+.badge.hold{color:#8f6519}
+.badge.accepted{color:#237b54}
+.badge.rejected{color:#b5474c}
+
+.detail{
+  border-color:#dfe3ea;
+  background:#fbfcfe;
+}
+.detail-item,.answer-item{
+  border-color:#e2e6ed;
+  background:#fff;
+}
+.detail-item small{
+  color:#7e8595;
+}
+.answer-item .q{
+  color:#2d323e;
+}
+.answer-item .a{
+  color:#555c6b;
+}
+
+/* Fine-tune spacing so dense content breathes without becoming huge. */
+.section-body{
+  padding:20px 22px 22px;
+}
+.editor-group__body{
+  padding:17px;
+}
+.question-list{
+  margin-top:2px;
+}
+
+/* Mobile/tablet keeps the same hierarchy. */
+@media(max-width:820px){
+  .question-title h3{
+    max-width:58vw;
+  }
+  .question-primary{
+    gap:10px;
+  }
+}
+@media(max-width:560px){
+  .question-title h3{
+    max-width:45vw;
+  }
+  .question-head{
+    padding-left:16px;
+  }
+  .question-primary,
+  .question-flags,
+  .question-advanced>summary,
+  .question-advanced__body{
+    padding-left:16px;
+    padding-right:14px;
+  }
+}
+
+
+/* Applicant preview readability */
+.app-table{
+  min-width:1080px;
+}
+.app-table .submitted-col{
+  width:138px;
+  min-width:138px;
+  padding-left:8px;
+  padding-right:8px;
+  white-space:nowrap;
+}
+.app-table th:nth-child(2),
+.app-table td:nth-child(2){
+  min-width:90px;
+}
+.app-table th:nth-child(3),
+.app-table td:nth-child(3){
+  width:108px;
+  min-width:108px;
+  white-space:nowrap;
+}
+.app-table th:nth-child(4),
+.app-table td:nth-child(4){
+  width:72px;
+  min-width:72px;
+}
+.app-table th:nth-child(5),
+.app-table td:nth-child(5){
+  min-width:110px;
+}
+.app-table th:nth-child(6),
+.app-table td:nth-child(6),
+.app-table th:nth-child(7),
+.app-table td:nth-child(7){
+  min-width:105px;
+}
+
+
+/* ============================================================
+   ADMIN REDESIGN — clean & legible light dashboard
+   (visual only · tab/hidden logic untouched)
+   ============================================================ */
+:root{
+  color-scheme:light;
+  --bg:#f4f6fb; --surface:#ffffff; --surface-2:#f7f8fc; --surface-3:#eef1f7;
+  --line:#e4e7ef; --line-soft:#eef0f6;
+  --text:#181a23; --text-2:#4b5263; --muted:#7a8194;
+  --accent:#6a5cd6; --accent-2:#5574d9; --accent-soft:#efedfb;
+  --ok:#1f8a5b; --ok-soft:#e6f5ee; --danger:#cf4b52; --danger-soft:#fdecec; --warn:#a06a12; --warn-soft:#fbf1dd;
+  --radius:14px; --radius-sm:10px;
+  --shadow:0 1px 2px rgba(20,22,40,.04),0 12px 30px -18px rgba(30,32,60,.22);
+  --shadow-sm:0 1px 2px rgba(20,22,40,.05);
+  --font:'Pretendard',system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;line-height:1.6}
+::selection{background:var(--accent-soft)}
+[hidden],.hidden{display:none!important}
+
+/* ---- shell / rhythm ---- */
+.shell{max-width:1240px;margin:0 auto;padding:clamp(20px,4vw,40px) clamp(16px,4vw,40px) 80px}
+
+/* ---- header ---- */
+.admin-header{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;
+  padding-bottom:22px;margin-bottom:6px;border-bottom:1px solid var(--line)}
+.admin-header h1,.admin-header .title{font-weight:800;letter-spacing:-.02em}
+.header-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
+/* ---- auth strip ---- */
+.auth-area{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 18px;margin:18px 0 26px;box-shadow:var(--shadow-sm)}
+.auth-dot{width:9px;height:9px;border-radius:50%;background:var(--muted);box-shadow:0 0 0 4px var(--surface-3)}
+.auth-area .auth-dot{background:var(--ok)}
+.help{color:var(--muted);font-size:.86rem;line-height:1.55}
+
+/* ---- cards / sections ---- */
+.profile,.admin-section,.preview-card,.editor-group,.table-wrap,.app-toolbar,.settings-card{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
+.profile{padding:clamp(18px,2.4vw,26px);box-shadow:var(--shadow);margin-bottom:24px}
+.profile-grid{display:grid;gap:14px 22px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+.workspace{margin-top:8px}
+
+/* ---- tabs (segmented) ---- */
+.admin-tabs{display:flex;gap:8px;flex-wrap:wrap;background:var(--surface-3);border:1px solid var(--line);
+  padding:7px;border-radius:16px;margin-bottom:22px}
+.admin-tab{flex:1;min-width:180px;display:flex;align-items:center;gap:12px;
+  background:transparent;border:1px solid transparent;border-radius:11px;padding:12px 16px;cursor:pointer;
+  color:var(--text-2);text-align:left;transition:background .25s,color .25s,border-color .25s,box-shadow .25s}
+.admin-tab:hover{background:var(--surface)}
+.admin-tab.is-active{background:var(--surface);border-color:var(--line);color:var(--text);box-shadow:var(--shadow-sm)}
+.admin-tab__no{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.78rem;font-weight:700;
+  color:var(--muted);background:var(--surface-3);border-radius:7px;padding:4px 8px;line-height:1}
+.admin-tab.is-active .admin-tab__no{background:var(--accent);color:#fff}
+.admin-tab__copy{display:flex;flex-direction:column;gap:2px}
+.admin-tab__copy b,.admin-tab__copy strong{font-weight:700;letter-spacing:-.01em}
+.admin-tab__copy span,.admin-tab__copy small{color:var(--muted);font-size:.8rem}
+
+/* section panels (DO NOT set display — JS toggles .is-active) */
+.admin-section{padding:clamp(20px,2.6vw,32px);box-shadow:var(--shadow)}
+
+/* ---- editor groups (accordion) ---- */
+.editor-group{margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow-sm)}
+.editor-group>summary{cursor:pointer;list-style:none;padding:15px 18px;font-weight:700;letter-spacing:-.01em;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--surface)}
+.editor-group>summary:hover{background:var(--surface-2)}
+.editor-group[open]>summary{border-bottom:1px solid var(--line)}
+.editor-group__body{padding:18px}
+
+/* ---- fields / inputs ---- */
+.field{display:flex;flex-direction:column;gap:7px;margin-bottom:15px}
+.field>label,.field-label,label{font-weight:600;font-size:.9rem;color:var(--text-2);letter-spacing:-.005em}
+.shell input,.shell select,.shell textarea{width:100%;font:inherit;color:var(--text);
+  background:var(--surface);border:1.5px solid var(--line);border-radius:var(--radius-sm);
+  padding:10px 13px;transition:border-color .2s,box-shadow .2s,background .2s}
+.shell textarea{min-height:96px;line-height:1.6;resize:vertical}
+.shell input::placeholder,.shell textarea::placeholder{color:var(--muted)}
+.shell input:focus,.shell select:focus,.shell textarea:focus{outline:none;border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(106,92,214,.15);background:var(--surface)}
+.shell input[type=checkbox],.shell input[type=radio]{width:auto;accent-color:var(--accent)}
+
+/* ---- buttons ---- */
+.btn{display:inline-flex;align-items:center;gap:8px;font:inherit;font-weight:650;cursor:pointer;
+  border:1.5px solid var(--line);background:var(--surface);color:var(--text);
+  border-radius:var(--radius-sm);padding:10px 16px;line-height:1;transition:background .2s,border-color .2s,color .2s,box-shadow .2s,transform .2s}
+.btn:hover{background:var(--surface-2);transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn.small{padding:7px 12px;font-size:.85rem}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 10px 24px -14px rgba(106,92,214,.7)}
+.btn.primary:hover{background:#5b4ecb;border-color:#5b4ecb}
+.btn.ok{background:var(--ok);border-color:var(--ok);color:#fff;box-shadow:0 10px 24px -14px rgba(31,138,91,.6)}
+.btn.ok:hover{filter:brightness(1.05)}
+
+/* ---- preview ---- */
+.preview-wrap{align-self:start}
+.preview-card{overflow:hidden;box-shadow:var(--shadow);position:sticky;top:20px}
+.preview-card__head{padding:14px 18px;border-bottom:1px solid var(--line);font-weight:700;background:var(--surface-2)}
+.preview{padding:18px;max-height:70vh;overflow:auto}
+.preview-input{background:var(--surface-3);border:1px solid var(--line);border-radius:8px;height:38px;margin-top:6px}
+
+/* ---- applicant management ---- */
+.app-toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:16px;margin-bottom:16px;box-shadow:var(--shadow-sm)}
+.app-toolbar input,.app-toolbar select{width:auto;min-width:180px}
+.app-count{font-size:.9rem;color:var(--muted);margin:6px 2px 14px;font-weight:600}
+.app-count b,.app-count strong{color:var(--text)}
+.table-wrap{overflow:auto;box-shadow:var(--shadow);max-height:70vh}
+.app-table{width:100%;border-collapse:separate;border-spacing:0;font-size:.9rem}
+.app-table thead th{position:sticky;top:0;z-index:1;background:var(--surface-2);
+  text-align:left;font-weight:700;color:var(--muted);font-size:.74rem;letter-spacing:.05em;text-transform:uppercase;
+  padding:13px 15px;border-bottom:1px solid var(--line);white-space:nowrap}
+.app-table tbody td{padding:13px 15px;border-bottom:1px solid var(--line-soft);color:var(--text-2);vertical-align:middle}
+.app-table tbody tr:last-child td{border-bottom:none}
+.app-table tbody tr{transition:background .15s}
+.app-table tbody tr:hover{background:var(--surface-2)}
+.app-table td:first-child,.app-table th:first-child{padding-left:18px}
+.app-table td:last-child,.app-table th:last-child{padding-right:18px}
+.app-table .mono,.app-table code,.app-table time{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85em;color:var(--text)}
+
+/* ---- status pills / chips / badges (defensive, if present) ---- */
+.chip,.badge,.pill,.status,.tag{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:.76rem;
+  padding:4px 10px;border-radius:999px;letter-spacing:.01em}
+.chip,.badge,.pill{background:var(--surface-3);color:var(--text-2);border:1px solid var(--line)}
+.is-open,.status--open,.badge--ok{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+.is-closed,.status--closed,.badge--danger{background:var(--danger-soft);color:var(--danger);border-color:transparent}
+.badge--warn,.status--pending{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+
+/* ---- question list items ---- */
+.question-list{display:flex;flex-direction:column;gap:10px}
+.question-list>*{border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--surface-2)}
+
+/* ---- scrollbars (soft) ---- */
+.table-wrap::-webkit-scrollbar,.preview::-webkit-scrollbar{height:10px;width:10px}
+.table-wrap::-webkit-scrollbar-thumb,.preview::-webkit-scrollbar-thumb{background:#d2d7e2;border-radius:8px;border:3px solid var(--surface)}
+
+</style></head>
+<body>
+<main class="shell">
+  <header class="admin-header">
+    <div class="brand-block">
+      <div class="brand">TURAMI / RECRUITMENT ADMIN</div>
+      <h1>모집 관리자</h1>
+      <p>지원서 작성부터 모집 오픈, 지원자 관리까지 한 곳에서 처리합니다.</p>
+    </div>
+
+    <div class="header-actions">
+      <button id="loginBtn" class="btn primary" type="button">
+        Google 로그인
+      </button>
+      <button id="logoutBtn" class="btn" type="button" hidden>
+        로그아웃
+      </button>
+    </div>
+  </header>
+
+  <div class="auth-area">
+    <div class="auth-copy">
+      <span class="auth-dot" aria-hidden="true"></span>
+      <div id="status" class="status" aria-live="polite">
+        Firebase 초기화 중...
+      </div>
+    </div>
+    <div class="help">
+      로그인 후 관리자 권한과 App Check를 확인합니다.
+    </div>
+  </div>
+
+  <section id="profile" class="profile">
+    <details>
+      <summary>로그인 계정 정보 보기</summary>
+      <div class="profile-grid">
+        <div class="meta">
+          <small>이름</small>
+          <div id="userName">-</div>
+        </div>
+        <div class="meta">
+          <small>이메일</small>
+          <div id="userEmail">-</div>
+        </div>
+        <div class="meta">
+          <small>UID</small>
+          <div id="userUid">-</div>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <section id="workspace" class="workspace">
+    <div class="admin-tabs" role="tablist" aria-label="모집 관리자 메뉴">
+      <button class="admin-tab is-active" type="button" role="tab"
+        aria-selected="true" aria-controls="formEditor"
+        data-admin-tab="formEditor">
+        <span class="admin-tab__no">01</span>
+        <span class="admin-tab__copy">
+          <strong>지원서 편집</strong>
+          <small>제목 · 개인정보 · 질문 · 게시</small>
+        </span>
+      </button>
+
+      <button class="admin-tab" type="button" role="tab"
+        aria-selected="false" aria-controls="recruitmentSettings"
+        data-admin-tab="recruitmentSettings">
+        <span class="admin-tab__no">02</span>
+        <span class="admin-tab__copy">
+          <strong>모집 운영</strong>
+          <small>게시 버전 · 모집 상태 · 기간</small>
+        </span>
+      </button>
+
+      <button class="admin-tab" type="button" role="tab"
+        aria-selected="false" aria-controls="applicantManagement"
+        data-admin-tab="applicantManagement">
+        <span class="admin-tab__no">03</span>
+        <span class="admin-tab__copy">
+          <strong>지원자 관리</strong>
+          <small>검색 · 심사 · 메모 · XLSX</small>
+        </span>
+      </button>
+    </div>
+
+    <div class="content-stack">
+        <!-- 01 FORM EDITOR -->
+        <section id="formEditor" class="admin-section is-active" role="tabpanel">
+          <div class="section-head">
+            <div class="section-heading">
+              <span class="section-icon">01</span>
+              <div>
+                <h2>지원서 편집</h2>
+                <p>
+                  지원자가 실제로 보게 될 제목, 개인정보 동의, 질문을 편집합니다.
+                </p>
+              </div>
+            </div>
+            <button id="addQuestionBtn" class="btn small" type="button">
+              + 질문 추가
+            </button>
+          </div>
+
+          <div class="section-body">
+            <div class="editor-layout">
+              <div class="editor-main">
+                <details class="editor-group" open>
+                  <summary>
+                    <div class="editor-summary-copy">
+                      <strong>지원서 기본 설정</strong>
+                      <span>지원자 페이지 상단에 표시되는 제목</span>
+                    </div>
+                    <span class="editor-chevron">⌄</span>
+                  </summary>
+                  <div class="editor-group__body">
+                    <div class="field">
+                      <label for="formTitle">지원서 제목</label>
+                      <input id="formTitle" maxlength="120">
+                    </div>
+                  </div>
+                </details>
+
+                <details class="editor-group">
+                  <summary>
+                    <div class="editor-summary-copy">
+                      <strong>개인정보 수집·이용 동의</strong>
+                      <span>지원서 맨 위에 표시되는 개인정보 안내 문구</span>
+                    </div>
+                    <span class="editor-chevron">⌄</span>
+                  </summary>
+                  <div class="editor-group__body">
+                    <div class="split">
+                      <div class="field">
+                        <label for="consentVersion">동의 문구 버전</label>
+                        <input id="consentVersion" maxlength="80">
+                        <div class="help">예: 2026-2학기-v1</div>
+                      </div>
+                      <div class="field">
+                        <label for="consentTitle">제목</label>
+                        <input id="consentTitle" maxlength="120">
+                      </div>
+                    </div>
+
+                    <div class="field">
+                      <label for="privacyPurpose">수집·이용 목적</label>
+                      <textarea id="privacyPurpose"></textarea>
+                      <div class="help">한 줄에 한 항목씩 입력</div>
+                    </div>
+
+                    <div class="field">
+                      <label for="privacyItems">수집 항목</label>
+                      <textarea id="privacyItems"></textarea>
+                      <div class="help">한 줄에 한 항목씩 입력</div>
+                    </div>
+
+                    <div class="field">
+                      <label for="retentionPeriod">보유·이용 기간</label>
+                      <textarea id="retentionPeriod"></textarea>
+                    </div>
+
+                    <div class="field">
+                      <label for="refusalNotice">동의 거부 안내</label>
+                      <textarea id="refusalNotice"></textarea>
+                    </div>
+                  </div>
+                </details>
+
+                <details class="editor-group" open>
+                  <summary>
+                    <div class="editor-summary-copy">
+                      <strong>모집 질문</strong>
+                      <span>질문 순서, 형식, 필수 여부, 선택지, 조건부 표시 설정</span>
+                    </div>
+                    <span class="editor-chevron">⌄</span>
+                  </summary>
+                  <div class="editor-group__body">
+                    <div id="questionList" class="question-list"></div>
+                  </div>
+                </details>
+
+                <div class="publish-bar">
+                  <p>
+                    먼저 초안을 저장하고, 최종 확인 후 게시하세요.
+                    게시된 버전은 수정되지 않으며 다음 편집용 초안이 자동 생성됩니다.
+                  </p>
+                  <div class="actions">
+                    <button id="saveDraftBtn" class="btn primary" type="button">
+                      초안 저장
+                    </button>
+                    <button id="publishBtn" class="btn ok" type="button">
+                      현재 초안 게시
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <aside class="preview-wrap">
+                <div class="preview-card">
+                  <div class="preview-card__head">
+                    <strong>지원서 미리보기</strong>
+                    <span>편집 내용 즉시 반영</span>
+                  </div>
+                  <div id="preview" class="preview"></div>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </section>
+
+        <!-- 02 RECRUITMENT SETTINGS -->
+        <section id="recruitmentSettings" class="admin-section" role="tabpanel">
+          <div class="section-head">
+            <div class="section-heading">
+              <span class="section-icon">02</span>
+              <div>
+                <h2>모집 운영</h2>
+                <p>
+                  어떤 지원서 버전을 공개할지 확인하고 모집 상태와 기간을 설정합니다.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-body">
+            <div class="subpanel">
+              <h3 class="subpanel-title">
+                현재 버전
+                <small>게시 버전이 있어야 접수를 열 수 있습니다.</small>
+              </h3>
+
+              <div class="version-box">
+                <div class="version">
+                  <small>지원자에게 공개되는 게시 버전</small>
+                  <code id="publishedVersion">없음</code>
+                </div>
+                <div class="version">
+                  <small>현재 편집 중인 초안</small>
+                  <code id="draftVersion">-</code>
+                </div>
+              </div>
+            </div>
+
+            <div class="subpanel">
+              <h3 class="subpanel-title">모집 상태와 기간</h3>
+
+              <div class="split">
+                <div class="field">
+                  <label for="recruitStatus">모집 상태</label>
+                  <select id="recruitStatus">
+                    <option value="draft">준비 중</option>
+                    <option value="open">접수 중</option>
+                    <option value="closed">마감</option>
+                  </select>
+                  <div class="help">
+                    ‘접수 중’이어도 설정한 시작 전/마감 후에는 지원할 수 없습니다.
+                  </div>
+                </div>
+                <div></div>
+
+                <div class="field">
+                  <label for="opensAt">모집 시작</label>
+                  <input id="opensAt" type="datetime-local">
+                </div>
+                <div class="field">
+                  <label for="closesAt">모집 종료</label>
+                  <input id="closesAt" type="datetime-local">
+                </div>
+              </div>
+
+              <div class="actions">
+                <button id="saveSettingsBtn" class="btn ok" type="button">
+                  모집 상태/기간 저장
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 03 APPLICANTS -->
+        <section id="applicantManagement" class="admin-section" role="tabpanel">
+          <div class="section-head">
+            <div class="section-heading">
+              <span class="section-icon">03</span>
+              <div>
+                <h2>지원자 관리</h2>
+                <p>
+                  지원서를 검색하고 심사 상태와 내부 메모를 관리합니다.
+                  개인정보는 서버에서 복호화된 결과만 표시됩니다.
+                </p>
+              </div>
+            </div>
+
+            <button id="refreshApplicationsBtn" class="btn small" type="button">
+              새로고침
+            </button>
+          </div>
+
+          <div class="section-body">
+            <div class="app-toolbar">
+              <input
+                id="applicationSearch"
+                type="search"
+                maxlength="100"
+                placeholder="이름, 학번, 학과, 전화번호, 답변 검색"
+              >
+              <select id="applicationStatusFilter">
+                <option value="all">전체 상태</option>
+                <option value="received">접수</option>
+                <option value="hold">보류</option>
+                <option value="accepted">합격</option>
+                <option value="rejected">불합격</option>
+              </select>
+              <button id="searchApplicationsBtn" class="btn" type="button">
+                검색
+              </button>
+              <button id="exportApplicationsBtn" class="btn ok" type="button">
+                필터 결과 XLSX
+              </button>
+            </div>
+
+            <div id="applicationCount" class="app-count">
+              지원자 목록을 불러오는 중...
+            </div>
+
+            <div class="table-wrap">
+              <table class="app-table">
+                <thead>
+                  <tr>
+                    <th class="submitted-col">제출일</th>
+                    <th>이름</th>
+                    <th>생년월일</th>
+                    <th>성별</th>
+                    <th>학과</th>
+                    <th>1지망</th>
+                    <th>2지망</th>
+                    <th>상태</th>
+                    <th>상세</th>
+                  </tr>
+                </thead>
+                <tbody id="applicationTableBody"></tbody>
+              </table>
+            </div>
+
+            <div id="applicationDetail" class="detail">
+              <div class="question-head">
+                <h3>지원서 상세</h3>
+                <button
+                  id="closeApplicationDetailBtn"
+                  class="btn small"
+                  type="button"
+                >
+                  닫기
+                </button>
+              </div>
+
+              <div id="applicationFixedFields" class="detail-grid"></div>
+              <div id="applicationAnswers" class="answer-list"></div>
+
+              <hr>
+
+              <div class="split">
+                <div class="field">
+                  <label for="applicationReviewStatus">심사 상태</label>
+                  <select id="applicationReviewStatus">
+                    <option value="received">접수</option>
+                    <option value="hold">보류</option>
+                    <option value="accepted">합격</option>
+                    <option value="rejected">불합격</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label for="applicationIdDisplay">지원서 ID</label>
+                  <input id="applicationIdDisplay" readonly>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="applicationAdminMemo">관리자 메모</label>
+                <textarea
+                  id="applicationAdminMemo"
+                  maxlength="3000"
+                  placeholder="운영진 내부 메모. 서버에서 암호화되어 저장됩니다."
+                ></textarea>
+              </div>
+
+              <div class="actions">
+                <button
+                  id="saveApplicationReviewBtn"
+                  class="btn primary"
+                  type="button"
+                >
+                  상태/메모 저장
+                </button>
+                <button
+                  id="deleteApplicationBtn"
+                  class="btn danger"
+                  type="button"
+                >
+                  지원서 영구 삭제
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+  </section>
+</main>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
+import {
+  initializeAppCheck,
+  ReCaptchaEnterpriseProvider,
+  getToken
+} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app-check.js";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
+import {
+  getFunctions,
+  httpsCallable
+} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-functions.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyALZiLC4D_7Rx-yg5_tO8m6rsOUrwF6S3s",
+  authDomain: "turami2026-recruitment.firebaseapp.com",
+  projectId: "turami2026-recruitment",
+  storageBucket: "turami2026-recruitment.firebasestorage.app",
+  messagingSenderId: "414130151801",
+  appId: "1:414130151801:web:03ae9c6bbe10eaaea24fa8"
+};
+
+const app = initializeApp(firebaseConfig);
+const appCheck = initializeAppCheck(app, {
+  provider: new ReCaptchaEnterpriseProvider(
+    "6LeEV48tAAAAAAuC-RDcAhZ9B99eol1OCxvagvfl"
+  ),
+  isTokenAutoRefreshEnabled: true
+});
+
+const auth = getAuth(app);
+auth.languageCode = "ko";
+const functions = getFunctions(app, "asia-northeast3");
+
+const getAdminStatus = httpsCallable(functions, "getAdminStatus");
+const getAdminRecruitmentConfig = httpsCallable(functions, "getAdminRecruitmentConfig");
+const saveAdminRecruitmentDraft = httpsCallable(functions, "saveAdminRecruitmentDraft");
+const publishRecruitmentDraft = httpsCallable(functions, "publishRecruitmentDraft");
+const saveAdminRecruitmentSettings = httpsCallable(functions, "saveAdminRecruitmentSettings");
+const listAdminApplications = httpsCallable(functions, "listAdminApplications");
+const getAdminApplication = httpsCallable(functions, "getAdminApplication");
+const updateAdminApplication = httpsCallable(functions, "updateAdminApplication");
+const deleteAdminApplication = httpsCallable(functions, "deleteAdminApplication");
+const exportApplicationsXlsx = httpsCallable(functions, "exportApplicationsXlsx");
+
+const provider = new GoogleAuthProvider();
+provider.setCustomParameters({prompt:"select_account"});
+
+const $ = (id) => document.getElementById(id);
+const loginBtn = $("loginBtn");
+const logoutBtn = $("logoutBtn");
+const statusEl = $("status");
+const profileEl = $("profile");
+const workspaceEl = $("workspace");
+const questionListEl = $("questionList");
+const previewEl = $("preview");
+
+let currentConfig = null;
+let currentForm = null;
+let questions = [];
+let applicationSummaries = [];
+let selectedApplicationId = null;
+
+function setStatus(message, type="") {
+  statusEl.textContent = message;
+  statusEl.className = "status" + (type ? " " + type : "");
+}
+
+function callError(error) {
+  if (error && error.message) return error.message.replace(/^FirebaseError:\s*/,"");
+  return "알 수 없는 오류가 발생했습니다.";
+}
+
+function lines(value) {
+  return String(value || "")
+    .split(/\r?\n/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function toLocalInput(iso) {
+  if (!iso) return "";
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return "";
+  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0,16);
+}
+
+function fromLocalInput(value) {
+  if (!value) return null;
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date.toISOString();
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function newQuestion() {
+  return {
+    id: "q_" + Date.now() + "_" + Math.random().toString(36).slice(2,7),
+    type: "text",
+    label: "새 질문",
+    required: false,
+    active: true,
+    minLength: 0,
+    maxLength: 300
+  };
+}
+
+function optionText(question) {
+  if (!Array.isArray(question.options)) return "";
+  return question.options
+    .map((option) => `${option.value} | ${option.label}`)
+    .join("\n");
+}
+
+function parseOptions(text) {
+  return lines(text).map((line, index) => {
+    const parts = line.split("|");
+    if (parts.length >= 2) {
+      return {
+        value: parts.shift().trim(),
+        label: parts.join("|").trim()
+      };
+    }
+    const label = line.trim();
+    return {
+      value: "opt_" + (index + 1),
+      label
+    };
+  });
+}
+
+function renderQuestions() {
+  questionListEl.innerHTML = "";
+
+  if (!questions.length) {
+    questionListEl.innerHTML =
+      '<div class="empty-state">아직 추가 질문이 없습니다. 상단의 “+ 질문 추가”로 시작하세요.</div>';
+    renderPreview();
+    return;
+  }
+
+  questions.forEach((question, index) => {
+    const card = document.createElement("article");
+    card.className = "question";
+    const optionTypes = ["radio","select","checkbox"];
+    const isOptions = optionTypes.includes(question.type);
+    const supportsLength = ["text","textarea"].includes(question.type);
+
+    card.innerHTML = `
+      <div class="question-head">
+        <div class="question-title">
+          <span class="order-badge">${index + 1}</span>
+          <h3>${escapeHtml(question.label || "제목 없는 질문")}</h3>
+        </div>
+
+        <div class="question-actions">
+          <button class="btn small icon-btn" data-action="up"
+            type="button" aria-label="위로 이동">↑</button>
+          <button class="btn small icon-btn" data-action="down"
+            type="button" aria-label="아래로 이동">↓</button>
+          <button class="btn small danger" data-action="delete"
+            type="button">삭제</button>
+        </div>
+      </div>
+
+      <div class="question-primary">
+        <div class="field question-label-field">
+          <label>질문 문구</label>
+          <input data-key="label"
+            value="${escapeHtml(question.label || "")}" maxlength="300">
+        </div>
+
+        <div class="field">
+          <label>입력 형식</label>
+          <select data-key="type">
+            ${[
+              ["text","한 줄"],
+              ["textarea","긴 글"],
+              ["radio","라디오"],
+              ["select","드롭다운"],
+              ["checkbox","체크박스"],
+              ["date","날짜"]
+            ].map(([value,label]) =>
+              `<option value="${value}" ${
+                question.type === value ? "selected" : ""
+              }>${label}</option>`
+            ).join("")}
+          </select>
+        </div>
+
+        <div class="field">
+          <label>질문 ID</label>
+          <input data-key="id"
+            value="${escapeHtml(question.id || "")}" maxlength="80">
+        </div>
+      </div>
+
+      <div class="question-flags">
+        <label class="toggle-option">
+          <input data-key="required" type="checkbox"
+            ${question.required ? "checked" : ""}>
+          <span>필수 질문</span>
+        </label>
+
+        <label class="toggle-option">
+          <input data-key="active" type="checkbox"
+            ${question.active !== false ? "checked" : ""}>
+          <span>지원서에 표시</span>
+        </label>
+      </div>
+
+      <div class="field options-box ${isOptions ? "" : "hidden"}">
+        <label>선택지</label>
+        <textarea data-key="options"
+          placeholder="vocal | 보컬&#10;guitar | 기타">${escapeHtml(optionText(question))}</textarea>
+        <div class="help">
+          한 줄에 하나씩 입력 · 권장 형식: <b>값 | 표시문구</b>
+        </div>
+      </div>
+
+      <details class="question-advanced">
+        <summary>
+          <span>고급 설정</span>
+          <small>${supportsLength ? "글자 수 · " : ""}조건부 표시</small>
+          <span class="advanced-chevron">⌄</span>
+        </summary>
+
+        <div class="question-advanced__body">
+          <div class="question-length ${supportsLength ? "" : "hidden"}">
+            <div class="field">
+              <label>최소 글자 수</label>
+              <input data-key="minLength" type="number" min="0" max="10000"
+                value="${Number(question.minLength ?? 0)}"
+                ${supportsLength ? "" : "disabled"}>
+            </div>
+
+            <div class="field">
+              <label>최대 글자 수</label>
+              <input data-key="maxLength" type="number" min="1" max="10000"
+                value="${Number(
+                  question.maxLength ??
+                  (question.type === "textarea" ? 1500 : 300)
+                )}"
+                ${supportsLength ? "" : "disabled"}>
+            </div>
+          </div>
+
+          <div class="advanced-divider"></div>
+
+          <div class="advanced-label">
+            조건부 표시
+            <span>특정 답변일 때만 이 질문을 보여줍니다.</span>
+          </div>
+
+          <div class="question-condition">
+            <div class="field">
+              <label>기준 질문 ID</label>
+              <input data-cond="questionId"
+                value="${escapeHtml(question.showWhen?.questionId || "")}"
+                placeholder="비워두면 항상 표시">
+            </div>
+
+            <div class="field">
+              <label>조건</label>
+              <select data-cond="operator">
+                ${[
+                  ["equals","같음"],
+                  ["notEquals","다름"],
+                  ["in","목록에 포함"],
+                  ["notIn","목록에 미포함"]
+                ].map(([value,label]) =>
+                  `<option value="${value}" ${
+                    question.showWhen?.operator === value ? "selected" : ""
+                  }>${label}</option>`
+                ).join("")}
+              </select>
+            </div>
+
+            <div class="field">
+              <label>조건 값</label>
+              <input data-cond="value"
+                value="${escapeHtml(
+                  question.showWhen
+                    ? (
+                      Array.isArray(question.showWhen.values)
+                        ? question.showWhen.values.join(", ")
+                        : (question.showWhen.value || "")
+                    )
+                    : ""
+                )}"
+                placeholder="예: vocal">
+            </div>
+          </div>
+        </div>
+      </details>
+    `;
+
+    card.addEventListener("input", (event) => {
+      const target = event.target;
+      const key = target.dataset.key;
+      if (key) {
+        if (key === "required" || key === "active") {
+          question[key] = target.checked;
+        } else if (key === "minLength" || key === "maxLength") {
+          question[key] = Number(target.value);
+        } else if (key === "options") {
+          question.options = parseOptions(target.value);
+        } else {
+          question[key] = target.value;
+        }
+
+        if (key === "label") {
+          card.querySelector("h3").textContent =
+            target.value || "제목 없는 질문";
+        }
+
+        renderPreview();
+      }
+
+      if (target.dataset.cond) {
+        const sourceId = card
+          .querySelector('[data-cond="questionId"]').value.trim();
+        const operator = card
+          .querySelector('[data-cond="operator"]').value;
+        const rawValue = card
+          .querySelector('[data-cond="value"]').value.trim();
+
+        if (!sourceId) {
+          delete question.showWhen;
+        } else if (operator === "in" || operator === "notIn") {
+          question.showWhen = {
+            questionId: sourceId,
+            operator,
+            values: rawValue
+              .split(",")
+              .map((v) => v.trim())
+              .filter(Boolean)
+          };
+        } else {
+          question.showWhen = {
+            questionId: sourceId,
+            operator,
+            value: rawValue
+          };
+        }
+        renderPreview();
+      }
+    });
+
+    card.addEventListener("change", (event) => {
+      if (event.target.dataset.key === "type") {
+        renderQuestions();
+      }
+    });
+
+    card.addEventListener("click", (event) => {
+      const action = event.target.dataset.action;
+      if (!action) return;
+
+      if (action === "delete") {
+        if (confirm(`"${question.label}" 질문을 삭제할까요?`)) {
+          questions.splice(index,1);
+          renderQuestions();
+        }
+      } else if (action === "up" && index > 0) {
+        [questions[index - 1], questions[index]] = [
+          questions[index],
+          questions[index - 1]
+        ];
+        renderQuestions();
+      } else if (
+        action === "down" &&
+        index < questions.length - 1
+      ) {
+        [questions[index + 1], questions[index]] = [
+          questions[index],
+          questions[index + 1]
+        ];
+        renderQuestions();
+      }
+    });
+
+    questionListEl.appendChild(card);
+  });
+
+  renderPreview();
+}
+
+function renderPreview() {
+  previewEl.innerHTML = "";
+
+  const active = questions.filter((question) => question.active !== false);
+  const fixedFields = currentForm && Array.isArray(currentForm.fixedFields)
+    ? currentForm.fixedFields
+    : [];
+
+  const title = document.createElement("div");
+  title.innerHTML = `
+    <div style="font-size:1.25rem;font-weight:900;margin-bottom:4px">
+      ${escapeHtml($("formTitle").value || "지원서 제목")}
+    </div>
+    <div class="help">
+      기본 정보 ${fixedFields.length}개 · 활성 질문 ${active.length}개
+    </div>
+  `;
+  previewEl.appendChild(title);
+
+  if (fixedFields.length) {
+    const section = document.createElement("div");
+    section.innerHTML = `
+      <div class="help" style="margin:8px 0 10px;font-weight:800">
+        지원자 기본 정보
+      </div>
+    `;
+    previewEl.appendChild(section);
+
+    fixedFields.forEach((field) => {
+      const item = document.createElement("div");
+      item.className = "preview-item";
+
+      let control = '<div class="preview-input"></div>';
+      if (field.type === "radio" && Array.isArray(field.options)) {
+        control = `<div class="preview-options">${
+          field.options.map((option) =>
+            `<div>○ ${escapeHtml(option.label)}</div>`
+          ).join("")
+        }</div>`;
+      } else if (field.type === "date") {
+        control =
+          '<div class="preview-input" style="width:180px"></div>';
+      }
+
+      item.innerHTML = `
+        <div class="preview-label">
+          ${escapeHtml(field.label)}
+          ${field.required
+            ? '<span style="color:var(--danger)">*</span>'
+            : ""}
+        </div>
+        ${control}
+      `;
+      previewEl.appendChild(item);
+    });
+  }
+
+  active.forEach((question) => {
+    const item = document.createElement("div");
+    item.className = "preview-item";
+
+    let control = '<div class="preview-input"></div>';
+    if (question.type === "textarea") {
+      control = '<div class="preview-textarea"></div>';
+    } else if (
+      ["radio", "select", "checkbox"].includes(question.type)
+    ) {
+      const opts = Array.isArray(question.options)
+        ? question.options
+        : [];
+      control = `<div class="preview-options">${
+        opts.map((option) =>
+          `<div>○ ${escapeHtml(option.label)}</div>`
+        ).join("") || "<div>선택지 없음</div>"
+      }</div>`;
+    } else if (question.type === "date") {
+      control =
+        '<div class="preview-input" style="width:180px"></div>';
+    }
+
+    item.innerHTML = `
+      <div class="preview-label">
+        ${escapeHtml(question.label)}
+        ${question.required
+          ? '<span style="color:var(--danger)">*</span>'
+          : ""}
+      </div>
+      ${question.showWhen
+        ? `<div class="help" style="margin-bottom:7px">
+            조건부 표시 · ${escapeHtml(question.showWhen.questionId)}
+          </div>`
+        : ""}
+      ${control}
+    `;
+    previewEl.appendChild(item);
+  });
+
+  const privacy = document.createElement("div");
+  privacy.className = "preview-item";
+  privacy.innerHTML = `
+    <div class="preview-label">개인정보 수집·이용 동의 *</div>
+    <div class="help">
+      실제 지원 페이지에서는 관리자가 작성한 동의 문구 전체가 표시됩니다.
+    </div>
+  `;
+  previewEl.appendChild(privacy);
+}
+
+function populate(data) {
+  currentConfig = data.config;
+  currentForm = data.form;
+  questions = Array.isArray(data.form.questions)
+    ? structuredClone(data.form.questions)
+    : [];
+
+  $("publishedVersion").textContent = data.config.publishedVersion || "없음";
+  $("draftVersion").textContent = data.config.draftVersion || "-";
+  $("recruitStatus").value = data.config.status || "draft";
+  $("opensAt").value = toLocalInput(data.config.opensAt);
+  $("closesAt").value = toLocalInput(data.config.closesAt);
+
+  $("formTitle").value = data.form.title || "";
+  const privacy = data.form.privacy || {};
+  $("consentVersion").value = privacy.consentVersion || "";
+  $("consentTitle").value = privacy.title || "";
+  $("privacyPurpose").value = Array.isArray(privacy.purpose) ? privacy.purpose.join("\n") : "";
+  $("privacyItems").value = Array.isArray(privacy.items) ? privacy.items.join("\n") : "";
+  $("retentionPeriod").value = privacy.retentionPeriod || "";
+  $("refusalNotice").value = privacy.refusalNotice || "";
+
+  renderQuestions();
+}
+
+
+const reviewLabels = {
+  received: "접수",
+  screening: "검토 중",
+  audition: "오디션",
+  hold: "보류",
+  accepted: "합격",
+  rejected: "불합격"
+};
+
+function formatPhone(value) {
+  const digits = String(value || "").replace(/\D/g, "");
+  if (/^010\d{8}$/.test(digits)) {
+    return `${digits.slice(0,3)}-${digits.slice(3,7)}-${digits.slice(7)}`;
+  }
+  return String(value || "");
+}
+
+function formatDateTime(value) {
+  if (!value) return "-";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return String(value);
+  return new Intl.DateTimeFormat("ko-KR", {
+    year:"numeric",
+    month:"2-digit",
+    day:"2-digit",
+    hour:"2-digit",
+    minute:"2-digit"
+  }).format(date);
+}
+
+function configuredLabel(definition, value) {
+  if (Array.isArray(value)) {
+    return value.map((item) => configuredLabel(definition, item)).join(", ");
+  }
+  if (definition && Array.isArray(definition.options)) {
+    const found = definition.options.find((option) =>
+      option && option.value === value
+    );
+    if (found && found.label) return found.label;
+  }
+  return value === undefined || value === null || value === ""
+    ? "-"
+    : String(value);
+}
+
+function currentApplicationFilter() {
+  return {
+    status: $("applicationStatusFilter").value,
+    query: $("applicationSearch").value.trim(),
+    limit: 300
+  };
+}
+
+async function loadApplications() {
+  $("applicationCount").textContent = "지원자 목록을 불러오는 중...";
+  const result = await listAdminApplications(currentApplicationFilter());
+  applicationSummaries = Array.isArray(result.data.applications)
+    ? result.data.applications
+    : [];
+
+  const total = Number(result.data.totalMatched || applicationSummaries.length);
+  $("applicationCount").textContent =
+    `검색 결과 ${total}명` +
+    (result.data.truncated ? ` · 화면에는 ${applicationSummaries.length}명 표시` : "");
+
+  renderApplicationTable();
+}
+
+function renderApplicationTable() {
+  const body = $("applicationTableBody");
+  body.innerHTML = "";
+
+  if (!applicationSummaries.length) {
+    const row = document.createElement("tr");
+    row.innerHTML = '<td colspan="9" style="text-align:center;color:var(--muted);padding:24px">조건에 맞는 지원자가 없습니다.</td>';
+    body.appendChild(row);
+    return;
+  }
+
+  applicationSummaries.forEach((application) => {
+    const row = document.createElement("tr");
+    const status = application.reviewStatus || "received";
+
+    row.innerHTML = `
+      <td class="submitted-col">${escapeHtml(formatDateTime(application.submittedAtIso))}</td>
+      <td><strong>${escapeHtml(application.name || "-")}</strong></td>
+      <td>${escapeHtml(application.birthDate || "-")}</td>
+      <td>${escapeHtml(application.gender || "-")}</td>
+      <td>${escapeHtml(application.department || "-")}</td>
+      <td>${escapeHtml(application.firstSession || "-")}</td>
+      <td>${escapeHtml(application.secondSession || "-")}</td>
+      <td><span class="badge ${escapeHtml(status)}">${escapeHtml(reviewLabels[status] || status)}</span></td>
+      <td><button class="btn small" data-application-id="${escapeHtml(application.applicationId)}" type="button">상세</button></td>
+    `;
+
+    row.querySelector("button").addEventListener("click", async () => {
+      await openApplication(application.applicationId);
+    });
+
+    body.appendChild(row);
+  });
+}
+
+async function openApplication(applicationId) {
+  setStatus("지원서 상세 정보를 복호화하는 중...");
+  const result = await getAdminApplication({applicationId});
+  const data = result.data;
+  const application = data.application || {};
+  const form = data.form || {};
+  selectedApplicationId = data.applicationId;
+
+  $("applicationIdDisplay").value = data.applicationId;
+  $("applicationReviewStatus").value = data.reviewStatus || "received";
+  $("applicationAdminMemo").value = data.adminMemo || "";
+
+  const fixed = $("applicationFixedFields");
+  fixed.innerHTML = "";
+  const fields = application.fields || {};
+
+  (form.fixedFields || []).forEach((definition) => {
+    const box = document.createElement("div");
+    box.className = "detail-item";
+    let value = configuredLabel(definition, fields[definition.id]);
+    if (definition.id === "phone") value = formatPhone(value);
+    box.innerHTML = `
+      <small>${escapeHtml(definition.label || definition.id)}</small>
+      <div>${escapeHtml(value)}</div>
+    `;
+    fixed.appendChild(box);
+  });
+
+  const answersEl = $("applicationAnswers");
+  answersEl.innerHTML = "";
+  const answers = application.answers || {};
+
+  (form.questions || []).forEach((definition) => {
+    if (!Object.prototype.hasOwnProperty.call(answers, definition.id)) return;
+
+    const box = document.createElement("div");
+    box.className = "answer-item";
+    box.innerHTML = `
+      <div class="q">${escapeHtml(definition.label || definition.id)}</div>
+      <div class="a">${escapeHtml(configuredLabel(definition, answers[definition.id]))}</div>
+    `;
+    answersEl.appendChild(box);
+  });
+
+  if (!answersEl.children.length) {
+    answersEl.innerHTML = '<div class="help">저장된 추가 답변이 없습니다.</div>';
+  }
+
+  $("applicationDetail").classList.add("show");
+  $("applicationDetail").scrollIntoView({behavior:"smooth",block:"start"});
+  setStatus("지원서를 불러왔습니다.", "ok");
+}
+
+function base64ToBlob(base64, contentType) {
+  const binary = atob(base64);
+  const chunkSize = 1024 * 1024;
+  const chunks = [];
+
+  for (let offset = 0; offset < binary.length; offset += chunkSize) {
+    const slice = binary.slice(offset, offset + chunkSize);
+    const bytes = new Uint8Array(slice.length);
+    for (let i = 0; i < slice.length; i++) {
+      bytes[i] = slice.charCodeAt(i);
+    }
+    chunks.push(bytes);
+  }
+
+  return new Blob(chunks, {type:contentType});
+}
+
+async function loadAdminData() {
+  setStatus("모집 설정과 질문을 불러오는 중...");
+  const result = await getAdminRecruitmentConfig();
+  populate(result.data);
+  workspaceEl.classList.add("show");
+  await loadApplications();
+  setStatus("관리자 설정과 지원자 목록을 불러왔습니다.", "ok");
+}
+
+function draftPayload() {
+  return {
+    title: $("formTitle").value.trim(),
+    questions: questions.map((question, index) => ({
+      ...question,
+      order:index
+    })),
+    privacy: {
+      consentVersion: $("consentVersion").value.trim(),
+      title: $("consentTitle").value.trim(),
+      purpose: lines($("privacyPurpose").value),
+      items: lines($("privacyItems").value),
+      retentionPeriod: $("retentionPeriod").value.trim(),
+      refusalNotice: $("refusalNotice").value.trim()
+    }
+  };
+}
+
+async function withButton(button, task) {
+  button.disabled = true;
+  try {
+    await task();
+  } catch (error) {
+    console.error(error);
+    setStatus(callError(error), "error");
+  } finally {
+    button.disabled = false;
+  }
+}
+
+loginBtn.addEventListener("click", () => withButton(loginBtn, async () => {
+  setStatus("Google 로그인 창을 여는 중...");
+  await signInWithPopup(auth, provider);
+}));
+
+logoutBtn.addEventListener("click", () => withButton(logoutBtn, async () => {
+  await signOut(auth);
+}));
+
+$("addQuestionBtn").addEventListener("click", () => {
+  questions.push(newQuestion());
+  renderQuestions();
+});
+
+$("formTitle").addEventListener("input", renderPreview);
+
+$("saveDraftBtn").addEventListener("click", () => withButton($("saveDraftBtn"), async () => {
+  setStatus("지원서 초안을 저장하는 중...");
+  const result = await saveAdminRecruitmentDraft(draftPayload());
+  setStatus(`초안 저장 완료 · 질문 ${result.data.questionCount}개`, "ok");
+  await loadAdminData();
+}));
+
+$("publishBtn").addEventListener("click", () => withButton($("publishBtn"), async () => {
+  if (!confirm("현재 초안을 게시할까요? 게시된 버전은 이후 수정되지 않습니다.")) return;
+
+  setStatus("초안을 먼저 저장하는 중...");
+  await saveAdminRecruitmentDraft(draftPayload());
+
+  setStatus("새 게시 버전을 만드는 중...");
+  const result = await publishRecruitmentDraft();
+  setStatus(`게시 완료 · ${result.data.publishedVersion}`, "ok");
+  await loadAdminData();
+}));
+
+$("saveSettingsBtn").addEventListener("click", () => withButton($("saveSettingsBtn"), async () => {
+  const payload = {
+    status: $("recruitStatus").value,
+    opensAt: fromLocalInput($("opensAt").value),
+    closesAt: fromLocalInput($("closesAt").value)
+  };
+
+  if (payload.status === "open" && !currentConfig?.publishedVersion) {
+    throw new Error("접수 시작 전에 지원서 초안을 먼저 게시해 주세요.");
+  }
+
+  setStatus("모집 상태와 기간을 저장하는 중...");
+  await saveAdminRecruitmentSettings(payload);
+  setStatus("모집 상태와 기간을 저장했습니다.", "ok");
+  await loadAdminData();
+}));
+
+
+$("refreshApplicationsBtn").addEventListener("click", () =>
+  withButton($("refreshApplicationsBtn"), loadApplications)
+);
+
+$("searchApplicationsBtn").addEventListener("click", () =>
+  withButton($("searchApplicationsBtn"), loadApplications)
+);
+
+$("applicationSearch").addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    $("searchApplicationsBtn").click();
+  }
+});
+
+$("applicationStatusFilter").addEventListener("change", () => {
+  $("searchApplicationsBtn").click();
+});
+
+$("closeApplicationDetailBtn").addEventListener("click", () => {
+  $("applicationDetail").classList.remove("show");
+  selectedApplicationId = null;
+});
+
+$("saveApplicationReviewBtn").addEventListener("click", () =>
+  withButton($("saveApplicationReviewBtn"), async () => {
+    if (!selectedApplicationId) {
+      throw new Error("먼저 지원서를 선택해 주세요.");
+    }
+
+    setStatus("심사 상태와 관리자 메모를 저장하는 중...");
+    await updateAdminApplication({
+      applicationId: selectedApplicationId,
+      reviewStatus: $("applicationReviewStatus").value,
+      adminMemo: $("applicationAdminMemo").value
+    });
+
+    await loadApplications();
+    setStatus("심사 상태와 관리자 메모를 저장했습니다.", "ok");
+  })
+);
+
+$("deleteApplicationBtn").addEventListener("click", () =>
+  withButton($("deleteApplicationBtn"), async () => {
+    if (!selectedApplicationId) {
+      throw new Error("먼저 지원서를 선택해 주세요.");
+    }
+
+    const confirmation = prompt(
+      "이 지원서는 복구할 수 없습니다. 계속하려면 '삭제'를 입력하세요."
+    );
+
+    if (confirmation !== "삭제") {
+      setStatus("삭제를 취소했습니다.", "warn");
+      return;
+    }
+
+    await deleteAdminApplication({
+      applicationId: selectedApplicationId,
+      confirmation:"삭제"
+    });
+
+    selectedApplicationId = null;
+    $("applicationDetail").classList.remove("show");
+    await loadApplications();
+    setStatus("지원서를 영구 삭제했습니다.", "ok");
+  })
+);
+
+$("exportApplicationsBtn").addEventListener("click", () =>
+  withButton($("exportApplicationsBtn"), async () => {
+    setStatus("서버에서 XLSX 파일을 생성하는 중...");
+    const filter = currentApplicationFilter();
+    delete filter.limit;
+
+    const result = await exportApplicationsXlsx(filter);
+    const data = result.data;
+    const blob = base64ToBlob(data.base64, data.contentType);
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+
+    anchor.href = url;
+    anchor.download = data.filename || "turami_applications.xlsx";
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    URL.revokeObjectURL(url);
+
+    setStatus(`XLSX 다운로드 완료 · ${data.count}명`, "ok");
+  })
+);
+
+onAuthStateChanged(auth, async (user) => {
+  workspaceEl.classList.remove("show");
+
+  if (!user) {
+    profileEl.classList.remove("show");
+    loginBtn.hidden = false;
+    logoutBtn.hidden = true;
+    $("userName").textContent = "-";
+    $("userEmail").textContent = "-";
+    $("userUid").textContent = "-";
+    setStatus("관리자용 Google 계정으로 로그인해 주세요.");
+    return;
+  }
+
+  $("userName").textContent = user.displayName || "(이름 없음)";
+  $("userEmail").textContent = user.email || "(이메일 없음)";
+  $("userUid").textContent = user.uid;
+  profileEl.classList.add("show");
+  loginBtn.hidden = true;
+  logoutBtn.hidden = false;
+  setStatus("관리자 권한을 확인하는 중...");
+
+  try {
+    await user.getIdToken(true);
+    await getToken(appCheck, false);
+    const result = await getAdminStatus();
+
+    if (!result.data || result.data.isAdmin !== true) {
+      throw new Error("관리자 권한을 확인할 수 없습니다.");
+    }
+
+    await loadAdminData();
+  } catch (error) {
+    console.error("Admin initialization failed:", error);
+    setStatus(callError(error), "error");
+  }
+});
+</script>
+
+<script>
+(function(){
+  const tabs = Array.from(
+    document.querySelectorAll("[data-admin-tab]")
+  );
+  const panels = tabs
+    .map((tab) => document.getElementById(tab.dataset.adminTab))
+    .filter(Boolean);
+
+  function activateAdminTab(panelId) {
+    tabs.forEach((tab) => {
+      const active = tab.dataset.adminTab === panelId;
+      tab.classList.toggle("is-active", active);
+      tab.setAttribute("aria-selected", active ? "true" : "false");
+    });
+
+    panels.forEach((panel) => {
+      panel.classList.toggle("is-active", panel.id === panelId);
+    });
+  }
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      activateAdminTab(tab.dataset.adminTab);
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
