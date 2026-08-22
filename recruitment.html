@@ -2856,11 +2856,10 @@ html{scroll-behavior:smooth}
       <!-- 모집 정보: 2학기 일정으로 날짜를 채워주세요 -->
       <dl class="facts reveal d1">
         <div class="row"><dt>모집 대상</dt><dd>음악을 사랑하는 홍익대<br>재학생 · 휴학생</dd></div>
-        <div class="row"><dt>모집 인원</dt><dd>미정</dd></div>
-        <div class="row"><dt>현재 상태</dt><dd><span id="statusHeadline">확인 중</span><small id="statusDescription">모집 상태를 확인하고 있습니다.</small></dd></div><div class="row"><dt>모집 기간</dt><dd><span id="opensAtText">—</span><br><span style="color:var(--muted-d)">~</span> <span id="closesAtText">—</span><small id="countdownText">상태 확인 중</small></dd></div>
-        <div class="row"><dt>오디션 기간</dt><dd>9월 20일~22일</dd></div>
-        <div class="row"><dt>합격자 발표</dt><dd>9월 23일<small>합격자는 활동인원 톡방에 초대될 예정입니다.</small></dd></div>
-        <div class="row"><dt>신입생 환영회</dt><dd>9월 29일</dd></div>
+        <div class="row"><dt>모집 기간</dt><dd>8월 25일 (화) ~ 9월 18일 (금)</dd></div>
+        <div class="row"><dt>오디션 기간</dt><dd>9월 20일 (일) ~ 9월 22일 (화)</dd></div>
+        <div class="row"><dt>합격자 발표</dt><dd>9월 23일 (수)<small>합격자는 활동인원 톡방에 초대될 예정입니다.</small></dd></div>
+        <div class="row"><dt>신입생 환영회</dt><dd>9월 29일 (화)</dd></div>
       </dl>
       <!-- 전형 절차 -->
       <div class="time reveal d2">
@@ -3669,14 +3668,6 @@ function updateStatusUi(data) {
 
   chip.className = "status-chip " + resolved.key;
   $("heroStatusText").textContent = resolved.title;
-  $("statusHeadline").textContent = resolved.title;
-  $("statusDescription").textContent = resolved.desc;
-  $("opensAtText").textContent = formatDateTime(data.opensAt);
-  $("closesAtText").textContent = formatDateTime(data.closesAt);
-
-  updateCountdown();
-  clearInterval(state.countdownTimer);
-  state.countdownTimer = setInterval(updateCountdown,1000);
 }
 
 function updateCountdown() {
