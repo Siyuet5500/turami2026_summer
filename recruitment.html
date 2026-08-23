@@ -2752,6 +2752,25 @@ html{scroll-behavior:smooth}
 .custom-input-wrap[hidden]{display:none!important}
 .custom-input{width:100%}
 
+
+/* ===== item 2: prettier session / skill-level choices ===== */
+.choice-grid{
+  grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+  gap:11px;
+}
+.choice span{
+  min-height:56px;
+  padding:13px 16px;
+  border-radius:13px;
+  line-height:1.35;
+  text-wrap:balance;          /* balanced line breaks for long labels */
+  word-break:keep-all;
+  letter-spacing:-.01em;
+}
+@media(max-width:560px){
+  .choice-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+}
+
 </style>
 </head>
 <body>
@@ -4545,6 +4564,61 @@ loadRecruitment();
     if (container && 'MutationObserver' in window) {
       new MutationObserver(function () { enhance(document); })
         .observe(container, { childList: true, subtree: true });
+    }
+  }
+  if (document.readyState !== 'loading') boot();
+  else document.addEventListener('DOMContentLoaded', boot);
+})();
+</script>
+
+
+<script>
+/* ===== additive UI (no change to submission/security logic) =====
+   1) conditional display removed: never hide questions by showWhen
+   2) optional radio groups (2지망 등): click a selected chip again to deselect ===== */
+(function () {
+  function enhance(root) {
+    var wraps = (root || document).querySelectorAll('[data-scope="question"]');
+    wraps.forEach(function (wrap) {
+
+      /* (1) strip any conditional rule so the question is always shown */
+      if (wrap.hasAttribute('data-show-when')) {
+        wrap.removeAttribute('data-show-when');
+        wrap.dataset.hidden = 'false';
+        wrap.querySelectorAll('input,textarea,select').forEach(function (c) { c.disabled = false; });
+      }
+
+      /* (2) allow deselect only on OPTIONAL radio questions (label shows "선택") */
+      if (wrap.dataset.deselectReady === '1') return;
+      var isOptional = !!wrap.querySelector('.field-label .optional');
+      var hasRadio = !!wrap.querySelector('input[type="radio"]');
+      if (!isOptional || !hasRadio) return;
+      wrap.dataset.deselectReady = '1';
+
+      wrap.addEventListener('mousedown', function (e) {
+        var lbl = e.target.closest && e.target.closest('label.choice');
+        if (!lbl) return;
+        var input = lbl.querySelector('input[type="radio"]');
+        if (input) input._wasChecked = input.checked;
+      });
+      wrap.addEventListener('click', function (e) {
+        var lbl = e.target.closest && e.target.closest('label.choice');
+        if (!lbl) return;
+        var input = lbl.querySelector('input[type="radio"]');
+        if (input && input._wasChecked) {          /* re-clicked an already-selected chip */
+          input.checked = false;
+          input.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      });
+    });
+  }
+
+  function boot() {
+    enhance(document);
+    var c = document.getElementById('dynamicQuestions');
+    if (c && 'MutationObserver' in window) {
+      new MutationObserver(function () { enhance(document); })
+        .observe(c, { childList: true, subtree: true });
     }
   }
   if (document.readyState !== 'loading') boot();

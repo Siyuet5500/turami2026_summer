@@ -1644,6 +1644,148 @@ input:focus,textarea:focus,select:focus{
   min-width:105px;
 }
 
+
+/* ============================================================
+   ADMIN REDESIGN — clean & legible light dashboard
+   (visual only · tab/hidden logic untouched)
+   ============================================================ */
+:root{
+  color-scheme:light;
+  --bg:#f4f6fb; --surface:#ffffff; --surface-2:#f7f8fc; --surface-3:#eef1f7;
+  --line:#e4e7ef; --line-soft:#eef0f6;
+  --text:#181a23; --text-2:#4b5263; --muted:#7a8194;
+  --accent:#6a5cd6; --accent-2:#5574d9; --accent-soft:#efedfb;
+  --ok:#1f8a5b; --ok-soft:#e6f5ee; --danger:#cf4b52; --danger-soft:#fdecec; --warn:#a06a12; --warn-soft:#fbf1dd;
+  --radius:14px; --radius-sm:10px;
+  --shadow:0 1px 2px rgba(20,22,40,.04),0 12px 30px -18px rgba(30,32,60,.22);
+  --shadow-sm:0 1px 2px rgba(20,22,40,.05);
+  --font:'Pretendard',system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;line-height:1.6}
+::selection{background:var(--accent-soft)}
+[hidden],.hidden{display:none!important}
+
+/* ---- shell / rhythm ---- */
+.shell{max-width:1240px;margin:0 auto;padding:clamp(20px,4vw,40px) clamp(16px,4vw,40px) 80px}
+
+/* ---- header ---- */
+.admin-header{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;
+  padding-bottom:22px;margin-bottom:6px;border-bottom:1px solid var(--line)}
+.admin-header h1,.admin-header .title{font-weight:800;letter-spacing:-.02em}
+.header-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
+/* ---- auth strip ---- */
+.auth-area{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 18px;margin:18px 0 26px;box-shadow:var(--shadow-sm)}
+.auth-dot{width:9px;height:9px;border-radius:50%;background:var(--muted);box-shadow:0 0 0 4px var(--surface-3)}
+.auth-area .auth-dot{background:var(--ok)}
+.help{color:var(--muted);font-size:.86rem;line-height:1.55}
+
+/* ---- cards / sections ---- */
+.profile,.admin-section,.preview-card,.editor-group,.table-wrap,.app-toolbar,.settings-card{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
+.profile{padding:clamp(18px,2.4vw,26px);box-shadow:var(--shadow);margin-bottom:24px}
+.profile-grid{display:grid;gap:14px 22px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+.workspace{margin-top:8px}
+
+/* ---- tabs (segmented) ---- */
+.admin-tabs{display:flex;gap:8px;flex-wrap:wrap;background:var(--surface-3);border:1px solid var(--line);
+  padding:7px;border-radius:16px;margin-bottom:22px}
+.admin-tab{flex:1;min-width:180px;display:flex;align-items:center;gap:12px;
+  background:transparent;border:1px solid transparent;border-radius:11px;padding:12px 16px;cursor:pointer;
+  color:var(--text-2);text-align:left;transition:background .25s,color .25s,border-color .25s,box-shadow .25s}
+.admin-tab:hover{background:var(--surface)}
+.admin-tab.is-active{background:var(--surface);border-color:var(--line);color:var(--text);box-shadow:var(--shadow-sm)}
+.admin-tab__no{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.78rem;font-weight:700;
+  color:var(--muted);background:var(--surface-3);border-radius:7px;padding:4px 8px;line-height:1}
+.admin-tab.is-active .admin-tab__no{background:var(--accent);color:#fff}
+.admin-tab__copy{display:flex;flex-direction:column;gap:2px}
+.admin-tab__copy b,.admin-tab__copy strong{font-weight:700;letter-spacing:-.01em}
+.admin-tab__copy span,.admin-tab__copy small{color:var(--muted);font-size:.8rem}
+
+/* section panels (DO NOT set display — JS toggles .is-active) */
+.admin-section{padding:clamp(20px,2.6vw,32px);box-shadow:var(--shadow)}
+
+/* ---- editor groups (accordion) ---- */
+.editor-group{margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow-sm)}
+.editor-group>summary{cursor:pointer;list-style:none;padding:15px 18px;font-weight:700;letter-spacing:-.01em;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--surface)}
+.editor-group>summary:hover{background:var(--surface-2)}
+.editor-group[open]>summary{border-bottom:1px solid var(--line)}
+.editor-group__body{padding:18px}
+
+/* ---- fields / inputs ---- */
+.field{display:flex;flex-direction:column;gap:7px;margin-bottom:15px}
+.field>label,.field-label,label{font-weight:600;font-size:.9rem;color:var(--text-2);letter-spacing:-.005em}
+.shell input,.shell select,.shell textarea{width:100%;font:inherit;color:var(--text);
+  background:var(--surface);border:1.5px solid var(--line);border-radius:var(--radius-sm);
+  padding:10px 13px;transition:border-color .2s,box-shadow .2s,background .2s}
+.shell textarea{min-height:96px;line-height:1.6;resize:vertical}
+.shell input::placeholder,.shell textarea::placeholder{color:var(--muted)}
+.shell input:focus,.shell select:focus,.shell textarea:focus{outline:none;border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(106,92,214,.15);background:var(--surface)}
+.shell input[type=checkbox],.shell input[type=radio]{width:auto;accent-color:var(--accent)}
+
+/* ---- buttons ---- */
+.btn{display:inline-flex;align-items:center;gap:8px;font:inherit;font-weight:650;cursor:pointer;
+  border:1.5px solid var(--line);background:var(--surface);color:var(--text);
+  border-radius:var(--radius-sm);padding:10px 16px;line-height:1;transition:background .2s,border-color .2s,color .2s,box-shadow .2s,transform .2s}
+.btn:hover{background:var(--surface-2);transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn.small{padding:7px 12px;font-size:.85rem}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 10px 24px -14px rgba(106,92,214,.7)}
+.btn.primary:hover{background:#5b4ecb;border-color:#5b4ecb}
+.btn.ok{background:var(--ok);border-color:var(--ok);color:#fff;box-shadow:0 10px 24px -14px rgba(31,138,91,.6)}
+.btn.ok:hover{filter:brightness(1.05)}
+
+/* ---- preview ---- */
+.preview-wrap{align-self:start}
+.preview-card{overflow:hidden;box-shadow:var(--shadow);position:sticky;top:20px}
+.preview-card__head{padding:14px 18px;border-bottom:1px solid var(--line);font-weight:700;background:var(--surface-2)}
+.preview{padding:18px;max-height:70vh;overflow:auto}
+.preview-input{background:var(--surface-3);border:1px solid var(--line);border-radius:8px;height:38px;margin-top:6px}
+
+/* ---- applicant management ---- */
+.app-toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:16px;margin-bottom:16px;box-shadow:var(--shadow-sm)}
+.app-toolbar input,.app-toolbar select{width:auto;min-width:180px}
+.app-count{font-size:.9rem;color:var(--muted);margin:6px 2px 14px;font-weight:600}
+.app-count b,.app-count strong{color:var(--text)}
+.table-wrap{overflow:auto;box-shadow:var(--shadow);max-height:70vh}
+.app-table{width:100%;border-collapse:separate;border-spacing:0;font-size:.9rem}
+.app-table thead th{position:sticky;top:0;z-index:1;background:var(--surface-2);
+  text-align:left;font-weight:700;color:var(--muted);font-size:.74rem;letter-spacing:.05em;text-transform:uppercase;
+  padding:13px 15px;border-bottom:1px solid var(--line);white-space:nowrap}
+.app-table tbody td{padding:13px 15px;border-bottom:1px solid var(--line-soft);color:var(--text-2);vertical-align:middle}
+.app-table tbody tr:last-child td{border-bottom:none}
+.app-table tbody tr{transition:background .15s}
+.app-table tbody tr:hover{background:var(--surface-2)}
+.app-table td:first-child,.app-table th:first-child{padding-left:18px}
+.app-table td:last-child,.app-table th:last-child{padding-right:18px}
+.app-table .mono,.app-table code,.app-table time{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85em;color:var(--text)}
+
+/* ---- status pills / chips / badges (defensive, if present) ---- */
+.chip,.badge,.pill,.status,.tag{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:.76rem;
+  padding:4px 10px;border-radius:999px;letter-spacing:.01em}
+.chip,.badge,.pill{background:var(--surface-3);color:var(--text-2);border:1px solid var(--line)}
+.is-open,.status--open,.badge--ok{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+.is-closed,.status--closed,.badge--danger{background:var(--danger-soft);color:var(--danger);border-color:transparent}
+.badge--warn,.status--pending{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+
+/* ---- question list items ---- */
+.question-list{display:flex;flex-direction:column;gap:10px}
+.question-list>*{border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--surface-2)}
+
+/* ---- scrollbars (soft) ---- */
+.table-wrap::-webkit-scrollbar,.preview::-webkit-scrollbar{height:10px;width:10px}
+.table-wrap::-webkit-scrollbar-thumb,.preview::-webkit-scrollbar-thumb{background:#d2d7e2;border-radius:8px;border:3px solid var(--surface)}
+
+
+/* ===== remove "조건부 표시" from the editor (visual only; save logic untouched) ===== */
+.advanced-divider,
+.advanced-label,
+.question-condition{ display:none !important; }
+
 </style></head>
 <body>
 <main class="shell">
