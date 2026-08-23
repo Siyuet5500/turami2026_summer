@@ -2700,6 +2700,58 @@ html{scroll-behavior:smooth}
   border-top:1px solid rgba(255,255,255,.07);
 }
 
+
+/* ============ applicant tweaks: 1(title) · 2(version) · 3(icon) · 4(choices) · 5(custom) ============ */
+
+/* #1 — form title fits in 2 lines */
+.form-title{
+  font-size:clamp(1.4rem,2.4vw,1.9rem)!important;
+  word-break:keep-all;           /* break by words (Korean), not mid-word */
+  line-height:1.15;
+}
+
+/* #2 — hide the published-version label */
+#formVersionText,.form-version{ display:none!important; }
+
+/* #3 — white calendar icon on the dark date field */
+.date-input::-webkit-calendar-picker-indicator{
+  filter:invert(1) brightness(1.9);
+  opacity:.85; cursor:pointer;
+}
+.date-input::-webkit-calendar-picker-indicator:hover{opacity:1}
+
+/* #4 — neat, aligned choice grid + clear separation between questions */
+.choice-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+  gap:10px;
+  align-items:stretch;
+}
+.choice{display:flex}
+.choice span{
+  flex:1;width:100%;
+  min-height:48px;
+  padding:11px 14px;
+  border-radius:11px;
+  text-align:center;
+  white-space:normal;
+  line-height:1.3;
+  font-weight:600;
+}
+@media(max-width:520px){
+  .choice-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
+}
+#dynamicQuestions .field + .field{
+  margin-top:26px;
+  padding-top:26px;
+  border-top:1px solid rgba(255,255,255,.07);
+}
+
+/* #5 — the reveal-on-select custom text input */
+.custom-input-wrap{margin-top:12px}
+.custom-input-wrap[hidden]{display:none!important}
+.custom-input{width:100%}
+
 </style>
 </head>
 <body>
@@ -4418,5 +4470,87 @@ window.addEventListener("scroll",updateNav,{passive:true});
 
 loadRecruitment();
 </script>
+
+<script>
+/* ===== additive UI enhancements (no change to submission/security logic) ===== */
+(function () {
+  /* --- #3: clicking a date field opens the native calendar --- */
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest && e.target.closest('input.date-input, input[type="date"]');
+    if (el) { try { if (el.showPicker) el.showPicker(); } catch (_) {} }
+  });
+
+  /* --- #5: "기타(직접 입력)" radio reveals a text box; the typed text becomes the answer --- */
+  var CUSTOM_HINT = /직접\s*입력/;   /* matches the "기타(직접 입력)" option label */
+
+  function enhance(root) {
+    var wraps = (root || document).querySelectorAll('[data-scope="question"]');
+    wraps.forEach(function (wrap) {
+      if (wrap.dataset.customEnhanced === '1') return;
+
+      var customRadio = null, sentinel = '';
+      wrap.querySelectorAll('label.choice').forEach(function (lb) {
+        var span = lb.querySelector('span');
+        var input = lb.querySelector('input[type="radio"]');
+        if (span && input && CUSTOM_HINT.test(span.textContent || '')) {
+          customRadio = input; sentinel = input.value;
+        }
+      });
+      if (!customRadio) return;               /* nothing to do for this question */
+      wrap.dataset.customEnhanced = '1';       /* guard set BEFORE insert (avoids observer loop) */
+
+      var box = document.createElement('div');
+      box.className = 'custom-input-wrap';
+      box.hidden = true;
+      var tf = document.createElement('input');
+      tf.type = 'text';
+      tf.className = 'custom-input text-input';
+      tf.placeholder = '직접 입력해 주세요';
+      tf.setAttribute('autocomplete', 'off');
+      tf.setAttribute('maxlength', '60');
+      box.appendChild(tf);
+
+      var grid = wrap.querySelector('.choice-grid');
+      if (grid && grid.parentNode) grid.parentNode.insertBefore(box, grid.nextSibling);
+      else wrap.appendChild(box);
+
+      var name = customRadio.getAttribute('name');
+
+      function sync() {
+        var checked = wrap.querySelector('input[name="' + CSS.escape(name) + '"]:checked');
+        var isCustom = checked === customRadio;
+        box.hidden = !isCustom;
+        if (isCustom) {
+          /* mirror the typed text into the radio value so the existing collector submits it */
+          customRadio.value = tf.value.trim() || sentinel;
+          if (!box.hidden) tf.focus({ preventScroll: true });
+        } else {
+          customRadio.value = sentinel;   /* restore original value when another option is chosen */
+          tf.value = '';
+        }
+      }
+
+      wrap.addEventListener('change', function (ev) {
+        if (ev.target && ev.target.name === name) sync();
+      });
+      tf.addEventListener('input', function () {
+        customRadio.value = tf.value.trim() || sentinel;
+      });
+    });
+  }
+
+  function boot() {
+    enhance(document);
+    var container = document.getElementById('dynamicQuestions');
+    if (container && 'MutationObserver' in window) {
+      new MutationObserver(function () { enhance(document); })
+        .observe(container, { childList: true, subtree: true });
+    }
+  }
+  if (document.readyState !== 'loading') boot();
+  else document.addEventListener('DOMContentLoaded', boot);
+})();
+</script>
+
 </body>
 </html>
