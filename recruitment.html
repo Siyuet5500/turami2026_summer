@@ -2772,31 +2772,33 @@ html{scroll-behavior:smooth}
 }
 
 
-/* ===== item 1: progress as a sticky right sidebar (desktop) / calm panel (mobile) ===== */
+/* ===== item 1: progress floats in the right gutter, OUTSIDE the form, follows scroll ===== */
 .form-progress-inline{
-  background:rgba(255,255,255,.035);
+  background:rgba(255,255,255,.04);
   border:1px solid var(--line);
   border-radius:16px;
-  padding:18px 18px 16px;
+  padding:18px;
   backdrop-filter:blur(8px);
 }
-@media(min-width:1000px){
-  .form-card{
+/* only show the rail when the actual form is visible */
+.application-shell > .form-progress-inline{display:none}
+.application-shell:has(#formShell:not([hidden])) > .form-progress-inline{display:block}
+
+@media(min-width:1024px){
+  .application-shell{
     display:grid;
-    grid-template-columns:minmax(0,1fr) 272px;
-    column-gap:40px;
+    grid-template-columns:minmax(0,1fr) 300px;
+    column-gap:36px;
     align-items:start;
   }
-  .form-top--unified{grid-column:1}
-  .form-body{grid-column:1}
-  .submit-area{grid-column:1}
-  .form-progress-inline{
+  .application-shell > *{grid-column:1}
+  .application-shell > .form-progress-inline{
     grid-column:2;
     grid-row:1 / -1;
+    align-self:start;
     position:sticky;
     top:100px;
-    align-self:start;
-    box-shadow:0 24px 60px -34px rgba(0,0,0,.6);
+    box-shadow:0 26px 64px -36px rgba(0,0,0,.6);
   }
   .form-progress-inline__steps{
     flex-direction:column;
@@ -2805,49 +2807,23 @@ html{scroll-behavior:smooth}
   }
   .form-progress-inline__steps > div{justify-content:flex-start}
 }
-@media(max-width:999px){
-  .form-progress-inline{margin-top:6px}
+@media(max-width:1023px){
+  .application-shell:has(#formShell:not([hidden])) > .form-progress-inline{margin-bottom:16px}
 }
 
-/* ===== item 2: make the privacy consent card feel simpler & lighter ===== */
-.form-section--privacy .privacy-box{
-  background:rgba(255,255,255,.02);
-  border:1px solid rgba(255,255,255,.07);
-  border-radius:16px;
+/* ===== item 2: privacy box — key content visible, the rest scrolls inside the box ===== */
+.privacy-box{position:relative}
+.privacy-body{
+  max-height:clamp(220px,34vh,320px);
+  overflow-y:auto;
+  padding-right:14px;
+  box-shadow:inset 0 -22px 20px -20px rgba(0,0,0,.55);   /* hints there is more below */
 }
-.privacy-body{padding:20px 22px}
-.privacy-title{
-  font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;
-  color:var(--muted);font-weight:700;margin-bottom:16px;
-}
-.privacy-grid{
-  display:grid;grid-template-columns:1fr 1fr;gap:18px 34px;
-}
-.privacy-item{
-  background:transparent!important;border:0!important;padding:0!important;
-}
-.privacy-item b{
-  display:block;font-size:.82rem;font-weight:700;color:var(--ink-2);
-  margin-bottom:7px;letter-spacing:-.01em;
-}
-.privacy-item ul{margin:0;padding-left:16px}
-.privacy-item li,.privacy-item p{
-  font-size:.9rem;line-height:1.6;color:var(--muted);margin:2px 0;
-}
-/* de-emphasise the two "small print" items so the card scans quickly */
-.privacy-item:nth-child(3),.privacy-item:nth-child(4){opacity:.82}
-.privacy-item:nth-child(3) b,.privacy-item:nth-child(4) b{color:var(--muted)}
-
-/* consent checkbox = the one clear action */
-.form-section--privacy .consent-row{
-  margin-top:6px;padding:16px 20px;border-top:1px solid rgba(255,255,255,.07);
-  background:rgba(156,137,226,.05);
-}
-.form-section--privacy .consent-row label{font-weight:600}
-
-@media(max-width:620px){
-  .privacy-grid{grid-template-columns:1fr;gap:16px}
-}
+.privacy-body::-webkit-scrollbar{width:8px}
+.privacy-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:8px}
+.privacy-body::-webkit-scrollbar-track{background:transparent}
+/* consent-row stays pinned & visible below the scroll area */
+.consent-row{position:relative;z-index:1}
 
 </style>
 </head>
@@ -3231,18 +3207,7 @@ html{scroll-behavior:smooth}
         </div>
       </div>
 
-      <div id="formShell" class="form-shell" hidden>
-        <form id="applicationForm" class="form-card" novalidate>
-          <div class="form-top form-top--unified">
-            <div class="form-identity">
-              <div class="form-kicker">APPLICATION FORM</div>
-              <h3 class="form-title" id="formTitle">뚜라미 지원서</h3>
-              <div class="form-version" id="formVersionText"></div>
-            </div>
-
-            </div>
-
-          <div class="form-progress-inline">
+      <div class="form-progress-inline">
               <div class="form-progress-inline__head">
                 <span>작성 진행률</span>
                 <strong id="progressNumber">0%</strong>
@@ -3266,6 +3231,17 @@ html{scroll-behavior:smooth}
                   <span>지원 질문</span>
                 </div>
               </div>
+            </div>
+
+      <div id="formShell" class="form-shell" hidden>
+        <form id="applicationForm" class="form-card" novalidate>
+          <div class="form-top form-top--unified">
+            <div class="form-identity">
+              <div class="form-kicker">APPLICATION FORM</div>
+              <h3 class="form-title" id="formTitle">뚜라미 지원서</h3>
+              <div class="form-version" id="formVersionText"></div>
+            </div>
+
             </div>
 
           <div class="form-body">
