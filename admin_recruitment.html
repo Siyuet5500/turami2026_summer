@@ -1786,6 +1786,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font
 .advanced-label,
 .question-condition{ display:none !important; }
 
+
+/* ===== requested editor simplification ===== */
+.editor-layout{grid-template-columns:minmax(0,1fr) !important;}
+.question-primary{grid-template-columns:minmax(260px,1.8fr) minmax(150px,.7fr) !important;}
+
 </style></head>
 <body>
 <main class="shell">
@@ -1957,7 +1962,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font
                   <summary>
                     <div class="editor-summary-copy">
                       <strong>모집 질문</strong>
-                      <span>질문 순서, 형식, 필수 여부, 선택지, 조건부 표시 설정</span>
+                      <span>질문 순서, 형식, 필수 여부, 선택지 설정</span>
                     </div>
                     <span class="editor-chevron">⌄</span>
                   </summary>
@@ -1982,15 +1987,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font
                 </div>
               </div>
 
-              <aside class="preview-wrap">
-                <div class="preview-card">
-                  <div class="preview-card__head">
-                    <strong>지원서 미리보기</strong>
-                    <span>편집 내용 즉시 반영</span>
-                  </div>
-                  <div id="preview" class="preview"></div>
-                </div>
-              </aside>
+              <div id="preview" hidden></div>
             </div>
           </div>
         </section>
@@ -2399,11 +2396,6 @@ function renderQuestions() {
           </select>
         </div>
 
-        <div class="field">
-          <label>질문 ID</label>
-          <input data-key="id"
-            value="${escapeHtml(question.id || "")}" maxlength="80">
-        </div>
       </div>
 
       <div class="question-flags">
@@ -2429,10 +2421,10 @@ function renderQuestions() {
         </div>
       </div>
 
-      <details class="question-advanced">
+      <details class="question-advanced ${supportsLength ? "" : "hidden"}">
         <summary>
           <span>고급 설정</span>
-          <small>${supportsLength ? "글자 수 · " : ""}조건부 표시</small>
+          <small>${supportsLength ? "글자 수" : ""}</small>
           <span class="advanced-chevron">⌄</span>
         </summary>
 
@@ -2456,52 +2448,6 @@ function renderQuestions() {
             </div>
           </div>
 
-          <div class="advanced-divider"></div>
-
-          <div class="advanced-label">
-            조건부 표시
-            <span>특정 답변일 때만 이 질문을 보여줍니다.</span>
-          </div>
-
-          <div class="question-condition">
-            <div class="field">
-              <label>기준 질문 ID</label>
-              <input data-cond="questionId"
-                value="${escapeHtml(question.showWhen?.questionId || "")}"
-                placeholder="비워두면 항상 표시">
-            </div>
-
-            <div class="field">
-              <label>조건</label>
-              <select data-cond="operator">
-                ${[
-                  ["equals","같음"],
-                  ["notEquals","다름"],
-                  ["in","목록에 포함"],
-                  ["notIn","목록에 미포함"]
-                ].map(([value,label]) =>
-                  `<option value="${value}" ${
-                    question.showWhen?.operator === value ? "selected" : ""
-                  }>${label}</option>`
-                ).join("")}
-              </select>
-            </div>
-
-            <div class="field">
-              <label>조건 값</label>
-              <input data-cond="value"
-                value="${escapeHtml(
-                  question.showWhen
-                    ? (
-                      Array.isArray(question.showWhen.values)
-                        ? question.showWhen.values.join(", ")
-                        : (question.showWhen.value || "")
-                    )
-                    : ""
-                )}"
-                placeholder="예: vocal">
-            </div>
-          </div>
         </div>
       </details>
     `;
