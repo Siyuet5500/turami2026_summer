@@ -2774,140 +2774,169 @@ html{scroll-behavior:smooth}
 
 
 /* ============================================================
-   APPLICATION PROGRESS — OUTSIDE FORM / STICKY
-   Presentational only. Existing progress IDs and JS are unchanged.
+   APPLICATION FORM — NO VISIBLE PROGRESS / CLEAN PRIVACY SUMMARY
+   Presentation only. Firebase, App Check, submission and privacy
+   data bindings remain unchanged.
    ============================================================ */
 
-/* 실제 지원서 카드 폭은 기존 920px 유지 */
-.application-shell{
-  width:min(1174px,100%);
-  max-width:1174px;
-}
-
-/* 상태 카드들은 기존 지원서 폭 유지 */
-.application-shell>.locked-card,
-.application-shell>.success-card,
-.application-shell>.error-card{
-  width:min(920px,100%);
-  margin-inline:auto;
-}
-
-/* PC: 왼쪽 920px 폼 + 오른쪽 230px 진행률 */
-#formShell.form-shell{
-  display:grid;
-  grid-template-columns:minmax(0,920px) 230px;
-  gap:24px;
-  align-items:start;
-  width:100%;
-}
-
-/* 진행률이 빠진 폼 상단은 제목만 사용 */
 .form-top--unified{
-  grid-template-columns:1fr;
+  grid-template-columns:1fr!important;
+  gap:0!important;
 }
 
-/* PC 진행률: 폼 테두리 밖, 스크롤을 따라 이동 */
-#formShell>.form-progress-inline{
-  position:sticky;
-  top:88px;
-  z-index:18;
-  align-self:start;
-  min-width:0;
-  padding:18px 16px 16px;
-  border:1px solid rgba(156,137,226,.30);
-  border-radius:12px;
-  background:rgba(15,15,22,.92);
-  backdrop-filter:blur(16px);
-  box-shadow:
-    0 20px 48px -34px rgba(0,0,0,.92),
-    0 14px 42px -34px rgba(124,120,242,.72);
+.form-progress-compat{
+  display:none!important;
 }
 
-#formShell>.form-progress-inline .form-progress-inline__head{
-  margin-bottom:12px;
+/* 개인정보 영역: 네 개의 작은 카드 대신 하나의 정돈된 정보표 */
+.form-section--privacy .privacy-box{
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:14px;
+  background:rgba(12,12,18,.72);
+  overflow:hidden;
 }
 
-#formShell>.form-progress-inline .form-progress-inline__head strong{
-  font-size:1.45rem;
+.form-section--privacy .privacy-body{
+  padding:0 20px;
 }
 
-#formShell>.form-progress-inline .progress-bar{
-  height:5px;
+/* 상단 섹션 제목과 중복되는 내부 제목은 시각적으로 숨김 */
+.form-section--privacy .privacy-title{
+  display:none;
 }
 
-/* PC 사이드바에서는 단계 표시를 세로로 정리 */
-#formShell>.form-progress-inline .form-progress-inline__steps{
-  grid-template-columns:1fr;
-  gap:13px;
-  margin-top:16px;
+.form-section--privacy .privacy-grid{
+  display:block;
 }
 
-#formShell>.form-progress-inline .form-progress-inline__steps>div{
-  gap:9px;
-  font-size:.72rem;
+.form-section--privacy .privacy-item{
+  display:grid;
+  grid-template-columns:142px minmax(0,1fr);
+  gap:22px;
+  align-items:start;
+  padding:18px 0;
+  margin:0;
+  border:0;
+  border-bottom:1px solid rgba(255,255,255,.065);
+  border-radius:0;
+  background:transparent;
 }
 
-/* 폭이 줄어들면 폼 위의 상단 진행률로 전환 */
-@media(max-width:1180px){
-  .application-shell{
-    width:min(920px,100%);
+.form-section--privacy .privacy-item:last-child{
+  border-bottom:0;
+}
+
+.form-section--privacy .privacy-item b{
+  margin:1px 0 0;
+  color:#f0edf9;
+  font-size:.84rem;
+  font-weight:700;
+  line-height:1.55;
+  letter-spacing:-.01em;
+}
+
+.form-section--privacy .privacy-item p,
+.form-section--privacy .privacy-item ul{
+  margin:0;
+  color:rgba(224,222,235,.78);
+  font-size:.88rem;
+  line-height:1.7;
+}
+
+.form-section--privacy #privacyPurpose{
+  padding-left:18px;
+}
+
+.form-section--privacy #privacyPurpose li + li{
+  margin-top:3px;
+}
+
+/* 수집 항목은 한눈에 읽기 쉬운 태그로 표시 */
+.form-section--privacy #privacyItems{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  padding:0;
+  list-style:none;
+}
+
+.form-section--privacy #privacyItems li{
+  list-style:none;
+  padding:5px 10px;
+  border:1px solid rgba(169,155,255,.13);
+  border-radius:999px;
+  background:rgba(156,137,226,.055);
+  color:rgba(232,229,246,.84);
+  font-size:.81rem;
+  line-height:1.4;
+}
+
+.form-section--privacy .consent-row{
+  align-items:center;
+  gap:12px;
+  padding:17px 20px;
+  border-top:1px solid rgba(255,255,255,.085);
+  background:
+    linear-gradient(
+      90deg,
+      rgba(156,137,226,.075),
+      rgba(108,133,230,.025)
+    );
+}
+
+.form-section--privacy .consent-row input{
+  width:21px;
+  height:21px;
+  margin:0;
+}
+
+.form-section--privacy .consent-row label{
+  font-size:.92rem;
+  line-height:1.55;
+  font-weight:700;
+  color:rgba(240,238,248,.9);
+}
+
+@media(max-width:640px){
+  .form-section--privacy .privacy-body{
+    padding:0 16px;
   }
 
-  #formShell.form-shell{
+  .form-section--privacy .privacy-item{
     grid-template-columns:1fr;
-    gap:0;
+    gap:7px;
+    padding:15px 0;
   }
 
-  #formShell>.form-progress-inline{
-    order:-1;
-    top:72px;
-    margin:0 0 10px;
+  .form-section--privacy .privacy-item b{
+    font-size:.82rem;
   }
 
-  #formShell>.form-progress-inline .form-progress-inline__steps{
-    grid-template-columns:repeat(3,minmax(0,1fr));
+  .form-section--privacy .privacy-item p,
+  .form-section--privacy .privacy-item ul{
+    font-size:.84rem;
+  }
+
+  .form-section--privacy #privacyItems{
     gap:6px;
   }
-}
 
-/* 모바일: 화면 상단에 얇게 고정되는 진행률 */
-@media(max-width:760px){
-  #formShell>.form-progress-inline{
-    position:sticky;
-    top:58px;
-    z-index:76;
-    margin:0;
-    padding:8px 12px 9px;
-    border-radius:0 0 10px 10px;
-    border-left-color:rgba(156,137,226,.20);
-    border-right-color:rgba(156,137,226,.20);
-    background:rgba(10,10,15,.94);
-    backdrop-filter:blur(18px) saturate(1.15);
-    box-shadow:0 12px 30px -24px rgba(0,0,0,.95);
+  .form-section--privacy #privacyItems li{
+    padding:4px 8px;
+    font-size:.78rem;
   }
 
-  #formShell>.form-progress-inline .form-progress-inline__head{
-    align-items:center;
-    margin-bottom:6px;
+  .form-section--privacy .consent-row{
+    align-items:flex-start;
+    padding:15px 16px;
   }
 
-  #formShell>.form-progress-inline .form-progress-inline__head span{
-    font-size:.58rem;
-    letter-spacing:.11em;
+  .form-section--privacy .consent-row input{
+    margin-top:1px;
   }
 
-  #formShell>.form-progress-inline .form-progress-inline__head strong{
-    font-size:1rem;
-    line-height:1;
-  }
-
-  #formShell>.form-progress-inline .progress-bar{
-    height:3px;
-  }
-
-  /* 모바일에서는 단계명을 숨겨 높이를 최소화 */
-  #formShell>.form-progress-inline .form-progress-inline__steps{
-    display:none;
+  .form-section--privacy .consent-row label{
+    font-size:.86rem;
   }
 }
 
@@ -3302,6 +3331,18 @@ html{scroll-behavior:smooth}
               <div class="form-version" id="formVersionText"></div>
             </div>
 
+            <!--
+              Progress UI intentionally removed.
+              Hidden compatibility nodes remain only so the existing
+              form JavaScript can run unchanged.
+            -->
+            <div class="form-progress-compat" hidden aria-hidden="true">
+              <span id="progressNumber">0%</span>
+              <span id="progressFill"></span>
+              <span class="tick" id="tickConsent">1</span>
+              <span class="tick" id="tickBasic">2</span>
+              <span class="tick" id="tickQuestions">3</span>
+            </div>
           </div>
 
           <div class="form-body">
@@ -3387,31 +3428,6 @@ html{scroll-behavior:smooth}
             </div>
           </div>
         </form>
-        <aside class="form-progress-inline" aria-label="지원서 작성 진행률">
-          <div class="form-progress-inline__head">
-            <span>작성 진행률</span>
-            <strong id="progressNumber">0%</strong>
-          </div>
-
-          <div class="progress-bar" aria-hidden="true">
-            <div class="progress-fill" id="progressFill"></div>
-          </div>
-
-          <div class="form-progress-inline__steps">
-            <div>
-              <span class="tick" id="tickConsent">1</span>
-              <span>개인정보 동의</span>
-            </div>
-            <div>
-              <span class="tick" id="tickBasic">2</span>
-              <span>기본 정보</span>
-            </div>
-            <div>
-              <span class="tick" id="tickQuestions">3</span>
-              <span>지원 질문</span>
-            </div>
-          </div>
-        </aside>
       </div>
     </div>
   </div>
