@@ -1104,7 +1104,6 @@ body{
 .fields{display:grid;gap:20px}
 .field{
   display:grid;
-  min-width:0;
   gap:9px;
   transition:
     opacity .25s ease,
@@ -1129,18 +1128,12 @@ body{
   font-size:.82rem;
   line-height:1.55;
 }
-.input-wrap{
-  position:relative;
-  width:100%;
-  min-width:0;
-}
+.input-wrap{position:relative}
 .text-input,
 .textarea-input,
 .select-input,
 .date-input{
   width:100%;
-  min-width:0;
-  max-width:100%;
   color:var(--text);
   background:#0e0e14;
   border:1px solid var(--line);
@@ -2946,6 +2939,7 @@ html{scroll-behavior:smooth}
     font-size:.86rem;
   }
 }
+
 </style>
 </head>
 <body>
@@ -4039,6 +4033,27 @@ function fieldControl(definition, scope) {
     `;
   }
 
+  if (definition.type === "date" && scope === "fixed" && definition.id === "birthDate") {
+    return `
+      <div class="input-wrap">
+        <input
+          class="text-input birthdate-input"
+          id="${id}"
+          name="${escapeHtml(definition.id)}"
+          type="text"
+          inputmode="numeric"
+          pattern="[0-9]{6}"
+          minlength="6"
+          maxlength="6"
+          placeholder="예: 010203"
+          autocomplete="bday"
+          ${req}
+        >
+      </div>
+      <div class="help">생년월일 6자리를 숫자로 입력해 주세요. 예: 010203</div>
+    `;
+  }
+
   if (definition.type === "date") {
     return `
       <div class="input-wrap">
@@ -4197,16 +4212,42 @@ function renderForm(form) {
   $("privacyRefusal").textContent =
     privacy.refusalNotice || "관리자 설정을 확인해 주세요.";
 
-  const today = new Date();
-  const isoToday = new Date(
-    today.getTime() - today.getTimezoneOffset() * 60000
-  ).toISOString().slice(0,10);
-
   const birthDateInput = document.querySelector(
-    '[data-scope="fixed"][data-field-id="birthDate"] input[type="date"]'
+    '[data-scope="fixed"][data-field-id="birthDate"] input'
   );
   if (birthDateInput) {
-    birthDateInput.max = isoToday;
+    const validateBirthDateInput = () => {
+      birthDateInput.value = birthDateInput.value
+        .replace(/\D/g, "")
+        .slice(0, 6);
+
+      if (!birthDateInput.value) {
+        birthDateInput.setCustomValidity("");
+        return;
+      }
+
+      if (birthDateInput.value.length !== 6) {
+        birthDateInput.setCustomValidity(
+          "생년월일 6자리를 입력해 주세요. 예: 010203"
+        );
+        return;
+      }
+
+      if (!birthDateSixToIso(birthDateInput.value)) {
+        birthDateInput.setCustomValidity(
+          "올바른 생년월일을 입력해 주세요. 예: 010203"
+        );
+        return;
+      }
+
+      birthDateInput.setCustomValidity("");
+    };
+
+    birthDateInput.addEventListener("input", () => {
+      validateBirthDateInput();
+      updateProgress();
+    });
+    birthDateInput.addEventListener("blur", validateBirthDateInput);
   }
 
   document.querySelectorAll("textarea[maxlength]").forEach((textarea) => {
@@ -4267,6 +4308,35 @@ function updateCounter(textarea) {
   const ratio = max ? current / max : 0;
   counter.className = "char-count" +
     (ratio >= 1 ? " bad" : ratio >= .9 ? " warn" : "");
+}
+
+function birthDateSixToIso(value) {
+  const digits = String(value || "").replace(/\D/g, "");
+  if (!/^[0-9]{6}$/.test(digits)) return "";
+
+  const yy = Number(digits.slice(0, 2));
+  const month = digits.slice(2, 4);
+  const day = digits.slice(4, 6);
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentTwoDigitYear = currentYear % 100;
+  const year = yy <= currentTwoDigitYear ? 2000 + yy : 1900 + yy;
+  const iso = `${year}-${month}-${day}`;
+  const parsed = new Date(`${iso}T00:00:00Z`);
+
+  if (
+    Number.isNaN(parsed.getTime()) ||
+    parsed.toISOString().slice(0, 10) !== iso
+  ) {
+    return "";
+  }
+
+  const localToday = new Date(
+    now.getTime() - now.getTimezoneOffset() * 60000
+  ).toISOString().slice(0, 10);
+
+  if (iso < "1900-01-01" || iso > localToday) return "";
+  return iso;
 }
 
 function getDefinitionValue(definition, scope) {
@@ -4492,8 +4562,10 @@ function gatherPayload() {
   const answers = {};
 
   for (const definition of state.form.fixedFields || []) {
-    fields[definition.id] =
-      getDefinitionValue(definition,"fixed") ?? "";
+    const value = getDefinitionValue(definition,"fixed") ?? "";
+    fields[definition.id] = definition.id === "birthDate"
+      ? birthDateSixToIso(value)
+      : value;
   }
 
   for (const definition of state.form.questions || []) {
