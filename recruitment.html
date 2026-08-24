@@ -2772,28 +2772,35 @@ html{scroll-behavior:smooth}
 }
 
 
-/* ===== progress: right column, pushed into the page gutter, follows scroll (sticky) ===== */
-@media(min-width:1180px){
-  #formShell{display:grid;grid-template-columns:minmax(0,1fr) 258px;column-gap:40px;align-items:start}
-  #formShell > form.form-card{grid-column:1;min-width:0}
-  #formShell > .form-progress-inline{
-    grid-column:2;position:sticky;top:120px;align-self:start;margin:0;width:258px;
-    /* slide into the empty right gutter as far as the viewport allows (clipped-safe by .apply overflow:hidden) */
-    transform:translateX(clamp(0px, calc((100vw - 1180px) / 2 - 16px), 230px));
-    background:rgba(255,255,255,.045);border:1px solid var(--line);border-radius:18px;
-    padding:22px 22px 20px;backdrop-filter:blur(10px);
+/* ===== progress lifted into the right gutter, follows scroll — form width/content unchanged ===== */
+@media(min-width:1600px){
+  .apply .form-progress-inline{
+    float:right;
+    position:sticky;
+    top:104px;
+    width:clamp(200px, calc((100vw - 1180px)/2 - 28px), 244px);
+    /* push the card fully to the right of the form (never overlaps), into the empty gutter */
+    transform:translateX(calc(100% + 22px));
+    margin:4px 0 20px;
+    background:rgba(255,255,255,.045);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:22px 22px 20px;
+    backdrop-filter:blur(10px);
     box-shadow:0 30px 70px -40px rgba(0,0,0,.65);
+    z-index:2;
   }
-  #formShell > .form-progress-inline .form-progress-inline__steps{
-    flex-direction:column;align-items:stretch;gap:12px;margin-top:16px;
-  }
-  #formShell > .form-progress-inline .form-progress-inline__steps > div{justify-content:flex-start}
+  .apply .form-progress-inline__steps{grid-template-columns:1fr;gap:12px;margin-top:16px}
+  .apply .form-progress-inline__steps>div{white-space:normal}
 }
-@media(max-width:1179px){
-  #formShell{display:flex;flex-direction:column}
-  #formShell > .form-progress-inline{
-    order:-1;margin:0 0 18px;
-    background:rgba(255,255,255,.045);border:1px solid var(--line);border-radius:16px;padding:16px 18px;
+/* not enough gutter room: show a compact card above the form (form stays full width) */
+@media(max-width:1599px){
+  .apply .form-progress-inline{
+    margin:0 0 18px;
+    background:rgba(255,255,255,.045);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:16px 18px;
   }
 }
 
@@ -3138,6 +3145,32 @@ html{scroll-behavior:smooth}
       </div>
     </div>
 
+    <div class="form-progress-inline">
+              <div class="form-progress-inline__head">
+                <span>작성 진행률</span>
+                <strong id="progressNumber">0%</strong>
+              </div>
+
+              <div class="progress-bar" aria-hidden="true">
+                <div class="progress-fill" id="progressFill"></div>
+              </div>
+
+              <div class="form-progress-inline__steps">
+                <div>
+                  <span class="tick" id="tickConsent">1</span>
+                  <span>개인정보 동의</span>
+                </div>
+                <div>
+                  <span class="tick" id="tickBasic">2</span>
+                  <span>기본 정보</span>
+                </div>
+                <div>
+                  <span class="tick" id="tickQuestions">3</span>
+                  <span>지원 질문</span>
+                </div>
+              </div>
+            </div>
+
     <div class="application-shell">
       <div id="loadingState" class="locked-card">
         <div class="lock-icon-large skeleton" aria-hidden="true"></div>
@@ -3273,32 +3306,6 @@ html{scroll-behavior:smooth}
             </div>
           </div>
         </form>
-
-          <div class="form-progress-inline">
-              <div class="form-progress-inline__head">
-                <span>작성 진행률</span>
-                <strong id="progressNumber">0%</strong>
-              </div>
-
-              <div class="progress-bar" aria-hidden="true">
-                <div class="progress-fill" id="progressFill"></div>
-              </div>
-
-              <div class="form-progress-inline__steps">
-                <div>
-                  <span class="tick" id="tickConsent">1</span>
-                  <span>개인정보 동의</span>
-                </div>
-                <div>
-                  <span class="tick" id="tickBasic">2</span>
-                  <span>기본 정보</span>
-                </div>
-                <div>
-                  <span class="tick" id="tickQuestions">3</span>
-                  <span>지원 질문</span>
-                </div>
-              </div>
-            </div>
       </div>
     </div>
   </div>
