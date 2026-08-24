@@ -4769,24 +4769,53 @@ loadRecruitment();
       var name = customRadio.getAttribute('name');
 
       function sync() {
-        var checked = wrap.querySelector('input[name="' + CSS.escape(name) + '"]:checked');
+        var checked = wrap.querySelector(
+          'input[name="' + CSS.escape(name) + '"]:checked'
+        );
         var isCustom = checked === customRadio;
+
         box.hidden = !isCustom;
+        tf.required = isCustom;
+
         if (isCustom) {
-          /* mirror the typed text into the radio value so the existing collector submits it */
-          customRadio.value = tf.value.trim() || sentinel;
-          if (!box.hidden) tf.focus({ preventScroll: true });
+          var customValue = tf.value.trim();
+
+          /* 직접 입력한 내용을 실제 답변값으로 사용 */
+          customRadio.value = customValue;
+
+          /* 빈칸 또는 공백만 입력한 경우 제출 금지 */
+          tf.setCustomValidity(
+            customValue ? '' : '직접 입력 내용을 입력해 주세요.'
+          );
+
+          if (!box.hidden) {
+            tf.focus({ preventScroll: true });
+          }
         } else {
-          customRadio.value = sentinel;   /* restore original value when another option is chosen */
+          /* 다른 선택지를 선택하면 원래 직접입력 option 값 복구 */
+          customRadio.value = sentinel;
           tf.value = '';
+          tf.required = false;
+          tf.setCustomValidity('');
         }
       }
 
       wrap.addEventListener('change', function (ev) {
-        if (ev.target && ev.target.name === name) sync();
+        if (ev.target && ev.target.name === name) {
+          sync();
+        }
       });
+
       tf.addEventListener('input', function () {
-        customRadio.value = tf.value.trim() || sentinel;
+        var customValue = tf.value.trim();
+
+        customRadio.value = customValue;
+
+        tf.setCustomValidity(
+          customRadio.checked && !customValue
+            ? '직접 입력 내용을 입력해 주세요.'
+            : ''
+        );
       });
     });
   }
