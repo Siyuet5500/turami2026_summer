@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/images/turami_logo_black.png">
 <title>뚜라미 모집 관리자</title>
 <meta name="robots" content="noindex,nofollow">
 <style>
@@ -2537,6 +2538,40 @@ let questions = [];
 let applicationSummaries = [];
 let selectedApplicationId = null;
 
+function clearSensitiveAdminState() {
+  // Decrypted applicant data and admin-only review data should not remain
+  // in the page after the authenticated admin session ends.
+  applicationSummaries = [];
+  selectedApplicationId = null;
+
+  const tableBody = $("applicationTableBody");
+  if (tableBody) tableBody.replaceChildren();
+
+  const fixedFields = $("applicationFixedFields");
+  if (fixedFields) fixedFields.replaceChildren();
+
+  const answers = $("applicationAnswers");
+  if (answers) answers.replaceChildren();
+
+  const detail = $("applicationDetail");
+  if (detail) detail.classList.remove("show");
+
+  const memo = $("applicationAdminMemo");
+  if (memo) memo.value = "";
+
+  const applicationId = $("applicationIdDisplay");
+  if (applicationId) applicationId.value = "";
+
+  const search = $("applicationSearch");
+  if (search) search.value = "";
+
+  const count = $("applicationCount");
+  if (count) count.textContent = "";
+
+  const reviewStatus = $("applicationReviewStatus");
+  if (reviewStatus) reviewStatus.value = "received";
+}
+
 function setStatus(message, type="") {
   statusEl.textContent = message;
   statusEl.className = "status" + (type ? " " + type : "");
@@ -3314,6 +3349,7 @@ onAuthStateChanged(auth, async (user) => {
   workspaceEl.classList.remove("show");
 
   if (!user) {
+    clearSensitiveAdminState();
     profileEl.classList.remove("show");
     loginBtn.hidden = false;
     logoutBtn.hidden = true;
@@ -3343,6 +3379,7 @@ onAuthStateChanged(auth, async (user) => {
 
     await loadAdminData();
   } catch (error) {
+    clearSensitiveAdminState();
     console.error("Admin initialization failed:", error);
     setStatus(callError(error), "error");
   }
